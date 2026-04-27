@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neighborhood Portal</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root[data-theme="light"]{
+  --bg:#f5f0eb;--card:#fff;--border:#e0d8d0;
+  --accent:#c9624a;--accent2:#d4a830;--green:#5a9478;--blue:#4a6fa5;
+  --text:#2a2d45;--muted:#6a6060;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.06);--shadow-md:0 4px 14px rgba(0,0,0,.09);
+  --shadow-hover:0 6px 22px rgba(201,98,74,.18);
+}
+:root[data-theme="dark"]{
+  --bg:#16161e;--card:#1f1f2e;--border:#2e2e42;
+  --accent:#e07a5f;--accent2:#f2cc8f;--green:#81b29a;--blue:#7aa2d4;
+  --text:#e8e4f0;--muted:#9a90b0;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.3);--shadow-md:0 4px 14px rgba(0,0,0,.4);
+  --shadow-hover:0 6px 22px rgba(224,122,95,.22);
+}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;transition:background .3s,color .3s}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse at 18% 18%,rgba(224,122,95,.08) 0%,transparent 52%),
+             radial-gradient(ellipse at 82% 82%,rgba(129,178,154,.06) 0%,transparent 52%);}
+.wrap{position:relative;z-index:1;max-width:940px;margin:0 auto;padding:1.6rem 1.1rem 5rem}
+
+/* ── Top bar ── */
+.top-bar{display:flex;align-items:center;flex-wrap:wrap;gap:.5rem;margin-bottom:1.6rem}
+.tb-btn{display:inline-flex;align-items:center;gap:.35rem;padding:.38rem .8rem;border-radius:8px;border:1.5px solid var(--border);background:var(--card);color:var(--muted);font-size:.8rem;font-weight:600;cursor:pointer;text-decoration:none;transition:border-color .2s,color .2s;min-height:36px;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+.tb-btn:hover{border-color:var(--accent);color:var(--accent)}
+.tb-btn svg{width:14px;height:14px;flex-shrink:0}
+.tb-sep{flex:1}
+
+.lang-wrap{position:relative}
+.lang-menu{display:none;position:absolute;top:calc(100% + 4px);right:0;background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:.3rem;min-width:150px;z-index:100;box-shadow:var(--shadow-md);flex-direction:column;gap:.1rem}
+.lang-menu.open{display:flex}
+.lang-opt{padding:.4rem .8rem;border-radius:6px;font-size:.8rem;font-weight:500;cursor:pointer;border:none;background:none;color:var(--text);text-align:left;transition:background .15s;white-space:nowrap}
+.lang-opt:hover{background:rgba(201,98,74,.1)}
+.lang-opt.active{color:var(--accent);font-weight:700}
+
+header{margin-bottom:1.4rem}
+header h1{font-size:clamp(1.4rem,4vw,2rem);font-weight:800;letter-spacing:-.03em;background:linear-gradient(135deg,var(--accent),var(--accent2),var(--green));background-size:200%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:grad 7s ease infinite}
+@keyframes grad{0%,100%{background-position:0 50%}50%{background-position:100% 50%}}
+header p{color:var(--muted);font-size:.86rem;margin-top:.3rem}
+
+/* ── Status bar ── */
+.status-bar{border-radius:9px;padding:.45rem .9rem;font-size:.78rem;font-weight:600;margin-bottom:.8rem;display:none;text-align:center}
+.status-bar.loading{background:rgba(74,111,165,.1);border:1px solid rgba(74,111,165,.2);color:var(--blue)}
+.status-bar.error{background:rgba(201,98,74,.08);border:1px solid rgba(201,98,74,.22);color:var(--accent);text-align:left}
+
+/* ════════════════════════════════════════════
+   ZIP GATE — covers the whole portal 
+   ════════════════════════════════════════════ */
+#zipGate{
+  min-height:60vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:2rem 1rem;
+}
+.gate-card{
+  background:var(--card);
+  border:1.5px solid var(--border);
+  border-radius:20px;
+  padding:2.4rem 2.2rem;
+  max-width:420px;
+  width:100%;
+  text-align:center;
+  box-shadow:var(--shadow-md);
+  animation:scaleIn .4s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+.gate-icon{
+  font-size:2.4rem;
+  margin-bottom:1rem;
+  display:block;
+}
+.gate-title{
+  font-size:1.35rem;
+  font-weight:800;
+  letter-spacing:-.03em;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:.5rem;
+}
+.gate-sub{
+  font-size:.86rem;
+  color:var(--muted);
+  margin-bottom:1.6rem;
+  line-height:1.6;
+}
+.gate-input-wrap{
+  display:flex;
+  gap:.5rem;
+  justify-content:center;
+}
+.gate-input{
+  padding:.62rem 1rem;
+  border-radius:12px;
+  border:1.5px solid var(--border);
+  background:var(--bg);
+  color:var(--text);
+  font-size:1.3rem;
+  font-weight:700;
+  letter-spacing:.14em;
+  width:170px;
+  text-align:center;
+  outline:none;
+  transition:border-color .25s,box-shadow .25s;
+  font-family:inherit;
+  -webkit-tap-highlight-color:transparent;
+}
+.gate-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(224,122,95,.18)}
+.gate-input.error{border-color:#e05555;box-shadow:0 0 0 3px rgba(224,85,85,.15)}
+.gate-btn{
+  padding:.62rem 1.2rem;
+  border-radius:12px;
+  border:none;
+  background:var(--accent);
+  color:#fff;
+  font-size:.92rem;
+  font-weight:700;
+  cursor:pointer;
+  transition:opacity .18s,transform .12s;
+  min-height:44px;
+  white-space:nowrap;
+}
+.gate-btn:hover{opacity:.88}
+.gate-btn:active{transform:scale(.97)}
+.gate-error{
+  font-size:.78rem;
+  color:#c84040;
+  margin-top:.65rem;
+  font-weight:600;
+  min-height:1.2em;
+  transition:opacity .2s;
+}
+[data-theme="dark"] .gate-error{color:#e07070}
+.gate-hint{font-size:.73rem;color:var(--muted);margin-top:1rem;line-height:1.5}
+.gate-hint a{color:var(--accent)}
+
+/* ── Portal content (hidden until ZIP unlocked) ── */
+#portalContent{display:none}
+#portalContent.unlocked{display:block;animation:fadeIn .35s ease both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ── Active ZIP badge ── */
+.zip-badge{
+  display:inline-flex;align-items:center;gap:.4rem;
+  background:rgba(201,98,74,.1);border:1.5px solid rgba(201,98,74,.28);
+  border-radius:999px;padding:.28rem .78rem;font-size:.78rem;font-weight:700;color:var(--accent);
+}
+.zip-badge button{background:none;border:none;cursor:pointer;color:var(--accent);opacity:.7;font-size:.82rem;padding:2px 0 2px 4px;min-width:20px;min-height:20px;transition:opacity .15s}
+.zip-badge button:hover{opacity:1}
+
+/* ── Tabs ── */
+.tabs{display:flex;border-bottom:1.5px solid var(--border);margin-bottom:1.2rem;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tab{padding:.6rem 1rem;font-size:.84rem;font-weight:600;background:none;border:none;border-bottom:2.5px solid transparent;color:var(--muted);cursor:pointer;margin-bottom:-1.5px;white-space:nowrap;transition:color .2s,border-color .2s;flex-shrink:0;min-height:44px}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab:hover:not(.active){color:var(--text)}
+
+/* ── Filters ── */
+.filter-row{display:flex;align-items:center;flex-wrap:wrap;gap:.45rem;margin-bottom:.8rem}
+.filter-row label{font-size:.76rem;font-weight:600;color:var(--muted)}
+.filter-row select{padding:.3rem .55rem;border-radius:8px;border:1.5px solid var(--border);background:var(--card);color:var(--text);font-size:.78rem;cursor:pointer;outline:none;min-height:32px}
+.filter-row select:focus{border-color:var(--accent)}
+
+/* ── Category pills ── */
+.cpills{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.8rem}
+.cpill{padding:.26rem .72rem;border-radius:999px;border:1.5px solid var(--border);background:var(--card);color:var(--muted);cursor:pointer;font-size:.73rem;font-weight:600;transition:all .18s;min-height:30px;display:inline-flex;align-items:center;justify-content:center;line-height:1;-webkit-tap-highlight-color:transparent}
+.cpill:hover{border-color:var(--accent);color:var(--accent)}
+.cpill.on{background:var(--accent);border-color:var(--accent);color:#fff}
+
+.count{color:var(--muted);font-size:.74rem;font-weight:600;margin-bottom:.65rem}
+
+/* ── Card grid ── */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:.85rem}
+.ncard{background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:1.05rem 1.15rem 1rem;box-shadow:0 1px 4px rgba(0,0,0,.05),0 2px 10px rgba(0,0,0,.04);display:flex;flex-direction:column;gap:.48rem;transition:border-color .22s,box-shadow .22s,transform .18s}
+.ncard:hover{border-color:rgba(201,98,74,.28);box-shadow:var(--shadow-hover);transform:translateY(-1px)}
+.ncard.offer-card:hover{border-color:rgba(90,148,120,.32)}
+.ncard.fulfilled{opacity:.5}
+
+.badges{display:flex;gap:.3rem;flex-wrap:wrap;align-items:center}
+.ncard-top{display:flex;justify-content:space-between;align-items:flex-start;gap:.4rem}
+.type-badge{font-size:.62rem;font-weight:700;padding:.22rem .6rem;border-radius:999px;text-transform:uppercase;letter-spacing:.05em;display:inline-flex;align-items:center;line-height:1}
+.type-need{background:#fdf0ed;color:#8a3520}
+.type-offer{background:#eaf6f2;color:#1a6655}
+.cat-badge{font-size:.65rem;font-weight:600;padding:.22rem .6rem;border-radius:999px;display:inline-flex;align-items:center;line-height:1}
+.urg-mini{display:inline-flex;align-items:center;gap:.3rem}
+.urg-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.urg-lbl{font-size:.65rem;font-weight:600}
+.urg-urgent .urg-dot{background:#e05555}.urg-urgent .urg-lbl{color:#c84040}
+.urg-week   .urg-dot{background:#e8a030}.urg-week   .urg-lbl{color:#c07818}
+.urg-flex   .urg-dot{background:#5a9a40}.urg-flex   .urg-lbl{color:#4a8030}
+
+.ncard-name{font-weight:700;font-size:.9rem;letter-spacing:-.01em}
+.ncard-meta{font-size:.71rem;color:var(--muted);font-weight:500}
+.ncard-desc{font-size:.81rem;color:var(--muted);line-height:1.65;overflow:hidden;flex:1;
+  display:-webkit-box;-webkit-line-clamp:3;line-clamp:3;-webkit-box-orient:vertical}
+@supports not (-webkit-line-clamp:3){.ncard-desc{max-height:5em}}
+
+.ncard-footer{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.35rem;margin-top:auto;padding-top:.5rem;border-top:1px solid var(--border)}
+.ncard-time{font-size:.68rem;color:var(--muted)}
+.ncard-btns{display:flex;gap:.3rem;flex-wrap:wrap;align-items:center}
+
+.chip{font-size:.64rem;font-weight:700;padding:.24rem .62rem;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;line-height:1;white-space:nowrap}
+.chip-open{background:rgba(90,148,120,.13);color:#3d7a60}
+.chip-done{background:rgba(201,98,74,.1);color:#a04830}
+
+.btn{padding:.3rem .72rem;border-radius:8px;border:1.5px solid;font-size:.71rem;font-weight:600;cursor:pointer;transition:all .18s;background:none;white-space:nowrap;min-height:32px;min-width:44px;display:inline-flex;align-items:center;justify-content:center;line-height:1;-webkit-tap-highlight-color:transparent}
+.btn-g{border-color:rgba(90,148,120,.35);color:var(--green);background:rgba(90,148,120,.07)}
+.btn-g:hover{background:var(--green);color:#fff;border-color:var(--green)}
+.btn-b{border-color:rgba(74,111,165,.35);color:var(--blue);background:rgba(74,111,165,.07)}
+.btn-b:hover{background:var(--blue);color:#fff;border-color:var(--blue)}
+.btn-r{border-color:rgba(201,98,74,.35);color:var(--accent);background:rgba(201,98,74,.07)}
+.btn-r:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn-del{border-color:rgba(180,50,50,.3);color:#c0392b;background:rgba(180,50,50,.07)}
+.btn-del:hover{background:#c0392b;color:#fff;border-color:#c0392b}
+
+.expand-box{overflow:hidden;max-height:0;transition:max-height .3s ease,opacity .25s ease,margin-top .25s ease;opacity:0;margin-top:0;border-radius:10px;font-size:.79rem;line-height:1.65}
+.expand-box.show{max-height:400px;opacity:1;margin-top:.4rem}
+.expand-green{background:rgba(90,148,120,.07);border:1px solid rgba(90,148,120,.22);padding:.6rem .85rem}
+.expand-blue{background:rgba(74,111,165,.06);border:1px solid rgba(74,111,165,.18);padding:.6rem .85rem}
+
+.msg-form{display:flex;flex-direction:column;gap:.38rem}
+.msg-form textarea,.msg-form input[type=text]{width:100%;padding:.42rem .65rem;border-radius:8px;border:1.5px solid var(--border);background:var(--bg);color:var(--text);font-size:.79rem;font-family:inherit;outline:none;transition:border-color .2s}
+.msg-form textarea{height:68px;resize:vertical;line-height:1.5}
+.msg-form textarea:focus,.msg-form input[type=text]:focus{border-color:var(--blue)}
+.anon-note{font-size:.69rem;color:var(--muted);font-style:italic}
+.msg-sent{font-size:.73rem;color:var(--green);font-weight:600;display:none}
+
+/* ── Post form ── */
+.form-wrap{max-width:540px}
+.type-toggle{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:1.1rem}
+.type-opt{padding:.65rem;border-radius:10px;border:2px solid var(--border);background:var(--card);cursor:pointer;text-align:center;transition:all .2s;user-select:none;-webkit-tap-highlight-color:transparent}
+.type-opt.sel-need{border-color:var(--accent);background:rgba(201,98,74,.07)}
+.type-opt.sel-offer{border-color:var(--green);background:rgba(90,148,120,.07)}
+.t-emoji{font-size:1.35rem;display:block;margin-bottom:.15rem}
+.t-label{font-size:.82rem;font-weight:700;color:var(--text)}
+.t-desc{font-size:.7rem;color:var(--muted);margin-top:.08rem}
+
+.fg{margin-bottom:.95rem}
+.fg>label,.fg-label{display:block;font-size:.74rem;font-weight:700;color:var(--muted);margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.04em}
+.fg input,.fg select,.fg textarea{width:100%;padding:.48rem .76rem;border-radius:9px;border:1.5px solid var(--border);background:var(--card);color:var(--text);font-size:.86rem;font-family:inherit;outline:none;transition:border-color .2s;min-height:40px}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--accent)}
+.fg textarea{height:90px;resize:vertical;line-height:1.5;min-height:auto}
+.fg .hint{font-size:.69rem;color:var(--muted);margin-top:.25rem;line-height:1.4}
+
+.urg-row{display:grid;grid-template-columns:repeat(3,1fr);gap:.42rem}
+.urg-opt{padding:.5rem .3rem;border-radius:9px;border:1.5px solid var(--border);background:var(--card);font-size:.73rem;font-weight:600;cursor:pointer;text-align:center;color:var(--muted);transition:all .18s;user-select:none;min-height:44px;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent}
+.urg-opt.sel-urgent{background:#FCEBEB;border-color:#E24B4A;color:#A32D2D}
+.urg-opt.sel-week{background:#FAEEDA;border-color:#EF9F27;color:#854F0B}
+.urg-opt.sel-flexible{background:#EAF3DE;border-color:#639922;color:#3B6D11}
+
+.popt{display:flex;align-items:flex-start;gap:.55rem;padding:.55rem .8rem;border-radius:9px;border:1.5px solid var(--border);background:var(--card);cursor:pointer;margin-bottom:.4rem;transition:all .2s;user-select:none;-webkit-tap-highlight-color:transparent}
+.popt:hover{border-color:var(--accent)}
+.popt.sel{border-color:var(--accent);background:rgba(201,98,74,.06)}
+.popt input[type=radio]{margin-top:.1rem;flex-shrink:0;accent-color:var(--accent);cursor:pointer;width:16px;height:16px}
+.popt-lbl{font-size:.8rem;font-weight:700;color:var(--text)}
+.popt-desc{font-size:.69rem;color:var(--muted);margin-top:.08rem;line-height:1.4}
+
+.form-error{padding:.5rem .8rem;border-radius:9px;font-size:.8rem;font-weight:600;color:#8b2000;background:rgba(201,98,74,.08);border:1.5px solid rgba(201,98,74,.3);margin-bottom:.75rem;display:none}
+.form-error.show{display:block}
+
+.sub-btn{width:100%;padding:.72rem;background:var(--accent);color:#fff;border:none;border-radius:10px;font-size:.92rem;font-weight:700;cursor:pointer;margin-top:.5rem;transition:opacity .18s;min-height:44px}
+.sub-btn:hover{opacity:.88}
+.sub-btn:disabled{opacity:.45;cursor:not-allowed}
+
+.success-box{background:rgba(90,148,120,.09);border:2px solid rgba(90,148,120,.28);border-radius:13px;padding:1.1rem 1.3rem;margin-bottom:1.2rem;display:none;position:relative}
+.success-box.show{display:block}
+.success-box h3{font-size:.9rem;color:var(--green);margin-bottom:.5rem}
+.code-display{background:var(--card);border:2.5px dashed var(--green);border-radius:9px;padding:.45rem 1rem;font-size:1.5rem;font-weight:800;letter-spacing:.18em;color:var(--green);text-align:center;font-family:'Courier New',monospace;margin:.4rem 0;cursor:pointer;transition:background .2s}
+.code-display:hover{background:rgba(90,148,120,.08)}
+.code-warn{font-size:.72rem;color:var(--muted);line-height:1.5;background:rgba(212,168,48,.1);border:1px solid rgba(212,168,48,.3);border-radius:7px;padding:.38rem .65rem;margin-top:.4rem}
+.close-success{position:absolute;top:.7rem;right:.9rem;background:none;border:none;color:var(--muted);cursor:pointer;font-size:1rem;opacity:.7;padding:.2rem .4rem;min-width:28px;min-height:28px}
+.close-success:hover{opacity:1}
+
+.manage-intro{font-size:.85rem;color:var(--muted);margin-bottom:1rem;line-height:1.6}
+.code-search{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem}
+.code-search input{padding:.5rem .9rem;border-radius:9px;border:1.5px solid var(--border);background:var(--card);color:var(--text);font-size:.98rem;font-family:'Courier New',monospace;letter-spacing:.12em;width:200px;text-transform:uppercase;outline:none;transition:border-color .2s;min-height:44px}
+.code-search input:focus{border-color:var(--accent)}
+.manage-card{background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:1.1rem 1.3rem;box-shadow:var(--shadow-sm);display:none}
+.manage-card.show{display:block}
+.manage-desc-block{font-size:.86rem;color:var(--text);line-height:1.7;margin:.55rem 0}
+.manage-meta{font-size:.72rem;color:var(--muted);margin-bottom:.7rem}
+.msgs-section{margin-top:.9rem;padding-top:.9rem;border-top:1px solid var(--border)}
+.msgs-section h4{font-size:.76rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.6rem}
+.msg-item{background:rgba(74,111,165,.07);border:1px solid rgba(74,111,165,.16);border-radius:9px;padding:.55rem .8rem;margin-bottom:.4rem;font-size:.8rem;line-height:1.6}
+.msg-item .msg-reply{font-size:.69rem;color:var(--blue);margin-top:.2rem;font-style:italic}
+.msg-item .msg-time{font-size:.65rem;color:var(--muted);margin-top:.15rem}
+.no-msgs{font-size:.8rem;color:var(--muted);font-style:italic}
+.manage-actions{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:.9rem;padding-top:.9rem;border-top:1px solid var(--border)}
+.edit-box{margin-top:.85rem;display:none}
+.edit-box textarea{width:100%;padding:.5rem .75rem;border-radius:9px;border:1.5px solid var(--border);background:var(--bg);color:var(--text);font-size:.86rem;font-family:inherit;height:90px;outline:none;resize:vertical;line-height:1.5;transition:border-color .2s}
+.edit-box textarea:focus{border-color:var(--accent)}
+.edit-actions{display:flex;gap:.4rem;margin-top:.4rem}
+.m-alert{padding:.52rem .85rem;border-radius:9px;font-size:.8rem;font-weight:600;margin-bottom:.8rem;display:none}
+.m-alert.show{display:block}
+.m-alert.warn{background:rgba(212,168,48,.1);border:1.5px solid rgba(212,168,48,.3);color:#5a3f00}
+.m-alert.ok{background:rgba(90,148,120,.1);border:1.5px solid rgba(90,148,120,.28);color:var(--green)}
+[data-theme="dark"] .m-alert.warn{color:var(--accent2)}
+
+.empty-state{text-align:center;padding:2.6rem 1rem;color:var(--muted)}
+.empty-state .e-icon{font-size:2rem;margin-bottom:.5rem}
+.empty-state p{font-size:.86rem;line-height:1.6}
+
+@keyframes scaleIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+@media(max-width:520px){
+  .type-toggle,.urg-row{grid-template-columns:1fr}
+  .tab{padding:.5rem .7rem;font-size:.78rem}
+  .grid{grid-template-columns:1fr}
+  .gate-input-wrap{flex-direction:column;align-items:center}
+  .gate-input,.gate-btn{width:200px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="statusBar" class="status-bar"></div>
+
+  <div class="top-bar">
+    <a class="tb-btn" href="index.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      <span>Back to Resource Navigator</span>
+    </a>
+    <div class="tb-sep"></div>
+    <button class="tb-btn" onclick="load()" title="Refresh">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+      Refresh
+    </button>
+    <button class="tb-btn" onclick="toggleTheme()" id="themeBtn">
+      <svg id="themeIco" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <span id="themeLabel">Dark mode</span>
+    </button>
+    <div class="lang-wrap" id="langWrap">
+      <button class="tb-btn" id="langBtn" onclick="toggleLangMenu()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+        <span id="langLabel">English</span>
+      </button>
+      <div class="lang-menu" id="langMenu">
+        <button class="lang-opt active" onclick="setLang('en')">🇺🇸 English</button>
+        <button class="lang-opt" onclick="setLang('es')">🇪🇸 Español</button>
+        <button class="lang-opt" onclick="setLang('fr')">🇫🇷 Français</button>
+        <button class="lang-opt" onclick="setLang('ru')">🇷🇺 Русский</button>
+        <button class="lang-opt" onclick="setLang('zh')">🇨🇳 中文</button>
+        <button class="lang-opt" onclick="setLang('hi')">🇮🇳 हिन्दी</button>
+        <button class="lang-opt" onclick="setLang('bn')">🇧🇩 বাংলা</button>
+        <button class="lang-opt" onclick="setLang('ht')">🇭🇹 Kreyòl</button>
+      </div>
+    </div>
+  </div>
+
+  <header>
+    <h1>🏘️ Neighborhood Portal</h1>
+    <p>Mutual aid by ZIP — post a need or offer help. All posts are anonymous by default.</p>
+  </header>
+
+  <!-- ════════════════════════════════════════════
+       ZIP GATE 
+       ════════════════════════════════════════════ -->
+  <div id="zipGate">
+    <div class="gate-card">
+      <span class="gate-icon">📍</span>
+      <div class="gate-title">Enter Your ZIP Code</div>
+      <div class="gate-sub">This portal serves NYC neighborhoods. Enter your 5-digit ZIP to see and post mutual aid in your area.</div>
+      <div class="gate-input-wrap">
+        <input type="text" class="gate-input" id="gateZipInput" maxlength="5" placeholder="10001" inputmode="numeric" autocomplete="postal-code"
+          oninput="onGateInput()" onkeydown="if(event.key==='Enter')tryUnlock()">
+        <button class="gate-btn" onclick="tryUnlock()">Enter →</button>
+      </div>
+      <div class="gate-error" id="gateError"></div>
+      <div class="gate-hint">Your ZIP is only used to filter nearby posts — it's never stored or shared.</div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════
+       PORTAL CONTENT (revealed after ZIP) 
+       ════════════════════════════════════════════ -->
+  <div id="portalContent">
+
+    <!-- Active ZIP + change link -->
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;margin-bottom:1.1rem">
+      <span class="zip-badge" id="activeBadge">
+        <span>📍 ZIP <span id="activeBadgeZip"></span></span>
+        <button onclick="resetGate()" title="Change ZIP">✕</button>
+      </span>
+      <span style="font-size:.75rem;color:var(--muted)">Showing posts for your neighborhood</span>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" id="t-needs"  onclick="switchTab('needs')">🙋 Needs</button>
+      <button class="tab"        id="t-offers" onclick="switchTab('offers')">🤝 Offers</button>
+      <button class="tab"        id="t-post"   onclick="switchTab('post')">➕ Post</button>
+      <button class="tab"        id="t-manage" onclick="switchTab('manage')">🔑 Manage</button>
+    </div>
+
+    <!-- NEEDS -->
+    <div id="p-needs">
+      <div class="filter-row">
+        <label>ZIP:</label><select id="nZip" onchange="setZipFilter(this.value)"><option value="">All</option></select>
+        <label>Urgency:</label>
+        <select id="nUrg" onchange="renderNeeds()">
+          <option value="">All</option>
+          <option value="urgent">Urgent</option>
+          <option value="week">This week</option>
+          <option value="flexible">Flexible</option>
+        </select>
+        <label>Show:</label>
+        <select id="nStat" onchange="renderNeeds()">
+          <option value="open">Open</option>
+          <option value="">All</option>
+          <option value="claimed">Fulfilled</option>
+        </select>
+      </div>
+      <div class="cpills" id="nCats"></div>
+      <div class="count"  id="nCount"></div>
+      <div id="nList"></div>
+    </div>
+
+    <!-- OFFERS -->
+    <div id="p-offers" style="display:none">
+      <div class="filter-row">
+        <label>ZIP:</label><select id="oZip" onchange="setZipFilter(this.value)"><option value="">All</option></select>
+        <label>Show:</label>
+        <select id="oStat" onchange="renderOffers()">
+          <option value="open">Active</option>
+          <option value="">All</option>
+          <option value="claimed">Closed</option>
+        </select>
+      </div>
+      <div class="cpills" id="oCats"></div>
+      <div class="count"  id="oCount"></div>
+      <div id="oList"></div>
+    </div>
+
+    <!-- POST -->
+    <div id="p-post" style="display:none">
+      <div class="success-box" id="successBox">
+        <button class="close-success" onclick="document.getElementById('successBox').className='success-box'">✕</button>
+        <h3>✅ Posted!</h3>
+        <p style="font-size:.81rem;color:var(--text);margin-bottom:.4rem">Save your <strong>secret management code</strong> — use it to view responses, edit, or delete.</p>
+        <div class="code-display" id="codeDisplay" onclick="copyCode()"></div>
+        <div class="code-warn">⚠️ Shown <strong>once</strong>. Screenshot it now. Click to copy.</div>
+      </div>
+      <div class="form-wrap">
+        <div class="fg" style="margin-bottom:1.2rem">
+          <span class="fg-label">I want to…</span>
+          <div class="type-toggle">
+            <div class="type-opt sel-need" id="optNeed" onclick="setPostType('need')" role="button" tabindex="0">
+              <span class="t-emoji">🙋</span>
+              <span class="t-label">Post a Need</span>
+              <span class="t-desc">I need help with something</span>
+            </div>
+            <div class="type-opt" id="optOffer" onclick="setPostType('offer')" role="button" tabindex="0">
+              <span class="t-emoji">🤝</span>
+              <span class="t-label">Offer Help</span>
+              <span class="t-desc">I can help my neighbors</span>
+            </div>
+          </div>
+        </div>
+        <div class="fg">
+          <label for="fZip">ZIP code *</label>
+          <input type="text" id="fZip" maxlength="5" placeholder="5-digit ZIP" style="max-width:160px" inputmode="numeric">
+        </div>
+        <div class="fg">
+          <label for="fName">Display name or alias</label>
+          <input type="text" id="fName" placeholder="e.g. Maria, or leave blank for 'Neighbor'">
+        </div>
+        <div class="fg">
+          <label for="fCat">Category *</label>
+          <select id="fCat" onchange="onCatChange()">
+            <option value="">Select…</option>
+            <option>Food</option><option>Clothing</option><option>Housing</option>
+            <option>Childcare</option><option>Transportation</option><option>Employment</option>
+            <option>Education</option><option>Legal</option><option>Mental Health</option>
+            <option>Medical</option><option>Technology</option><option>Errands</option>
+            <option>Companionship</option><option>Skills / Tutoring</option><option>Other</option>
+          </select>
+        </div>
+        <div class="fg" id="fOtherWrap" style="display:none">
+          <label for="fOther">Describe your category *</label>
+          <input type="text" id="fOther" placeholder="e.g. Pet care, Moving help…">
+        </div>
+        <div class="fg">
+          <label for="fDesc" id="fDescLbl">What do you need? *</label>
+          <textarea id="fDesc" maxlength="800" placeholder="Be specific — what, when, where, any constraints."></textarea>
+          <p class="hint">Max 800 characters.</p>
+        </div>
+        <div class="fg" id="fUrgWrap">
+          <span class="fg-label">How urgent?</span>
+          <div class="urg-row">
+            <div class="urg-opt" data-v="urgent"   onclick="selUrg('urgent')">🔴 Urgent</div>
+            <div class="urg-opt" data-v="week"     onclick="selUrg('week')">🟡 This week</div>
+            <div class="urg-opt" data-v="flexible" onclick="selUrg('flexible')">🟢 Flexible / Ongoing</div>
+          </div>
+        </div>
+        <div class="fg">
+          <span class="fg-label">Contact privacy *</span>
+          <label class="popt sel" id="poptAnon">
+            <input type="radio" name="priv" value="anon" checked onchange="setPrivacy('anon')">
+            <div>
+              <div class="popt-lbl">🔒 Fully anonymous (recommended)</div>
+              <div class="popt-desc">No contact info shown. Helpers leave you a private message; read it with your secret code.</div>
+            </div>
+          </label>
+          <label class="popt" id="poptReveal">
+            <input type="radio" name="priv" value="reveal" onchange="setPrivacy('reveal')">
+            <div>
+              <div class="popt-lbl">👁️ Reveal my contact when someone responds</div>
+              <div class="popt-desc">Your info is shown only after someone clicks the help button.</div>
+            </div>
+          </label>
+        </div>
+        <div class="fg" id="fContactWrap" style="display:none">
+          <label for="fContact">Your contact info *</label>
+          <input type="text" id="fContact" placeholder="Email, phone, Signal, etc.">
+          <p class="hint">Only revealed when a neighbor clicks the respond button.</p>
+        </div>
+        <div id="formError" class="form-error" role="alert"></div>
+        <button class="sub-btn" id="subBtn" onclick="submitPost()">Post →</button>
+      </div>
+    </div>
+
+    <!-- MANAGE -->
+    <div id="p-manage" style="display:none">
+      <p class="manage-intro">Enter the secret code from when you posted — view messages, edit, mark as done, or delete.</p>
+      <div class="code-search">
+        <input type="text" id="codeIn" maxlength="8" placeholder="ABCD1234"
+          oninput="this.value=this.value.toUpperCase()"
+          onkeydown="if(event.key==='Enter')lookupCode()">
+        <button class="sub-btn" style="width:auto;padding:.48rem 1.1rem;margin-top:0" onclick="lookupCode()">Find My Post</button>
+      </div>
+      <div class="m-alert" id="mAlert"></div>
+      <div class="manage-card" id="manageCard"></div>
+    </div>
+
+  </div><!-- /portalContent -->
+</div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzRCwLlIrC_y8srwuns65SQwS8cMKEpnC4knnyZAP1f6vilnGSaHp1XQQ4UKYMiiz9pbg/exec';
+
+/* ─────────────── ZIP GATE LOGIC ─────────────── */
+let activeZip = sessionStorage.getItem('portalZip') || '';
+
+function onGateInput(){
+  const v = document.getElementById('gateZipInput').value;
+  document.getElementById('gateError').textContent = '';
+  document.getElementById('gateZipInput').classList.remove('error');
+  if(/^\d{5}$/.test(v)) tryUnlock();
+}
+
+function tryUnlock(){
+  const v = document.getElementById('gateZipInput').value.trim();
+  if(!/^\d{5}$/.test(v)){
+    document.getElementById('gateError').textContent = 'Please enter a valid 5-digit NYC ZIP code.';
+    document.getElementById('gateZipInput').classList.add('error');
+    document.getElementById('gateZipInput').focus();
+    return;
+  }
+  activeZip = v;
+  sessionStorage.setItem('portalZip', v);
+  showPortal();
+}
+
+function showPortal(){
+  document.getElementById('zipGate').style.display = 'none';
+  const content = document.getElementById('portalContent');
+  content.classList.add('unlocked');
+  document.getElementById('activeBadgeZip').textContent = activeZip;
+  document.getElementById('fZip').value = activeZip;
+  document.getElementById('nCount').textContent = `Loading posts for ZIP ${activeZip}…`;
+  document.getElementById('oCount').textContent = `Loading posts for ZIP ${activeZip}…`;
+  load();
+}
+
+function resetGate(){
+  activeZip = '';
+  zipOverride = null;
+  sessionStorage.removeItem('portalZip');
+  document.getElementById('portalContent').classList.remove('unlocked');
+  document.getElementById('zipGate').style.display = 'flex';
+  document.getElementById('gateZipInput').value = '';
+  document.getElementById('gateError').textContent = '';
+  document.getElementById('gateZipInput').classList.remove('error');
+  document.getElementById('gateZipInput').focus();
+}
+
+// Auto-unlock if ZIP already in session
+if(activeZip && /^\d{5}$/.test(activeZip)){
+  document.getElementById('gateZipInput').value = activeZip;
+  document.addEventListener('DOMContentLoaded', showPortal);
+} else {
+  document.addEventListener('DOMContentLoaded', ()=> document.getElementById('gateZipInput').focus());
+}
+
+/* ─────────────── DATA & STATE ─────────────── */
+const CATS=['Food','Clothing','Housing','Childcare','Transportation','Employment','Education','Legal','Mental Health','Medical','Technology','Errands','Companionship','Skills / Tutoring','Other'];
+const CS={'Food':{bg:'#FAEEDA',tc:'#633806'},'Clothing':{bg:'#FAECE7',tc:'#712B13'},'Housing':{bg:'#E6F1FB',tc:'#0C447C'},'Childcare':{bg:'#FBEAF0',tc:'#72243E'},'Transportation':{bg:'#E1F5EE',tc:'#085041'},'Employment':{bg:'#EEEDFE',tc:'#3C3489'},'Education':{bg:'#EAF3DE',tc:'#27500A'},'Legal':{bg:'#F1EFE8',tc:'#444441'},'Mental Health':{bg:'#EEEDFE',tc:'#3C3489'},'Medical':{bg:'#E1F5EE',tc:'#085041'},'Technology':{bg:'#E8F4FD',tc:'#0B4F6C'},'Errands':{bg:'#FDF5E1',tc:'#5C4400'},'Companionship':{bg:'#F9EAF5',tc:'#6B2D7A'},'Skills / Tutoring':{bg:'#EBF5EB',tc:'#1E5E1E'},'Other':{bg:'#F1EFE8',tc:'#444441'}};
+let posts=[],nCat='All',oCat='All',openContact=null,openMsg=null;
+let postType='need',urgency='',privacy='anon',isDark=false;
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const cs=c=>CS[c]||CS['Other'];
+
+function timeAgo(ts){const d=Math.floor((Date.now()-new Date(ts))/1000);if(d<60)return'just now';if(d<3600)return Math.floor(d/60)+'m ago';if(d<86400)return Math.floor(d/3600)+'h ago';if(d<604800)return Math.floor(d/86400)+'d ago';return new Date(ts).toLocaleDateString();}
+function genCode(){const a='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';return Array.from({length:8},()=>a[Math.floor(Math.random()*a.length)]).join('');}
+function copyCode(){const el=document.getElementById('codeDisplay');const t=el.textContent.trim();if(!navigator.clipboard){selectText(el);return;}navigator.clipboard.writeText(t).then(()=>{const orig=el.textContent;el.textContent='Copied!';setTimeout(()=>el.textContent=orig,1400);}).catch(()=>selectText(el));}
+function selectText(el){const r=document.createRange();r.selectNode(el);window.getSelection().removeAllRanges();window.getSelection().addRange(r);}
+function showFormError(msg){const el=document.getElementById('formError');if(!el)return;el.textContent=msg;el.className='form-error'+(msg?' show':'');if(msg)el.scrollIntoView({behavior:'smooth',block:'nearest'});}
+
+async function api(action,payload={}){
+  if(!SCRIPT_URL||SCRIPT_URL.includes('PASTE'))throw new Error('SCRIPT_URL not set');
+  const clean=Object.fromEntries(Object.entries(payload).filter(([,v])=>v!==''&&v!==null&&v!==undefined));
+  const url=SCRIPT_URL+'?action='+encodeURIComponent(action)+'&payload='+encodeURIComponent(JSON.stringify(clean));
+  const ctrl=new AbortController(),tid=setTimeout(()=>ctrl.abort(),20000);
+  try{const r=await fetch(url,{redirect:'follow',signal:ctrl.signal});clearTimeout(tid);if(!r.ok)throw new Error('Server error '+r.status);return r.json();}
+  catch(e){clearTimeout(tid);if(e.name==='AbortError')throw new Error('Request timed out — please try again.');throw e;}
+}
+
+function setStatus(type,msg){const el=document.getElementById('statusBar');el.className='status-bar'+(type?' '+type:'');el.textContent=msg||'';el.style.display=msg?'block':'none';}
+
+async function load(){
+  if(!activeZip)return;
+  setStatus('loading','⏳ Loading posts…');
+  try{const res=await api('load');if(!res.ok)throw new Error(res.error||'Load failed');posts=res.posts||[];rebuildFilters();renderNeeds();renderOffers();setStatus('','');}
+  catch(e){setStatus('error','⚠️ '+e.message);}
+}
+
+function displayCat(p){return p.category==='Other'&&p.customCat?p.customCat:p.category;}
+
+// Normalize a ZIP value for reliable comparison — trim whitespace, force string
+function normZip(z){ return String(z||'').trim(); }
+
+// The ZIP filter to apply: what the user picked in the dropdown, defaulting to activeZip
+// We store the user's override separately so "All ZIPs" is a deliberate opt-in
+let zipOverride = null; // null = use activeZip; '' = show all; '12345' = explicit choice
+
+function getZipFilter(){ return zipOverride === null ? activeZip : zipOverride; }
+
+function buildZip(id,arr){
+  const el=document.getElementById(id);
+  const current=getZipFilter();
+  const zips=[...new Set([...(activeZip?[activeZip]:[]),...arr.map(p=>normZip(p.zip))])].filter(Boolean).sort();
+  el.innerHTML='<option value="">All ZIPs</option>'+zips.map(z=>`<option value="${esc(z)}"${z===current?' selected':''}>${esc(z)}</option>`).join('');
+  if(current) el.value=current;
+}
+
+function setZipFilter(v){
+  zipOverride = v===activeZip ? null : v; // snap back to null when user picks their own ZIP
+  rebuildFilters(); renderNeeds(); renderOffers();
+}
+
+function rebuildFilters(){
+  const needs=posts.filter(p=>p.type==='need');
+  const offers=posts.filter(p=>p.type==='offer');
+  buildZip('nZip',needs);
+  buildZip('oZip',offers);
+  buildCats('nCats',needs,nCat,'setNCat');
+  buildCats('oCats',offers,oCat,'setOCat');
+}
+function buildCats(id,arr,active,fn){const used=['All',...CATS.filter(c=>arr.some(p=>p.category===c||displayCat(p)===c))];document.getElementById(id).innerHTML=used.map(c=>`<button class="cpill${c===active?' on':''}" onclick="${fn}('${esc(c)}')">${esc(c==='All'?'All':c)}</button>`).join('');}
+function setNCat(c){nCat=c;openContact=openMsg=null;rebuildFilters();renderNeeds();}
+function setOCat(c){oCat=c;openContact=openMsg=null;rebuildFilters();renderOffers();}
+
+function renderNeeds(){
+  const zipF=getZipFilter();
+  const urgF=document.getElementById('nUrg').value,stF=document.getElementById('nStat').value;
+  let f=posts.filter(p=>{
+    if(p.type!=='need')return false;
+    if(zipF && normZip(p.zip)!==normZip(zipF))return false;
+    if(nCat!=='All'&&displayCat(p)!==nCat&&p.category!==nCat)return false;
+    if(urgF&&p.urgency!==urgF)return false;
+    if(stF&&p.status!==stF)return false;
+    if(!stF&&p.status==='claimed')return false;
+    return true;
+  });
+  const ord={urgent:0,week:1,flexible:2};f.sort((a,b)=>(ord[a.urgency]||2)-(ord[b.urgency]||2)||(new Date(b.timestamp)-new Date(a.timestamp)));
+  const open=f.filter(p=>p.status==='open').length;
+  document.getElementById('nCount').textContent=f.length
+    ?`${open} open · ${f.length-open} fulfilled`+(zipF?` in ZIP ${zipF}`:'')
+    :`No open needs`+(zipF?` for ZIP ${zipF}`:'');
+  renderList('nList',f,'need');
+}
+
+function renderOffers(){
+  const zipF=getZipFilter();
+  const stF=document.getElementById('oStat').value;
+  let f=posts.filter(p=>{
+    if(p.type!=='offer')return false;
+    if(zipF && normZip(p.zip)!==normZip(zipF))return false;
+    if(oCat!=='All'&&displayCat(p)!==oCat&&p.category!==oCat)return false;
+    if(stF&&p.status!==stF)return false;
+    if(!stF&&p.status==='claimed')return false;
+    return true;
+  });
+  f.sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp));
+  const open=f.filter(p=>p.status==='open').length;
+  document.getElementById('oCount').textContent=f.length
+    ?`${open} active · ${f.length-open} closed`+(zipF?` in ZIP ${zipF}`:'')
+    :`No active offers`+(zipF?` for ZIP ${zipF}`:'');
+  renderList('oList',f,'offer');
+}
+
+function renderList(id,items,type){
+  const el=document.getElementById(id);
+  if(!items.length){el.innerHTML=`<div class="empty-state"><div class="e-icon">${type==='need'?'🌱':'🤝'}</div><p>${type==='need'?'No needs match your filters.\nBe the first to post!':'No offers match your filters.\nBe the first to post!'}</p></div>`;return;}
+  el.innerHTML=`<div class="grid">${items.map(p=>card(p,type)).join('')}</div>`;
+}
+
+function card(p,type){
+  const dc=displayCat(p),c=cs(p.category);
+  const urgLabels={urgent:'Urgent',week:'This week',flexible:'Flexible'};
+  const urgCls={urgent:'urg-urgent',week:'urg-week',flexible:'urg-flex'}[p.urgency]||'urg-flex';
+  const urgLbl=urgLabels[p.urgency]||urgLabels.flexible;
+  const done=p.status==='claimed';
+  const msgs=(p.messages||[]).length;
+  const isC=openContact===p.id,isM=openMsg===p.id;
+  const contactInner=p.privacy==='reveal'&&p.contact?`<strong>Contact:</strong> ${esc(p.contact)}`:p.privacy==='reveal'&&!p.contact?`<em>No contact left — try leaving a message below.</em>`:`<em>Poster chose full anonymity. Leave a private message and they'll read it with their secret code.</em>`;
+  const helpBtn=type==='need'?'I can help':'I need this';
+  const msgsSuffix=msgs?` · 💬 ${msgs}`:'';
+  return`<div class="ncard${done?' fulfilled':''}${type==='offer'?' offer-card':''}" id="pc-${p.id}">
+    <div class="ncard-top">
+      <div class="badges">
+        <span class="type-badge ${type==='need'?'type-need':'type-offer'}">${type}</span>
+        <span class="cat-badge" style="background:${c.bg};color:${c.tc}">${esc(dc)}</span>
+      </div>
+      ${type==='need'?`<div class="urg-mini ${urgCls}"><div class="urg-dot"></div><span class="urg-lbl">${urgLbl}</span></div>`:''}
+    </div>
+    <div class="ncard-name">${esc(p.firstName||'Neighbor')}</div>
+    <div class="ncard-meta">ZIP ${esc(p.zip)}${p.updatedAt&&p.updatedAt!==p.timestamp?' · '+timeAgo(p.updatedAt):''}</div>
+    <div class="ncard-desc">${esc(p.description)}</div>
+    <div class="ncard-footer">
+      <span class="ncard-time">Posted ${timeAgo(p.timestamp)}${msgsSuffix}</span>
+      <div class="ncard-btns">
+        <span class="chip ${done?'chip-done':'chip-open'}">${done?(type==='need'?'Fulfilled':'Closed'):'Open'}</span>
+        ${!done?`<button class="btn btn-g" onclick="togContact('${p.id}')">${isC?'Hide':helpBtn}</button>`:''}
+        <button class="btn btn-b" onclick="togMsg('${p.id}')">${isM?'Hide':'💬 Message'}</button>
+      </div>
+    </div>
+    <div class="expand-box expand-green${isC?' show':''}">${contactInner}</div>
+    <div class="expand-box expand-blue${isM?' show':''}">
+      <div class="msg-form">
+        <div class="anon-note">Your identity is not revealed.</div>
+        <textarea id="mt-${p.id}" placeholder="Write your message…" maxlength="600"></textarea>
+        <input type="text" id="mr-${p.id}" placeholder="Optional: your contact info (only visible to poster)" maxlength="200">
+        <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap">
+          <button class="btn btn-b" onclick="sendMsg('${p.id}')">Send</button>
+          <span class="msg-sent" id="ms-${p.id}">✓ Sent!</span>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function togContact(id){openContact=openContact===id?null:id;openMsg=null;renderNeeds();renderOffers();}
+function togMsg(id){openMsg=openMsg===id?null:id;openContact=null;renderNeeds();renderOffers();}
+
+async function sendMsg(id){
+  const mt=document.getElementById('mt-'+id),mr=document.getElementById('mr-'+id);
+  const txt=(mt||{}).value||'',rpl=(mr||{}).value||'';
+  if(!txt.trim()){showFormError('Please write a message first.');return;}
+  const message={id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),text:txt.trim(),replyTo:rpl.trim(),timestamp:new Date().toISOString()};
+  try{await api('message',{id,message});const idx=posts.findIndex(p=>p.id===id);if(idx>-1){if(!posts[idx].messages)posts[idx].messages=[];posts[idx].messages.push(message);posts[idx].updatedAt=new Date().toISOString();}const s=document.getElementById('ms-'+id);if(s){s.style.display='inline';setTimeout(()=>s.style.display='none',2500);}if(mt)mt.value='';if(mr)mr.value='';}
+  catch(e){setStatus('error','⚠️ Could not send: '+e.message);}
+}
+
+/* Post form */
+function setPostType(t){postType=t;document.getElementById('optNeed').className='type-opt'+(t==='need'?' sel-need':'');document.getElementById('optOffer').className='type-opt'+(t==='offer'?' sel-offer':'');const lbl=document.getElementById('fDescLbl');if(lbl)lbl.textContent=t==='need'?'What do you need? *':'What can you help with? *';const ta=document.getElementById('fDesc');if(ta)ta.placeholder=t==='need'?'Be specific — what, when, where, any constraints.':'Describe what you can offer, your availability, and area.';document.getElementById('fUrgWrap').style.display=t==='need'?'':'none';showFormError('');}
+function setPrivacy(v){privacy=v;document.getElementById('poptAnon').classList.toggle('sel',v==='anon');document.getElementById('poptReveal').classList.toggle('sel',v==='reveal');document.getElementById('fContactWrap').style.display=v==='reveal'?'block':'none';}
+function selUrg(v){urgency=v;document.querySelectorAll('.urg-opt').forEach(el=>{el.className='urg-opt';if(el.dataset.v===v)el.className='urg-opt sel-'+v;});showFormError('');}
+function onCatChange(){document.getElementById('fOtherWrap').style.display=document.getElementById('fCat').value==='Other'?'block':'none';showFormError('');}
+
+async function submitPost(){
+  showFormError('');
+  const zip=document.getElementById('fZip').value.trim();
+  const name=document.getElementById('fName').value.trim();
+  const cat=document.getElementById('fCat').value;
+  const customCat=cat==='Other'?document.getElementById('fOther').value.trim():'';
+  const desc=document.getElementById('fDesc').value.trim();
+  const contact=document.getElementById('fContact').value.trim();
+  if(!zip||!/^\d{5}$/.test(zip)){showFormError('Please enter a valid 5-digit ZIP.');return;}
+  if(!cat){showFormError('Please select a category.');return;}
+  if(cat==='Other'&&!customCat){showFormError('Please describe your "Other" category.');return;}
+  if(desc.length<10){showFormError('Please add a bit more detail (at least 10 characters).');return;}
+  if(postType==='need'&&!urgency){showFormError('Please select an urgency level.');return;}
+  if(privacy==='reveal'&&!contact){showFormError('Please enter your contact info, or choose "Fully anonymous."');return;}
+  const btn=document.getElementById('subBtn');btn.disabled=true;btn.textContent='Posting…';setStatus('loading','💾 Saving…');
+  const code=genCode();
+  const newPost={id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),type:postType,zip,firstName:name||'Neighbor',category:cat,customCat,description:desc,urgency:postType==='need'?(urgency||'flexible'):'',privacy,contact:privacy==='reveal'?contact:'',timestamp:new Date().toISOString(),updatedAt:new Date().toISOString(),status:'open',secretCode:code};
+  try{const res=await api('add',newPost);if(!res.ok)throw new Error(res.error||'Save failed');document.getElementById('codeDisplay').textContent=code;const sb=document.getElementById('successBox');sb.className='success-box show';sb.scrollIntoView({behavior:'smooth',block:'nearest'});['fName','fDesc','fContact','fOther'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});document.getElementById('fCat').value='';document.getElementById('fOtherWrap').style.display='none';urgency='';document.querySelectorAll('.urg-opt').forEach(e=>e.className='urg-opt');setPostType('need');setPrivacy('anon');setStatus('','');await load();}
+  catch(e){setStatus('error','⚠️ '+e.message);}
+  btn.disabled=false;btn.textContent='Post →';
+}
+
+/* Manage */
+function showMAlert(msg,ok){const el=document.getElementById('mAlert');el.textContent=msg;el.className='m-alert '+(ok?'ok':'warn')+' show';if(!ok)document.getElementById('manageCard').className='manage-card';}
+
+async function lookupCode(){
+  const code=document.getElementById('codeIn').value.trim().toUpperCase();
+  if(code.length<6){showMAlert('Please enter your 8-character secret code.');return;}
+  setStatus('loading','🔍 Looking up your post…');document.getElementById('mAlert').className='m-alert';
+  try{const res=await api('lookup',{code});setStatus('','');if(!res.ok){showMAlert(res.error||'Not found.');return;}renderManageCard(res.post,code);}
+  catch(e){setStatus('error','⚠️ '+e.message);}
+}
+
+function renderManageCard(p,code){
+  const dc=displayCat(p),c=cs(p.category);
+  const msgs=p.messages||[];
+  const msgsHtml=msgs.length?msgs.map(m=>`<div class="msg-item"><div>${esc(m.text)}</div>${m.replyTo?`<div class="msg-reply">📧 ${esc(m.replyTo)}</div>`:''}<div class="msg-time">${timeAgo(m.timestamp)}</div></div>`).join(''):`<div class="no-msgs">No messages yet — share your post so neighbors can reach you.</div>`;
+  document.getElementById('manageCard').className='manage-card show';
+  document.getElementById('manageCard').innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:.4rem;margin-bottom:.5rem">
+      <div class="badges"><span class="type-badge ${p.type==='need'?'type-need':'type-offer'}">${p.type}</span><span class="cat-badge" style="background:${c.bg};color:${c.tc}">${esc(dc)}</span></div>
+      <span class="chip ${p.status==='open'?'chip-open':'chip-done'}">${p.status==='open'?'Open':p.type==='need'?'Fulfilled':'Closed'}</span>
+    </div>
+    <div class="manage-desc-block">${esc(p.description)}</div>
+    <div class="manage-meta">ZIP ${esc(p.zip)} · ${timeAgo(p.timestamp)}</div>
+    <div class="msgs-section"><h4>💬 Messages (${msgs.length})</h4>${msgsHtml}</div>
+    <div class="manage-actions">
+      ${p.status==='open'?`<button class="btn btn-g" onclick="mMark('${p.id}','${code}')">${p.type==='need'?'✓ Mark fulfilled':'✓ Mark closed'}</button>`:''}
+      <button class="btn btn-r" onclick="mEdit('${p.id}','${code}')">✏️ Edit</button>
+      <button class="btn btn-del" onclick="mDelete('${p.id}','${code}')">🗑️ Delete</button>
+    </div>
+    <div class="edit-box" id="editBox">
+      <textarea id="editTxt" maxlength="800">${esc(p.description)}</textarea>
+      <div class="edit-actions">
+        <button class="btn btn-g" onclick="mSaveEdit('${p.id}','${code}')">Save changes</button>
+        <button class="btn btn-r" onclick="document.getElementById('editBox').style.display='none'">Cancel</button>
+      </div>
+    </div>`;
+}
+
+function mEdit(){const eb=document.getElementById('editBox');if(eb)eb.style.display=eb.style.display==='block'?'none':'block';}
+async function mSaveEdit(id,code){const t=(document.getElementById('editTxt')||{}).value||'';if(t.trim().length<5){setStatus('error','Description too short.');return;}setStatus('loading','💾 Saving…');try{const res=await api('lookup',{code});if(!res.ok)throw new Error(res.error);const p=res.post;p.description=t.trim();p.updatedAt=new Date().toISOString();const up=await api('update',p);if(!up.ok)throw new Error(up.error);await load();const res2=await api('lookup',{code});if(res2.ok)renderManageCard(res2.post,code);setStatus('','');}catch(e){setStatus('error','⚠️ '+e.message);}}
+async function mMark(id,code){setStatus('loading','Updating…');try{const res=await api('lookup',{code});if(!res.ok)throw new Error(res.error);const p=res.post;p.status='claimed';p.updatedAt=new Date().toISOString();const up=await api('update',p);if(!up.ok)throw new Error(up.error);await load();const res2=await api('lookup',{code});if(res2.ok)renderManageCard(res2.post,code);setStatus('','');}catch(e){setStatus('error','⚠️ '+e.message);}}
+async function mDelete(id,code){if(!confirm('Delete this post permanently? This cannot be undone.'))return;setStatus('loading','Deleting…');try{const res=await api('lookup',{code});if(!res.ok)throw new Error(res.error);const p=res.post;p.status='deleted';p.updatedAt=new Date().toISOString();const up=await api('update',p);if(!up.ok)throw new Error(up.error);await load();showMAlert('Post deleted successfully.',true);setStatus('','');}catch(e){setStatus('error','⚠️ '+e.message);}}
+
+function switchTab(t){['needs','offers','post','manage'].forEach(k=>{document.getElementById('p-'+k).style.display=k===t?'block':'none';document.getElementById('t-'+k).className='tab'+(k===t?' active':'');});showFormError('');}
+
+/* Lang helpers (minimal — static text only, portal already in one lang) */
+const LANG_NAMES={en:'English',es:'Español',fr:'Français',ru:'Русский',zh:'中文',hi:'हिन्दी',bn:'বাংলা',ht:'Kreyòl'};
+let lang=sessionStorage.getItem('lang')||'en';
+function toggleLangMenu(){document.getElementById('langMenu').classList.toggle('open');}
+function setLang(code){lang=code;sessionStorage.setItem('lang',code);document.getElementById('langLabel').textContent=LANG_NAMES[code]||'English';document.getElementById('langMenu').classList.remove('open');document.querySelectorAll('.lang-opt').forEach(o=>{o.classList.toggle('active',o.getAttribute('onclick').includes(`'${code}'`));});}
+document.addEventListener('click',e=>{const w=document.getElementById('langWrap');if(w&&!w.contains(e.target))document.getElementById('langMenu').classList.remove('open');});
+
+/* Theme */
+const SUN=`<svg id="themeIco" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`;
+const MOON=`<svg id="themeIco" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>`;
+function toggleTheme(){isDark=!isDark;document.documentElement.setAttribute('data-theme',isDark?'dark':'light');document.getElementById('themeLabel').textContent=isDark?'Light mode':'Dark mode';document.getElementById('themeIco').outerHTML=isDark?MOON:SUN;}
+</script>
+</body>
+</html>
