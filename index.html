@@ -1,1212 +1,864 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NYC Community Resource Navigator</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NYC Resource Finder</title>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root[data-theme="light"] {
-  --bg: #f5f0eb; --card: #ffffff; --border: #e0d8d0;
-  --accent: #c9624a; --accent2: #d4a830; --green: #5a9478;
-  --text: #2a2d45; --muted: #6a6060;
-  --notice-bg: rgba(212,168,48,.12); --notice-border: rgba(212,168,48,.4); --notice-text: #4a3a08;
-  --shadow-sm: 0 1px 3px rgba(0,0,0,.06); --shadow-md: 0 4px 14px rgba(0,0,0,.09);
-  --shadow-hover: 0 6px 22px rgba(201,98,74,.18);
-  --res-bg: rgba(201,98,74,.07); --res-border: rgba(201,98,74,.2);
-  --job-bg: rgba(90,148,120,.07); --job-border: rgba(90,148,120,.25);
-  --link-color: #5a3fa0; --phone-color: #5a3fa0;
-  --tag-bg: rgba(201,98,74,.08); --tag-border: rgba(201,98,74,.2);
-  --btn-bg: rgba(90,148,120,.09);
-  --hotline-bg: linear-gradient(135deg,rgba(201,98,74,.08),rgba(212,168,48,.06));
-  --modal-bg: #fff; --modal-text: #2a2d45; --modal-muted: #6a6060;
-  --tab-active: #c9624a; --tab-active-text: #fff;
-  --tile-hover: rgba(201,98,74,.04);
-  --fresh-green: #5a9478; --fresh-yellow: #d4a830; --fresh-red: #c9624a;
-  --verify-bg: rgba(90,148,120,.08); --verify-border: rgba(90,148,120,.28);
-  --flag-bg: rgba(212,168,48,.08); --flag-border: rgba(212,168,48,.32);
+  --bg: #fbf7f2;
+  --card: #ffffff;
+  --border: #d8cfc4;
+  --border-strong: #b8aa97;
+  --accent: #b54a30;
+  --accent-dark: #8c3520;
+  --text: #1f1f1f;
+  --muted: #5a5550;
+  --link: #2a4a8a;
+  --link-visited: #5a3fa0;
+  --notice-bg: #fff4e0;
+  --notice-border: #d4a000;
+  --notice-text: #5a3a00;
+  --emergency-bg: #fdecec;
+  --emergency-border: #c43030;
+  --emergency-text: #7a1f1f;
+  --success-bg: #e6f3ea;
+  --success-text: #1f5a30;
 }
 :root[data-theme="dark"] {
-  --bg: #16161e; --card: #1f1f2e; --border: #2e2e42;
-  --accent: #e07a5f; --accent2: #f2cc8f; --green: #81b29a;
-  --text: #e8e4f0; --muted: #9a90b0;
-  --notice-bg: rgba(242,204,143,.08); --notice-border: rgba(242,204,143,.3); --notice-text: #d4b060;
-  --shadow-sm: 0 1px 3px rgba(0,0,0,.3); --shadow-md: 0 4px 14px rgba(0,0,0,.4);
-  --shadow-hover: 0 6px 22px rgba(224,122,95,.22);
-  --res-bg: rgba(224,122,95,.08); --res-border: rgba(224,122,95,.2);
-  --job-bg: rgba(129,178,154,.08); --job-border: rgba(129,178,154,.25);
-  --link-color: #a78bfa; --phone-color: #a78bfa;
-  --tag-bg: rgba(224,122,95,.1); --tag-border: rgba(224,122,95,.22);
-  --btn-bg: rgba(129,178,154,.1);
-  --hotline-bg: linear-gradient(135deg,rgba(224,122,95,.1),rgba(242,204,143,.07));
-  --modal-bg: #1f1f2e; --modal-text: #e8e4f0; --modal-muted: #9a90b0;
-  --tab-active: #e07a5f; --tab-active-text: #fff;
-  --tile-hover: rgba(224,122,95,.06);
-  --fresh-green: #81b29a; --fresh-yellow: #f2cc8f; --fresh-red: #e07a5f;
-  --verify-bg: rgba(129,178,154,.1); --verify-border: rgba(129,178,154,.3);
-  --flag-bg: rgba(242,204,143,.08); --flag-border: rgba(242,204,143,.3);
-}
-:root { --ease-spring: cubic-bezier(0.34,1.56,0.64,1); --ease-out: cubic-bezier(0.4,0,0.2,1); }
-
-.skip-link { position:absolute; top:-100%; left:1rem; background:var(--accent); color:#fff; padding:.5rem 1rem; border-radius:0 0 8px 8px; font-size:.9rem; font-weight:700; text-decoration:none; z-index:9999; transition:top .2s; }
-.skip-link:focus { top:0; }
-
-html { scroll-behavior:smooth; }
-body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,-apple-system,sans-serif; min-height:100vh; font-size:17px; line-height:1.65; -webkit-font-smoothing:antialiased; transition:background .3s,color .3s; }
-body::before { content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
-  background: radial-gradient(ellipse at 18% 18%,rgba(224,122,95,.08) 0%,transparent 52%),
-              radial-gradient(ellipse at 82% 82%,rgba(129,178,154,.06) 0%,transparent 52%); }
-
-/* Slow drifting noise / grain layer for atmosphere */
-body::after {
-  content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
-  background-image: radial-gradient(circle at 10% 20%, rgba(201,98,74,.04) 1px, transparent 1px),
-                    radial-gradient(circle at 70% 60%, rgba(90,148,120,.04) 1px, transparent 1px);
-  background-size: 30px 30px, 50px 50px;
-  opacity:.5;
-  animation: drift 60s linear infinite;
-}
-@keyframes drift { from{background-position:0 0,0 0} to{background-position:120px 60px,-200px 100px} }
-
-.wrap { position:relative; z-index:1; max-width:900px; margin:0 auto; padding:1.8rem 1.2rem 5rem; }
-
-/* ── Toolbar ── */
-.toolbar { display:flex; align-items:center; justify-content:flex-end; gap:.4rem; margin-bottom:1.2rem; flex-wrap:wrap; }
-.tb-btn { display:inline-flex; align-items:center; gap:.3rem; padding:.34rem .75rem; border-radius:8px; border:1.5px solid var(--border); background:var(--card); color:var(--muted); font-size:.78rem; font-weight:600; cursor:pointer; transition:border-color .2s,color .2s,transform .15s; white-space:nowrap; min-height:36px; -webkit-tap-highlight-color:transparent; text-decoration:none; }
-.tb-btn:hover { border-color:var(--accent); color:var(--accent); transform:translateY(-1px); }
-.tb-btn:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
-.tb-btn svg { width:13px; height:13px; flex-shrink:0; }
-
-.lang-wrap { position:relative; }
-.lang-menu { display:none; position:absolute; top:calc(100% + 4px); right:0; background:var(--card); border:1.5px solid var(--border); border-radius:10px; padding:.3rem; min-width:152px; z-index:100; box-shadow:var(--shadow-md); flex-direction:column; gap:.1rem; }
-.lang-menu.open { display:flex; animation: scaleIn .2s var(--ease-spring) both; }
-.lang-opt { padding:.42rem .8rem; border-radius:6px; font-size:.82rem; font-weight:500; cursor:pointer; border:none; background:none; color:var(--text); text-align:left; transition:background .15s; white-space:nowrap; }
-.lang-opt:hover { background:var(--res-bg); }
-.lang-opt.active { color:var(--accent); font-weight:700; }
-
-.font-control { display:inline-flex; align-items:center; border:1.5px solid var(--border); border-radius:8px; overflow:hidden; background:var(--card); }
-.fc-btn { padding:.34rem .62rem; background:none; border:none; color:var(--muted); font-size:.84rem; font-weight:700; cursor:pointer; transition:all .15s; min-height:36px; }
-.fc-btn:hover { background:var(--res-bg); color:var(--accent); }
-.fc-label { padding:0 .42rem; font-size:.72rem; font-weight:600; color:var(--muted); user-select:none; border-left:1px solid var(--border); border-right:1px solid var(--border); line-height:2; }
-
-/* ── Header ── */
-header { text-align:center; margin-bottom:1.2rem; animation:fadeDown .55s var(--ease-out) both; }
-header h1 { font-size:clamp(1.7rem,5vw,2.4rem); font-weight:800; letter-spacing:-.04em; background:linear-gradient(135deg,var(--accent) 0%,var(--accent2) 50%,var(--green) 100%); background-size:200% 200%; -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; animation:gradShift 8s ease infinite; }
-@keyframes gradShift { 0%,100%{background-position:0 50%} 50%{background-position:100% 50%} }
-header p { color:var(--muted); margin-top:.4rem; font-size:.9rem; }
-
-/* ── Live activity ticker ── */
-.ticker {
-  display:flex; align-items:center; gap:.55rem;
-  background: linear-gradient(135deg, var(--verify-bg), rgba(90,148,120,.04));
-  border:1px solid var(--verify-border);
-  border-radius:999px;
-  padding:.42rem 1rem;
-  font-size:.78rem; font-weight:500;
-  color:var(--text);
-  margin: 0 auto 1.2rem;
-  max-width:fit-content;
-  overflow:hidden;
-  animation:fadeDown .55s var(--ease-out) .12s both;
-}
-.ticker-dot {
-  width:7px; height:7px; border-radius:50%;
-  background:var(--green); flex-shrink:0;
-  position:relative;
-}
-.ticker-dot::after {
-  content:''; position:absolute; inset:-3px; border-radius:50%;
-  background:var(--green); opacity:.35;
-  animation:pulse 2.4s ease-in-out infinite;
-}
-@keyframes pulse {0%,100%{transform:scale(1);opacity:.4}50%{transform:scale(1.7);opacity:0}}
-.ticker-content { display:inline-block; min-width:0; transition:opacity .35s; }
-.ticker-content.swap { opacity:0; }
-.ticker-strong { color:var(--green); font-weight:700; }
-.ticker.offline { background:var(--flag-bg); border-color:var(--flag-border); }
-.ticker.offline .ticker-dot { background:#d4a830; }
-.ticker.offline .ticker-dot::after { display:none; }
-
-/* ── Hotline ── */
-.hotline { display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:.45rem 1.2rem; background:var(--hotline-bg); border:1px solid rgba(224,122,95,.28); border-radius:14px; padding:.75rem 1.3rem; margin-bottom:1.4rem; font-size:.84rem; color:var(--accent); animation:fadeDown .65s var(--ease-out) .18s both; }
-.hotline-item { display:flex; align-items:center; gap:.4rem; }
-.h-icon { width:15px; height:15px; flex-shrink:0; }
-
-/* ── Search ── */
-.search-wrap { position:relative; margin-bottom:1rem; animation:fadeDown .65s var(--ease-out) .22s both; }
-.search-wrap input { width:100%; padding:.88rem 1.2rem .88rem 3.1rem; background:var(--card); border:1.5px solid var(--border); border-radius:14px; color:var(--text); font-size:.96rem; outline:none; box-shadow:var(--shadow-sm); transition:border-color .25s,box-shadow .25s; }
-.search-wrap input:focus-visible { border-color:var(--accent); box-shadow:0 0 0 3px rgba(224,122,95,.2),var(--shadow-md); }
-.search-wrap input::placeholder { color:var(--muted); }
-.search-ico { position:absolute; left:1rem; top:50%; transform:translateY(-50%); color:var(--muted); width:18px; height:18px; pointer-events:none; transition:color .25s,transform .3s; }
-.search-wrap:focus-within .search-ico { color:var(--accent); transform:translateY(-50%) rotate(-8deg) scale(1.1); }
-
-/* ── Pills ── */
-.pills { display:flex; flex-wrap:wrap; gap:.42rem; margin-bottom:1.1rem; animation:fadeDown .65s var(--ease-out) .28s both; }
-.pill { padding:.36rem .9rem; border-radius:999px; border:1.5px solid var(--border); background:var(--card); color:var(--muted); cursor:pointer; font-size:.8rem; font-weight:600; box-shadow:var(--shadow-sm); transition:all .2s; min-height:34px; -webkit-tap-highlight-color:transparent; }
-.pill:hover { border-color:var(--accent); color:var(--accent); transform:translateY(-1px); }
-.pill:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
-.pill[aria-pressed="true"] { background:var(--accent); border-color:var(--accent); color:#fff; box-shadow:0 2px 10px rgba(224,122,95,.28); transform:translateY(-1px); }
-
-.count { color:var(--muted); font-size:.78rem; margin-bottom:.85rem; font-weight:600; transition:opacity .25s; }
-
-/* ── TILE GRID ── */
-.tile-grid {
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
-  gap:.7rem;
+  --bg: #1a1814;
+  --card: #2a2622;
+  --border: #4a4238;
+  --border-strong: #6a5f50;
+  --accent: #e07a5f;
+  --accent-dark: #d05a3a;
+  --text: #f0ebe2;
+  --muted: #b0a89c;
+  --link: #8ab4f8;
+  --link-visited: #c4a8f0;
+  --notice-bg: #3a3020;
+  --notice-border: #d4a000;
+  --notice-text: #f0d080;
+  --emergency-bg: #4a2020;
+  --emergency-border: #e05050;
+  --emergency-text: #ffb0b0;
+  --success-bg: #2a4a30;
+  --success-text: #b0e0c0;
 }
 
-/* ── Tile card ── */
-.tile {
-  background:var(--card);
-  border:1.5px solid var(--border);
-  border-radius:16px;
-  padding:1rem 1.1rem 1rem;
-  box-shadow:var(--shadow-sm);
-  cursor:pointer;
-  transition:border-color .25s,box-shadow .25s,background .2s,transform .25s var(--ease-out);
-  display:flex;
-  flex-direction:column;
-  gap:.5rem;
-  position:relative;
-  -webkit-tap-highlight-color:transparent;
-  animation:tileIn .5s var(--ease-spring) both;
-  outline:none;
-  scroll-margin-top:1rem;
-  overflow:hidden;
-}
-@keyframes tileIn {
-  from { opacity:0; transform:translateY(14px) scale(.98); }
-  to   { opacity:1; transform:translateY(0)   scale(1);    }
-}
-.tile::before {
-  content:''; position:absolute; inset:0;
-  background:linear-gradient(135deg, transparent 60%, rgba(201,98,74,.04));
-  opacity:0; transition:opacity .35s;
-  pointer-events:none;
-}
-.tile:hover::before { opacity:1; }
-.tile:hover { border-color:var(--accent); box-shadow:var(--shadow-hover); background:var(--tile-hover); transform:translateY(-2px); }
-.tile.is-open { border-color:var(--accent); box-shadow:var(--shadow-md); transform:none; }
-.tile.is-open::before { opacity:0; }
-.tile:focus-visible { outline:3px solid var(--accent); outline-offset:2px; }
-
-/* Recently active tile pulse */
-.tile.recent-activity { animation:tileIn .5s var(--ease-spring) both, recentGlow 3s ease-in-out 1.5s 1; }
-@keyframes recentGlow {
-  0%   { box-shadow:var(--shadow-sm); }
-  50%  { box-shadow:0 0 0 4px rgba(90,148,120,.15), var(--shadow-md); }
-  100% { box-shadow:var(--shadow-sm); }
+html { font-size: 18px; scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.55;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
 }
 
-.tile-top { display:flex; align-items:flex-start; gap:.75rem; position:relative; z-index:1; }
-.tile-icon {
-  width:40px; height:40px; border-radius:11px;
-  background:linear-gradient(135deg,var(--res-bg),var(--job-bg));
-  display:flex; align-items:center; justify-content:center;
-  flex-shrink:0; color:var(--accent);
-  transition:transform .35s var(--ease-spring);
-  position:relative;
+/* ─── Skip link ─── */
+.skip-link {
+  position: absolute; top: -100px; left: 0;
+  background: var(--accent); color: #fff;
+  padding: 0.8rem 1.4rem; font-weight: 700;
+  text-decoration: none; z-index: 9999;
 }
-.tile:hover .tile-icon { transform:scale(1.12) rotate(-4deg); }
-.tile.is-open .tile-icon { transform:scale(1.05); }
+.skip-link:focus { top: 0; }
 
-/* Mini freshness dot on tile icon */
-.tile-fresh-dot {
-  position:absolute; top:-2px; right:-2px;
-  width:11px; height:11px; border-radius:50%;
-  border:2px solid var(--card);
-  transition:transform .25s var(--ease-spring);
+/* ─── Top utility bar ─── */
+.utility-bar {
+  background: var(--card);
+  border-bottom: 2px solid var(--border);
+  padding: 0.6rem 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  align-items: center;
 }
-.tile-fresh-dot.fresh-green  { background:var(--fresh-green); }
-.tile-fresh-dot.fresh-yellow { background:var(--fresh-yellow); }
-.tile-fresh-dot.fresh-red    { background:var(--fresh-red); }
-.tile-fresh-dot.fresh-unknown { background:var(--muted); opacity:.5; }
-.tile:hover .tile-fresh-dot { transform:scale(1.25); }
-
-.tile-text { flex:1; min-width:0; }
-.tile-title { font-weight:700; font-size:.95rem; margin-bottom:.1rem; line-height:1.3; }
-.tile-sub { color:var(--muted); font-size:.79rem; line-height:1.55; }
-.tile-chev { color:var(--muted); transition:transform .35s var(--ease-spring),color .22s; flex-shrink:0; margin-top:.1rem; }
-.tile.is-open .tile-chev { transform:rotate(180deg); color:var(--accent); }
-.tile-chev svg { width:16px; height:16px; }
-
-/* job tile — no chevron, external link icon */
-.tile[data-type="job-listings"] .tile-chev svg { display:none; }
-.tile[data-type="job-listings"] .tile-chev::after {
-  content:''; display:block; width:15px; height:15px; background:currentColor;
-  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6'/%3E%3Cpolyline points='15 3 21 3 21 9'/%3E%3Cline x1='10' y1='14' x2='21' y2='3'/%3E%3C/svg%3E") center/contain no-repeat;
-  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6'/%3E%3Cpolyline points='15 3 21 3 21 9'/%3E%3Cline x1='10' y1='14' x2='21' y2='3'/%3E%3C/svg%3E") center/contain no-repeat;
-  transition:transform .3s var(--ease-spring);
+.util-btn {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.5rem 0.9rem;
+  background: var(--card);
+  border: 2px solid var(--border-strong);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 0.95rem; font-weight: 600;
+  cursor: pointer; text-decoration: none;
+  min-height: 44px;
+  transition: background 0.15s, border-color 0.15s;
 }
-.tile[data-type="job-listings"]:hover .tile-chev::after { transform:translate(2px,-2px); }
-
-.tile-tags { display:flex; flex-wrap:wrap; gap:.25rem; position:relative; z-index:1; }
-.tag { padding:.12rem .48rem; background:var(--tag-bg); border:1px solid var(--tag-border); border-radius:999px; font-size:.68rem; color:var(--accent); font-weight:500; transition:transform .15s; }
-.tile:hover .tag { transform:translateY(-1px); }
-
-/* Verify count chip on tile */
-.tile-verify-chip {
-  display:inline-flex; align-items:center; gap:.28rem;
-  font-size:.66rem; font-weight:600;
-  padding:.14rem .5rem; border-radius:999px;
-  background:var(--verify-bg); color:var(--green);
-  border:1px solid var(--verify-border);
+.util-btn:hover, .util-btn:focus-visible {
+  background: var(--bg);
+  border-color: var(--accent);
+  outline: none;
 }
-.tile-verify-chip svg { width:9px; height:9px; }
+.util-btn:focus-visible { box-shadow: 0 0 0 3px rgba(181,74,48,0.3); }
+.util-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
 
-/* ── Expanded body (inside tile) ── */
-.tile-body {
-  overflow:hidden;
-  max-height:0;
-  opacity:0;
-  transition:max-height .42s var(--ease-out),opacity .3s ease,margin-top .3s ease;
-  margin-top:0;
+.font-control {
+  display: inline-flex;
+  border: 2px solid var(--border-strong);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--card);
 }
-.tile-body.open {
-  max-height:5000px;
-  opacity:1;
-  margin-top:.6rem;
+.fc-btn {
+  padding: 0.5rem 0.85rem;
+  background: none; border: none;
+  color: var(--text);
+  font-size: 1rem; font-weight: 700;
+  cursor: pointer; min-height: 44px;
 }
-@supports (grid-template-rows: 0fr) {
-  .tile-body { display:grid; grid-template-rows:0fr; max-height:none; transition:grid-template-rows .42s var(--ease-out),opacity .3s ease,margin-top .3s ease; }
-  .tile-body.open { grid-template-rows:1fr; max-height:none; }
-  .tile-body-inner { min-height:0; }
+.fc-btn:hover { background: var(--bg); }
+.fc-label {
+  padding: 0 0.6rem;
+  font-size: 0.85rem; font-weight: 600;
+  color: var(--muted);
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  display: flex; align-items: center;
 }
-.tile-body-inner { overflow:hidden; padding-top:.8rem; border-top:1px solid var(--border); font-size:.84rem; line-height:1.75; }
-.tile-body a { color:var(--link-color); text-decoration:underline; }
-.tile-body a:hover { opacity:.8; }
 
-.notice { background:var(--notice-bg); border:1px solid var(--notice-border); border-left:3px solid var(--accent2); border-radius:8px; padding:.5rem .88rem; font-size:.79rem; color:var(--notice-text); margin-bottom:.7rem; font-weight:500; animation:noticeIn .35s var(--ease-out) both; }
-@keyframes noticeIn { from{opacity:0;transform:translateX(-6px)} to{opacity:1;transform:none} }
-
-/* ── Resource grid inside expanded tile ── */
-.res-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:.5rem; margin-top:.6rem; }
-.res-card {
-  background:var(--res-bg); border:1px solid var(--res-border);
-  border-radius:11px; padding:.7rem .9rem;
-  display:flex; flex-direction:column; gap:.2rem;
-  transition:background .2s,border-color .2s,transform .15s;
-  position:relative;
-  animation:resCardIn .35s var(--ease-out) both;
+.lang-wrap { position: relative; }
+.lang-menu {
+  display: none;
+  position: absolute; top: calc(100% + 4px); right: 0;
+  background: var(--card);
+  border: 2px solid var(--border-strong);
+  border-radius: 10px;
+  padding: 0.3rem;
+  min-width: 180px;
+  z-index: 100;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  flex-direction: column;
+  gap: 0.15rem;
 }
-@keyframes resCardIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
-.res-card:hover { background:rgba(224,122,95,.13); border-color:var(--accent); transform:translateY(-1px); }
-.rc-link-row { display:flex; justify-content:space-between; align-items:flex-start; gap:.4rem; }
-.rc-link { text-decoration:none; color:inherit; flex:1; min-width:0; }
-.rc-org { font-size:.86rem; font-weight:700; color:var(--text); margin-bottom:.14rem; line-height:1.3; }
-.rc-link:hover .rc-org { color:var(--accent); }
-.rc-note { font-size:.74rem; color:var(--muted); margin-bottom:.22rem; line-height:1.5; }
-.rc-addr { font-size:.71rem; color:var(--muted); font-style:italic; }
-.rc-phone { font-size:.71rem; color:var(--phone-color); margin-top:.13rem; }
-
-/* Freshness pill on resource card */
-.freshness {
-  display:inline-flex; align-items:center; gap:.3rem;
-  font-size:.65rem; font-weight:600;
-  padding:.13rem .48rem; border-radius:999px;
-  background:var(--card); border:1px solid var(--border);
-  flex-shrink:0; white-space:nowrap;
+.lang-menu.open { display: flex; }
+.lang-opt {
+  padding: 0.6rem 0.9rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background: none; border: none;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  min-height: 44px;
 }
-.freshness-dot {
-  width:6px; height:6px; border-radius:50%;
-  flex-shrink:0; position:relative;
+.lang-opt:hover, .lang-opt:focus-visible {
+  background: var(--bg);
+  outline: none;
 }
-.freshness-dot::after {
-  content:''; position:absolute; inset:-3px; border-radius:50%;
-  opacity:.3; animation:pulse 2.4s ease-in-out infinite;
+.lang-opt.active {
+  font-weight: 700;
+  color: var(--accent);
 }
-.fresh-green .freshness-dot{background:var(--fresh-green)}
-.fresh-green .freshness-dot::after{background:var(--fresh-green)}
-.fresh-green{color:var(--fresh-green)}
-.fresh-yellow .freshness-dot{background:var(--fresh-yellow)}
-.fresh-yellow .freshness-dot::after{background:var(--fresh-yellow)}
-.fresh-yellow{color:#9c7c1a}
-[data-theme="dark"] .fresh-yellow{color:var(--fresh-yellow)}
-.fresh-red .freshness-dot{background:var(--fresh-red)}
-.fresh-red .freshness-dot::after{background:var(--fresh-red);animation-duration:1.4s}
-.fresh-red{color:var(--fresh-red)}
-.fresh-unknown .freshness-dot{background:var(--muted)}
-.fresh-unknown{color:var(--muted)}
-.fresh-unknown .freshness-dot::after{display:none}
 
-/* Verify row inside res-card */
-.verify-row {
-  display:flex; align-items:center; justify-content:space-between;
-  flex-wrap:wrap; gap:.35rem;
-  margin-top:.45rem; padding-top:.4rem;
-  border-top:1px dashed var(--border);
+/* ─── Header ─── */
+.wrap { max-width: 920px; margin: 0 auto; padding: 1.5rem 1rem 4rem; }
+
+header { text-align: center; margin-bottom: 1.5rem; }
+header h1 {
+  font-size: clamp(1.8rem, 5vw, 2.5rem);
+  font-weight: 800;
+  color: var(--accent);
+  letter-spacing: -0.02em;
+  margin-bottom: 0.4rem;
 }
-.verify-meta { font-size:.66rem; color:var(--muted); display:flex; align-items:center; gap:.3rem; }
-.verify-count { font-weight:600; color:var(--green); }
-.verify-actions { display:flex; gap:.25rem; flex-wrap:wrap; }
-.v-btn {
-  display:inline-flex; align-items:center; gap:.22rem;
-  padding:.22rem .55rem; border-radius:6px;
-  font-size:.66rem; font-weight:600;
-  border:1px solid; cursor:pointer; background:none;
-  transition:all .18s; min-height:26px; white-space:nowrap;
-  -webkit-tap-highlight-color:transparent;
+header p {
+  font-size: 1.05rem;
+  color: var(--muted);
 }
-.v-btn:disabled { opacity:.6; cursor:not-allowed; }
-.v-btn svg { width:9px; height:9px; flex-shrink:0; }
-.v-btn-verify { border-color:var(--verify-border); color:var(--green); background:var(--verify-bg); }
-.v-btn-verify:hover:not(:disabled) { background:var(--green); color:#fff; border-color:var(--green); transform:translateY(-1px); }
-.v-btn-verify.confirmed { background:var(--green); color:#fff; border-color:var(--green); animation:confirmPop .4s var(--ease-spring) both; }
-.v-btn-verify.confirmed:disabled { opacity:1; }
-@keyframes confirmPop { 0%{transform:scale(.92)} 60%{transform:scale(1.08)} 100%{transform:scale(1)} }
-.v-btn-flag { border-color:var(--flag-border); color:#9c7c1a; background:var(--flag-bg); }
-[data-theme="dark"] .v-btn-flag { color:var(--accent2); }
-.v-btn-flag:hover:not(:disabled) { background:#d4a830; color:#fff; border-color:#d4a830; }
-[data-theme="dark"] .v-btn-flag:hover:not(:disabled) { background:var(--accent2); color:#1f1f2e; }
 
-/* ── Job grids ── */
-.job-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:.48rem; margin-top:.6rem; }
-.job-card { background:var(--job-bg); border:1px solid var(--job-border); border-radius:10px; padding:.62rem .82rem; text-decoration:none; display:block; transition:background .2s,border-color .2s,transform .15s; }
-.job-card:hover { background:rgba(129,178,154,.18); border-color:var(--green); transform:translateY(-1px); }
-.jc-org { font-size:.86rem; font-weight:600; color:var(--text); }
-.jc-note { font-size:.73rem; color:var(--muted); margin-top:.15rem; }
-
-.section-label { font-size:.74rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.07em; margin:1rem 0 .4rem; }
-.sub-section { margin-top:1rem; padding-top:.85rem; border-top:1px dashed var(--border); }
-.sub-section:first-child { margin-top:0; padding-top:0; border-top:none; }
-.sub-label { font-size:.71rem; font-weight:700; color:var(--accent); text-transform:uppercase; letter-spacing:.07em; margin-bottom:.45rem; }
-
-.card-actions { display:flex; flex-wrap:wrap; gap:.45rem; margin-top:.75rem; padding-top:.75rem; border-top:1px solid var(--border); }
-.ca-btn { display:inline-flex; align-items:center; gap:.3rem; padding:.32rem .78rem; border-radius:8px; font-size:.74rem; font-weight:600; border:1px solid rgba(129,178,154,.3); cursor:pointer; background:var(--btn-bg); color:var(--green); transition:all .2s; min-height:30px; }
-.ca-btn:hover { background:var(--green); color:#fff; border-color:var(--green); transform:translateY(-1px); }
-.ca-btn svg { width:12px; height:12px; }
-
-.vol-form-link { display:inline-flex; align-items:center; gap:.45rem; margin-top:.65rem; padding:.48rem 1rem; background:var(--job-bg); border:1.5px solid var(--job-border); border-radius:10px; text-decoration:none; color:var(--green); font-size:.83rem; font-weight:600; transition:all .2s; }
-.vol-form-link:hover { background:rgba(129,178,154,.18); border-color:var(--green); transform:translateY(-1px); }
-.vol-form-link svg { width:13px; height:13px; flex-shrink:0; }
-
-.empty { text-align:center; color:var(--muted); padding:3rem 0; font-size:.92rem; }
-
-/* ── Toast ── */
-.toast {
-  position:fixed; bottom:1.4rem; left:50%;
-  transform:translateX(-50%) translateY(140%);
-  background:var(--card); border:1.5px solid var(--green);
-  color:var(--text); padding:.7rem 1.2rem; border-radius:11px;
-  font-size:.84rem; font-weight:600;
-  box-shadow:0 8px 28px rgba(0,0,0,.18);
-  transition:transform .4s var(--ease-spring);
-  z-index:9999; display:flex; align-items:center; gap:.5rem;
-  max-width:90vw;
+/* ─── Emergency bar ─── */
+.emergency-bar {
+  background: var(--emergency-bg);
+  border: 2px solid var(--emergency-border);
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 1.5rem;
 }
-.toast.show { transform:translateX(-50%) translateY(0); }
-.toast svg { width:16px; height:16px; color:var(--green); flex-shrink:0; }
-.toast.toast-flag { border-color:var(--accent2); }
-.toast.toast-flag svg { color:#9c7c1a; }
-[data-theme="dark"] .toast.toast-flag svg { color:var(--accent2); }
-.toast.toast-error { border-color:var(--accent); }
-.toast.toast-error svg { color:var(--accent); }
+.emergency-bar h2 {
+  font-size: 1.05rem;
+  color: var(--emergency-text);
+  margin-bottom: 0.5rem;
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.emergency-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.6rem;
+  font-size: 1rem;
+}
+.emergency-list a {
+  color: var(--emergency-text);
+  font-weight: 700;
+  text-decoration: underline;
+}
+.emergency-list a:hover { text-decoration: none; }
 
-/* ── Jobs Modal ── */
-.modal-bg { display:none; position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:200; align-items:center; justify-content:center; padding:1rem; }
-@supports (backdrop-filter:blur(4px)) { .modal-bg { backdrop-filter:blur(4px); } }
-.modal-bg.open { display:flex; }
-.modal { background:var(--modal-bg); border:1px solid var(--border); border-radius:18px; padding:1.5rem; width:100%; max-width:700px; max-height:90vh; overflow-y:auto; color:var(--modal-text); animation:scaleIn .3s var(--ease-spring) both; }
-.modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; }
-.modal-header h2 { font-size:1.1rem; font-weight:800; display:flex; align-items:center; gap:.45rem; }
-.modal-header h2 svg { width:18px; height:18px; color:var(--accent); flex-shrink:0; }
-.modal-close { background:none; border:none; color:var(--muted); cursor:pointer; padding:.3rem .5rem; border-radius:8px; transition:all .18s; display:flex; align-items:center; min-height:36px; }
-.modal-close:hover { background:var(--border); color:var(--text); }
-.modal-close svg { width:16px; height:16px; }
-.hint { font-size:.8rem; color:var(--modal-muted); margin-bottom:1rem; line-height:1.6; }
+/* ─── Search & filter ─── */
+.search-bar {
+  position: relative;
+  margin-bottom: 1rem;
+}
+.search-bar input {
+  width: 100%;
+  padding: 1rem 1rem 1rem 3rem;
+  font-size: 1.1rem;
+  background: var(--card);
+  border: 2px solid var(--border-strong);
+  border-radius: 12px;
+  color: var(--text);
+  outline: none;
+}
+.search-bar input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(181,74,48,0.2);
+}
+.search-icon {
+  position: absolute;
+  left: 1rem; top: 50%;
+  transform: translateY(-50%);
+  width: 22px; height: 22px;
+  color: var(--muted);
+  pointer-events: none;
+}
 
-.jobs-tabs { display:flex; gap:.4rem; margin-bottom:1.1rem; flex-wrap:wrap; }
-.jobs-tab { padding:.4rem .95rem; border-radius:999px; border:1.5px solid var(--border); background:var(--card); color:var(--muted); font-size:.79rem; font-weight:700; cursor:pointer; transition:all .18s; min-height:33px; }
-.jobs-tab:hover { border-color:var(--accent); color:var(--accent); }
-.jobs-tab.active { background:var(--tab-active); border-color:var(--tab-active); color:var(--tab-active-text); }
-.jobs-panel { display:none; }
-.jobs-panel.active { display:block; animation:fadeIn .3s ease both; }
-@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+.jump-nav {
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 0.8rem 1rem;
+  margin-bottom: 1.5rem;
+}
+.jump-nav-label {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.jump-nav-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.jump-link {
+  padding: 0.5rem 0.9rem;
+  background: var(--bg);
+  border: 2px solid var(--border);
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+  text-decoration: none;
+  transition: all 0.15s;
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+}
+.jump-link:hover, .jump-link:focus-visible {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+  outline: none;
+}
 
+/* ─── Section ─── */
+.section {
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  padding: 1.4rem 1.4rem 1.2rem;
+  margin-bottom: 1.4rem;
+  scroll-margin-top: 1rem;
+}
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 2px solid var(--border);
+}
+.section-icon {
+  width: 44px; height: 44px;
+  flex-shrink: 0;
+  background: var(--bg);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+}
+.section-icon svg { width: 26px; height: 26px; }
+.section-title-block { flex: 1; }
+.section-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+.section-sub {
+  font-size: 0.95rem;
+  color: var(--muted);
+  margin-top: 0.15rem;
+}
+
+.notice {
+  background: var(--notice-bg);
+  border-left: 4px solid var(--notice-border);
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+  margin: 1rem 0 0.5rem;
+  font-size: 0.95rem;
+  color: var(--notice-text);
+  font-weight: 500;
+}
+.notice.emergency {
+  background: var(--emergency-bg);
+  border-color: var(--emergency-border);
+  color: var(--emergency-text);
+}
+
+/* ─── Resource list (always visible) ─── */
+.resource-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 0.8rem;
+  margin-top: 1rem;
+}
+.resource {
+  background: var(--bg);
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  padding: 0.9rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  transition: border-color 0.15s;
+}
+.resource:hover { border-color: var(--border-strong); }
+.resource-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.3;
+}
+.resource-name a {
+  color: var(--link);
+  text-decoration: underline;
+}
+.resource-name a:visited { color: var(--link-visited); }
+.resource-name a:hover { text-decoration: none; }
+.resource-note {
+  font-size: 0.95rem;
+  color: var(--muted);
+  margin-bottom: 0.2rem;
+}
+.resource-detail {
+  font-size: 1rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-top: 0.2rem;
+  word-break: break-word;
+}
+.resource-detail svg {
+  width: 18px; height: 18px;
+  flex-shrink: 0;
+  color: var(--muted);
+  margin-top: 0.18rem;
+}
+.resource-detail a {
+  color: var(--link);
+  text-decoration: underline;
+  font-weight: 600;
+}
+.resource-detail a:visited { color: var(--link-visited); }
+.resource-detail.phone a {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+.resource-detail.website a {
+  font-size: 0.95rem;
+}
+
+.section-footer {
+  margin-top: 1rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.feedback-link {
+  font-size: 0.9rem;
+  color: var(--muted);
+  text-decoration: underline;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.3rem 0;
+  font-family: inherit;
+}
+.feedback-link:hover { color: var(--accent); }
+
+/* Job sub-sections */
+.subsection {
+  margin-top: 1.2rem;
+  padding-top: 1rem;
+  border-top: 1px dashed var(--border);
+}
+.subsection:first-of-type {
+  margin-top: 0.8rem;
+  padding-top: 0;
+  border-top: none;
+}
+.subsection-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+}
+
+/* ─── No results ─── */
+.no-results {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--muted);
+  font-size: 1.05rem;
+  background: var(--card);
+  border: 2px dashed var(--border);
+  border-radius: 12px;
+}
+
+/* ─── Print ─── */
 @media print {
-  body::before, body::after, .toolbar, .ticker, .hotline, .search-wrap, .pills, .count, .skip-link, .card-actions, .tile-chev, .tile-tags, .verify-row, .tile-fresh-dot { display:none!important; }
-  body { background:#fff!important; color:#000!important; font-size:11pt; }
-  .wrap { max-width:100%; padding:0; }
-  header h1 { -webkit-text-fill-color:#222!important; font-size:18pt; }
-  .tile { border:1px solid #ccc; border-radius:0; box-shadow:none; page-break-inside:avoid; animation:none; }
-  .tile-body { display:block!important; max-height:none!important; opacity:1!important; margin-top:.5rem!important; grid-template-rows:1fr!important; }
-  .tile-body-inner { border-top:1px solid #ddd; overflow:visible; }
-  .res-grid, .job-grid { grid-template-columns:repeat(2,1fr); }
+  .utility-bar, .search-bar, .jump-nav, .section-footer, .skip-link { display: none !important; }
+  body { background: #fff; color: #000; font-size: 12pt; }
+  .section { page-break-inside: avoid; border: 1px solid #999; }
+  .resource { break-inside: avoid; }
 }
 
-@keyframes fadeDown { from{opacity:0;transform:translateY(-7px)} to{opacity:1;transform:none} }
-@keyframes scaleIn  { from{opacity:0;transform:scale(.95)} to{opacity:1;transform:none} }
-@media (prefers-reduced-motion:reduce) {
-  *, *::before, *::after { animation-duration:.01ms!important; transition-duration:.01ms!important; }
-  html { scroll-behavior:auto; }
-  .freshness-dot::after, .ticker-dot::after { display:none; }
+/* ─── Reduced motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+  html { scroll-behavior: auto; }
+}
+
+/* ─── Mobile adjustments ─── */
+@media (max-width: 600px) {
+  html { font-size: 17px; }
+  .wrap { padding: 1rem 0.7rem 3rem; }
+  .section { padding: 1.1rem 1rem 1rem; }
+  .resource-list { grid-template-columns: 1fr; }
+  .utility-bar { justify-content: center; padding: 0.5rem 0.6rem; }
+  .util-btn { padding: 0.5rem 0.7rem; font-size: 0.85rem; }
+  .util-btn span { display: inline; }
 }
 </style>
 </head>
 <body>
-<a href="#main-content" class="skip-link">Skip to main content</a>
-<div class="wrap">
+<a href="#main" class="skip-link">Skip to main content</a>
 
-  <div class="toolbar" role="toolbar" aria-label="Display options">
-    <div class="font-control" role="group" aria-label="Text size">
-      <button class="fc-btn" onclick="changeFont(-0.1)" aria-label="Decrease text size">A−</button>
-      <span class="fc-label" aria-hidden="true" id="fontLabel">100%</span>
-      <button class="fc-btn" onclick="changeFont(+0.1)" aria-label="Increase text size">A+</button>
-    </div>
-    <button class="tb-btn" id="themeBtn" onclick="toggleTheme()" aria-pressed="false">
-      <svg aria-hidden="true" id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
-        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-        <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
-        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-      </svg>
-      <span id="themeLabel">Dark mode</span>
-    </button>
-    <div class="lang-wrap" id="langWrap">
-      <button class="tb-btn" id="langBtn" onclick="toggleLangMenu()" aria-haspopup="listbox" aria-expanded="false">
-        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
-          <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
-        </svg>
-        <span id="langLabel">English</span>
-      </button>
-      <div class="lang-menu" id="langMenu" role="listbox">
-        <button class="lang-opt active" role="option" aria-selected="true"  onclick="setLang('en')">🇺🇸 English</button>
-        <button class="lang-opt"        role="option" aria-selected="false" onclick="setLang('es')">🇪🇸 Español</button>
-        <button class="lang-opt"        role="option" aria-selected="false" onclick="setLang('fr')">🇫🇷 Français</button>
-        <button class="lang-opt"        role="option" aria-selected="false" onclick="setLang('ru')">🇷🇺 Русский</button>
-        <button class="lang-opt"        role="option" aria-selected="false" onclick="setLang('zh')">🇨🇳 中文</button>
-        <button class="lang-opt"        role="option" aria-selected="false" onclick="setLang('hi')">🇮🇳 हिन्दी</button>
-        <button class="lang-opt"        role="option" aria-selected="false" onclick="setLang('bn')">🇧🇩 বাংলা</button>
-        <button class="lang-opt"        role="option" aria-selected="false" onclick="setLang('ht')">🇭🇹 Kreyòl</button>
-      </div>
-    </div>
-    <button class="tb-btn" onclick="window.open('https://www.google.com/maps/search/community+center+near+me','_blank')">
-      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>
-      </svg>
-      <span id="btnMapLabel">Find Community Center</span>
-    </button>
-    <button class="tb-btn" onclick="window.print()">
-      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="6 9 6 2 18 2 18 9"/>
-        <path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/>
-        <rect x="6" y="14" width="12" height="8"/>
-      </svg>
-      <span id="btnPrintLabel">Print / PDF</span>
-    </button>
-    <button class="tb-btn" onclick="window.open('portal.html','_blank')">
-      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
-      </svg>
-      <span id="btnPortalLabel">Neighborhood Portal</span>
-    </button>
+<div class="utility-bar" role="toolbar" aria-label="Display options">
+  <div class="font-control" role="group" aria-label="Text size">
+    <button class="fc-btn" onclick="changeFont(-0.1)" aria-label="Smaller text">A−</button>
+    <span class="fc-label" id="fontLabel">100%</span>
+    <button class="fc-btn" onclick="changeFont(0.1)" aria-label="Bigger text">A+</button>
   </div>
+  <button class="util-btn" id="themeBtn" onclick="toggleTheme()" aria-pressed="false">
+    <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+      <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+    </svg>
+    <span id="themeLabel">Dark</span>
+  </button>
+  <div class="lang-wrap" id="langWrap">
+    <button class="util-btn" id="langBtn" onclick="toggleLangMenu()" aria-haspopup="true" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
+        <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
+      </svg>
+      <span id="langLabel">English</span>
+    </button>
+    <div class="lang-menu" id="langMenu" role="menu">
+      <button class="lang-opt active" role="menuitem" onclick="setLang('en')">🇺🇸 English</button>
+      <button class="lang-opt" role="menuitem" onclick="setLang('es')">🇪🇸 Español</button>
+      <button class="lang-opt" role="menuitem" onclick="setLang('fr')">🇫🇷 Français</button>
+      <button class="lang-opt" role="menuitem" onclick="setLang('zh')">🇨🇳 中文</button>
+      <button class="lang-opt" role="menuitem" onclick="setLang('ru')">🇷🇺 Русский</button>
+      <button class="lang-opt" role="menuitem" onclick="setLang('ht')">🇭🇹 Kreyòl</button>
+    </div>
+  </div>
+  <button class="util-btn" onclick="window.print()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <polyline points="6 9 6 2 18 2 18 9"/>
+      <path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/>
+      <rect x="6" y="14" width="12" height="8"/>
+    </svg>
+    <span>Print</span>
+  </button>
+  <a class="util-btn" href="feedback.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+    </svg>
+    <span>Feedback</span>
+  </a>
+</div>
 
+<div class="wrap">
   <header>
-    <h1><span aria-hidden="true">🗽 </span><span id="h1text">NYC Resource Navigator</span></h1>
-    <p id="subtext">Real links. Real addresses. Updated for NYC 2025–2026.</p>
+    <h1>🗽 NYC Resource Finder</h1>
+    <p>Free help with food, housing, jobs, and more — all across New York City</p>
   </header>
 
-  <div class="ticker" id="ticker" role="status" aria-live="polite">
-    <span class="ticker-dot"></span>
-    <span class="ticker-content" id="tickerContent">Connecting to live data…</span>
+  <div class="emergency-bar" role="region" aria-label="Emergency contacts">
+    <h2>📞 If you need help right now</h2>
+    <div class="emergency-list">
+      <div><strong>Need shelter tonight:</strong> <a href="tel:311">Call 311</a> (24 hours)</div>
+      <div><strong>Homeless Hotline:</strong> <a href="tel:18883582384">1-888-358-2384</a></div>
+      <div><strong>Mental Health:</strong> <a href="tel:18886929355">1-888-NYC-WELL</a></div>
+      <div><strong>Life-threatening emergency:</strong> <a href="tel:911">Call 911</a></div>
+    </div>
   </div>
 
-  <div class="hotline" role="region" aria-label="Emergency contacts">
-    <span class="hotline-item">
-      <svg class="h-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
-        <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
-      </svg>
-      <strong id="hl1">Emergency Shelter: Call 311 (24/7)</strong>
-    </span>
-    <span class="hotline-item">
-      <svg class="h-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.6 19.79 19.79 0 01.22 1 2 2 0 012.2.01h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006.29 6.29l1.06-1.06a2 2 0 012.11-.45c.907.34 1.85.574 2.81.7a2 2 0 011.72 2z"/>
-      </svg>
-      <span id="hl2">Coalition Hotline: <strong>1-888-358-2384</strong></span>
-    </span>
-    <span class="hotline-item">
-      <svg class="h-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
-      </svg>
-      <span id="hl3">Mental Health: <strong>NYC Well 1-888-NYC-WELL</strong></span>
-    </span>
-  </div>
-
-  <div id="main-content">
-    <div class="search-wrap" role="search">
-      <svg class="search-ico" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+  <div id="main">
+    <div class="search-bar" role="search">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
       </svg>
-      <input type="search" id="search" placeholder="Search by need, resource, keyword…"
-        aria-label="Search resources" autocomplete="off" oninput="render()">
+      <input type="search" id="search" placeholder="Type what you need (food, job, housing…)" aria-label="Search resources" oninput="render()">
     </div>
-    <div class="pills" id="pills" role="group" aria-label="Filter by category"></div>
-    <div class="count" id="count" aria-live="polite" aria-atomic="true"></div>
-    <div class="tile-grid" id="results" role="list"></div>
-  </div>
-</div>
 
-<!-- Toast -->
-<div class="toast" id="toast" role="status" aria-live="polite">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-  <span id="toastText">Thanks!</span>
-</div>
+    <nav class="jump-nav" aria-label="Jump to section">
+      <div class="jump-nav-label">Jump to:</div>
+      <div class="jump-nav-list" id="jumpNav"></div>
+    </nav>
 
-<!-- Jobs Modal -->
-<div class="modal-bg" id="jobsModal" role="dialog" aria-modal="true" aria-labelledby="jobs-modal-title">
-  <div class="modal">
-    <div class="modal-header">
-      <h2 id="jobs-modal-title">
-        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/>
-        </svg>
-        <span id="jobsModalTitle">Jobs</span>
-      </h2>
-      <button class="modal-close" onclick="closeModal('jobsModal')" aria-label="Close">
-        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-        </svg>
-      </button>
-    </div>
-    <p class="notice" id="jobsNotice">⚠️ Check employer pages before sending clients — openings change frequently.</p>
-    <div class="jobs-tabs" role="tablist" id="jobsTabs"></div>
-    <div id="jobsPanels"></div>
+    <div id="sections" aria-live="polite"></div>
   </div>
 </div>
 
 <script>
-/* ════════════════════════════════════════════════════════════════════════════
-   LIVE BACKEND — connected to your Apps Script
-   ════════════════════════════════════════════════════════════════════════════ */
-const API_URL = 'https://script.google.com/macros/s/AKfycbzU4d-aHrHwF4jgMpQEkTM3gwy6HfEaYeG73A5P38dkUC1fF6yj6i1G82N5lON65ZKSUA/exec';
+/* ════════════════════════════════════════════
+   STATE
+   ════════════════════════════════════════════ */
+let data = [];
+let jobListingsData = null;
+let isDark = false;
+let fontScale = 1;
+let lang = sessionStorage.getItem('lang') || 'en';
 
-async function api(action, payload = {}) {
-  const url = API_URL + '?action=' + encodeURIComponent(action) + '&payload=' + encodeURIComponent(JSON.stringify(payload));
-  const ctrl = new AbortController();
-  const tid = setTimeout(() => ctrl.abort(), 15000);
-  try {
-    const res = await fetch(url, { redirect:'follow', signal:ctrl.signal });
-    clearTimeout(tid);
-    if (!res.ok) throw new Error('Server error ' + res.status);
-    const json = await res.json();
-    if (!json.ok) throw new Error(json.error || 'Request failed');
-    return json;
-  } catch (err) {
-    clearTimeout(tid);
-    if (err.name === 'AbortError') throw new Error('Request timed out');
-    throw err;
-  }
-}
-
-function getBrowserFingerprint(){
-  const parts = [navigator.language||'', screen.width+'x'+screen.height, new Date().getTimezoneOffset(), navigator.platform||''];
-  return btoa(parts.join('|')).slice(0, 24);
-}
-
-/* ════════════════════════════════════════════════════════════════════════════
-   ICONS, TRANSLATIONS (unchanged from original)
-   ════════════════════════════════════════════════════════════════════════════ */
+/* ════════════════════════════════════════════
+   ICONS
+   ════════════════════════════════════════════ */
 const ICONS = {
-  'jobs-apply':   `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>`,
-  'food':         `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>`,
-  'clothing':     `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-.16 3.42l4.29 2.87a1 1 0 01.45.83V21a1 1 0 001 1h5.6a1 1 0 001-1V10.58a1 1 0 01.45-.83l4.29-2.87a2 2 0 00-.16-3.42z"/></svg>`,
-  'housing':      `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
-  'benefits':     `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>`,
-  'childcare':    `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>`,
-  'education':    `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>`,
-  'legal':        `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="21"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M4 6l-2 8h4z"/><path d="M20 6l-2 8h4z"/><line x1="8" y1="21" x2="16" y2="21"/></svg>`,
-  'mentalhealth': `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>`,
-  'transit':      `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>`,
-  'immigrant':    `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>`,
-  'digital':      `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0114.08 0"/><path d="M1.42 9a16 16 0 0121.16 0"/><path d="M8.53 16.11a6 6 0 016.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>`,
-  'anchors':      `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="3"/><line x1="12" y1="22" x2="12" y2="8"/><path d="M5 12H2a10 10 0 0020 0h-3"/></svg>`,
-  'volunteers':   `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+  'jobs-apply':   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>`,
+  'food':         `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>`,
+  'clothing':     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-.16 3.42l4.29 2.87a1 1 0 01.45.83V21a1 1 0 001 1h5.6a1 1 0 001-1V10.58a1 1 0 01.45-.83l4.29-2.87a2 2 0 00-.16-3.42z"/></svg>`,
+  'housing':      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
+  'benefits':     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>`,
+  'childcare':    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>`,
+  'education':    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>`,
+  'legal':        `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="21"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M4 6l-2 8h4z"/><path d="M20 6l-2 8h4z"/><line x1="8" y1="21" x2="16" y2="21"/></svg>`,
+  'mentalhealth': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>`,
+  'transit':      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>`,
+  'immigrant':    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>`,
+  'digital':      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0114.08 0"/><path d="M1.42 9a16 16 0 0121.16 0"/><path d="M8.53 16.11a6 6 0 016.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>`,
+  'anchors':      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="3"/><line x1="12" y1="22" x2="12" y2="8"/><path d="M5 12H2a10 10 0 0020 0h-3"/></svg>`,
+  'volunteers':   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
 };
 
+const PHONE_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.6 19.79 19.79 0 01.22 1 2 2 0 012.2.01h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006.29 6.29l1.06-1.06a2 2 0 012.11-.45c.907.34 1.85.574 2.81.7a2 2 0 011.72 2z"/></svg>`;
+const ADDR_ICON  = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>`;
+const WEB_ICON   = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`;
+
+/* ════════════════════════════════════════════
+   TRANSLATIONS (top-level UI only)
+   ════════════════════════════════════════════ */
 const T = {
   en: {
-    search:"Search by need, resource, keyword…",
-    found:n=>`${n} resource${n!==1?'s':''} found`,
-    empty:"No results — try a different search or category.",
-    suggest:"Suggest Update",volForm:"Sign Up / Volunteer Form",
-    hl1:"Emergency Shelter: Call 311 (24/7)",hl2:"Coalition Hotline:",hl3:"Mental Health:",
-    sub:"Real links. Real addresses. Updated for NYC 2025–2026.",
-    darkOn:"Dark mode",darkOff:"Light mode",findCenter:"Find Community Center",
-    print:"Print / PDF",portal:"Neighborhood Portal",
-    jobsNotice:"⚠️ Check employer pages before sending clients — openings change frequently.",
-    jobsTabs:[{key:"hiring",label:"💼 Direct Hiring"},{key:"training",label:"🎓 Job Training"},{key:"support",label:"🤝 Support Orgs"}],
-    jobsHiringSections:[{label:"🟢 Entry-Level",key:"entryLevel"},{label:"🏥 HHA / CNA — Hiring",key:"healthcareHiring"},{label:"🍽️ Food & Hospitality",key:"food"},{label:"🔧 Trades & Labor",key:"trades"}],
-    tickerInit: "Connecting to live verification data…",
-    tickerNoActivity: "No verifications yet — be the first to confirm a resource",
-    tickerOffline: "Live updates unavailable",
-    verify: "✓ Still open",
-    verified: "✓ Verified",
-    flag: "⚠ Flag",
-    notVerified: "Not yet verified",
-    confirmedBy: n => `${n} confirmed`,
-    flaggedBy: n => `⚠️ ${n} flag${n>1?'s':''}`,
-    verifyToast: org => `✓ Thanks! ${org} marked fresh.`,
-    flagToast: "⚠ Flagged for review.",
-    errorToast: "⚠ Could not save — try again."
+    title: '🗽 NYC Resource Finder',
+    subtitle: 'Free help with food, housing, jobs, and more — all across New York City',
+    emergencyTitle: '📞 If you need help right now',
+    needShelter: 'Need shelter tonight:',
+    homelessHotline: 'Homeless Hotline:',
+    mentalHealth: 'Mental Health:',
+    lifeThreat: 'Life-threatening emergency:',
+    call311: 'Call 311',
+    call911: 'Call 911',
+    hours24: '(24 hours)',
+    searchPlaceholder: 'Type what you need (food, job, housing…)',
+    jumpTo: 'Jump to:',
+    noResults: 'No matches. Try a different word, or scroll down to browse all sections.',
+    visit: 'Visit website',
+    feedbackPrompt: 'Found a problem? Suggest an update →',
+    dark: 'Dark',
+    light: 'Light',
+  },
+  es: {
+    title: '🗽 Buscador de Recursos NYC',
+    subtitle: 'Ayuda gratis con comida, vivienda, trabajos y más — en toda Nueva York',
+    emergencyTitle: '📞 Si necesita ayuda ahora',
+    needShelter: 'Necesita refugio esta noche:',
+    homelessHotline: 'Línea para Personas sin Hogar:',
+    mentalHealth: 'Salud Mental:',
+    lifeThreat: 'Emergencia de vida o muerte:',
+    call311: 'Llame al 311',
+    call911: 'Llame al 911',
+    hours24: '(24 horas)',
+    searchPlaceholder: 'Escriba lo que necesita (comida, trabajo, vivienda…)',
+    jumpTo: 'Ir a:',
+    noResults: 'Sin resultados. Pruebe otra palabra o desplácese para ver todas las secciones.',
+    visit: 'Visitar sitio web',
+    feedbackPrompt: '¿Encontró un problema? Sugerir una actualización →',
+    dark: 'Oscuro',
+    light: 'Claro',
   }
 };
+const LANG_NAMES = {en:'English', es:'Español', fr:'Français', zh:'中文', ru:'Русский', ht:'Kreyòl'};
 
-const LANG_NAMES={en:'English',es:'Español',fr:'Français',ru:'Русский',zh:'中文',hi:'हिन्दी',bn:'বাংলা',ht:'Kreyòl'};
-const CHEVRON=`<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>`;
-const BULB=`<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="9" y1="18" x2="15" y2="18"/><line x1="10" y1="22" x2="14" y2="22"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0018 8 6 6 0 006 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 018.91 14"/></svg>`;
-const EXT_LINK=`<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`;
-const CHECK=`<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
-const SUN_SVG=`<svg aria-hidden="true" id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`;
-const MOON_SVG=`<svg aria-hidden="true" id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>`;
-
-/* ════════════════════════════════════════════════════════════════════════════
-   STATE
-   ════════════════════════════════════════════════════════════════════════════ */
-let data = [], jobListingsData = null, active = 'All', open = null, isDark = false, fontScale = 1;
-let lang = sessionStorage.getItem('lang') || 'en';
-let activeJobTab = 'hiring';
-
-// Verification state — keyed by resource id
-const verState = {
-  byId: {},                    // { resourceId: { verifyCount, flagCount, lastVerified, ... } }
-  userVerified: new Set(),     // resource IDs user has clicked verify on this session
-  userFlagged: new Set(),
-  loaded: false
-};
-
-/* ════════════════════════════════════════════════════════════════════════════
-   FRESHNESS
-   ════════════════════════════════════════════════════════════════════════════ */
-function daysSince(iso){ return iso ? Math.floor((Date.now() - new Date(iso))/86400000) : null; }
-function freshnessClass(days){
-  if (days === null) return 'fresh-unknown';
-  if (days < 30) return 'fresh-green';
-  if (days < 60) return 'fresh-yellow';
-  return 'fresh-red';
-}
-function freshnessLabel(days){
-  if (days === null) return 'Not verified';
-  if (days === 0) return 'Verified today';
-  if (days === 1) return 'Verified 1d ago';
-  return `Verified ${days}d ago`;
-}
-
-/**
- * Returns aggregate freshness for a category (used on tile dot).
- * Worst-case wins: if any resource is red, the tile is red.
- */
-function categoryFreshness(card){
-  if (!card.resources || !card.resources.length) return 'fresh-unknown';
-  let hasGreen = false, hasYellow = false, hasRed = false, hasUnknown = false;
-  card.resources.forEach(r => {
-    const v = verState.byId[r.id];
-    const days = v && v.lastVerified ? daysSince(v.lastVerified) : null;
-    const cls = freshnessClass(days);
-    if (cls === 'fresh-red')    hasRed = true;
-    else if (cls === 'fresh-yellow') hasYellow = true;
-    else if (cls === 'fresh-green')  hasGreen = true;
-    else hasUnknown = true;
-  });
-  if (hasRed)    return 'fresh-red';
-  if (hasYellow) return 'fresh-yellow';
-  if (hasGreen)  return 'fresh-green';
-  return 'fresh-unknown';
-}
-
-function categoryVerifyCount(card){
-  if (!card.resources) return 0;
-  return card.resources.reduce((sum, r) => {
-    const v = verState.byId[r.id];
-    return sum + (v ? v.verifyCount : 0);
-  }, 0);
-}
-
-/* ════════════════════════════════════════════════════════════════════════════
-   DATA LOADING
-   ════════════════════════════════════════════════════════════════════════════ */
-async function loadData(){
-  let json;
-  try { json = await fetch('data.json').then(r => r.json()); }
-  catch(e){ document.getElementById('results').innerHTML = '<div class="empty">Could not load data.json</div>'; return; }
-  data = json.cards || [];
-  jobListingsData = json.jobListings || null;
-  rebuildPills();
-  render();
-  hydrateVerifications();   // fire-and-forget
-}
-
-async function hydrateVerifications(){
+/* ════════════════════════════════════════════
+   LOAD
+   ════════════════════════════════════════════ */
+async function load() {
   try {
-    const res = await api('load');
-    const byId = {};
-    (res.resources || []).forEach(r => { byId[r.id] = r; });
-    verState.byId = byId;
-    verState.loaded = true;
+    const json = await fetch('data.json').then(r => r.json());
+    data = json.cards || [];
+    jobListingsData = json.jobListings || null;
     render();
-    updateTicker();
-  } catch (err) {
-    console.warn('Verification hydration failed:', err);
-    setTickerOffline();
+  } catch (e) {
+    document.getElementById('sections').innerHTML =
+      '<div class="no-results">Could not load data. Please refresh the page.</div>';
   }
 }
 
-/* ════════════════════════════════════════════════════════════════════════════
+/* ════════════════════════════════════════════
    RENDER
-   ════════════════════════════════════════════════════════════════════════════ */
-function render(){
+   ════════════════════════════════════════════ */
+function render() {
   const t = T[lang] || T.en;
   const q = (document.getElementById('search').value || '').toLowerCase().trim();
-  document.getElementById('search').placeholder = t.search;
-  const filtered = data.map((d,i) => ({...d, _i:i})).filter(d => {
-    const matchCat = active === 'All' || (d.cats||[]).includes(active);
-    const matchQ = !q || d.title.toLowerCase().includes(q) || d.sub.toLowerCase().includes(q) || (d.tags||[]).some(tag => tag.includes(q)) || (d.notice||'').toLowerCase().includes(q);
-    return matchCat && matchQ;
+
+  const filtered = data.filter(d => {
+    if (!q) return true;
+    if (d.title.toLowerCase().includes(q)) return true;
+    if (d.sub.toLowerCase().includes(q)) return true;
+    if ((d.tags || []).some(tag => tag.toLowerCase().includes(q))) return true;
+    if ((d.notice || '').toLowerCase().includes(q)) return true;
+    if ((d.resources || []).some(r =>
+      (r.org && r.org.toLowerCase().includes(q)) ||
+      (r.note && r.note.toLowerCase().includes(q)) ||
+      (r.addr && r.addr.toLowerCase().includes(q))
+    )) return true;
+    return false;
   });
-  document.getElementById('count').textContent = t.found(filtered.length);
-  const res = document.getElementById('results');
-  if (!filtered.length) { res.innerHTML = `<div class="empty" style="grid-column:1/-1">${t.empty}</div>`; return; }
 
-  res.innerHTML = filtered.map((d,pos) => {
-    const isJobsCard = d.type === 'job-listings';
-    const isOpen = open === d._i, bodyId = `body-${d._i}`;
-    const noticeHtml = d.notice ? `<div class="notice">${d.notice}</div>` : '';
-    const resHtml = (d.resources || []).length ? resGrid(d.resources) : '';
-    const volFormHtml = d.volunteerFormUrl ? `<a class="vol-form-link" href="${d.volunteerFormUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">${EXT_LINK} ${t.volForm}</a>` : '';
-    const tagsHtml = (d.tags || []).slice(0,5).map(tg => `<span class="tag">${tg}</span>`).join('');
+  // Jump nav
+  const jumpNav = document.getElementById('jumpNav');
+  jumpNav.innerHTML = filtered.map(d =>
+    `<a class="jump-link" href="#section-${d.id}">${escapeHtml(d.title)}</a>`
+  ).join('');
 
-    const freshCls = categoryFreshness(d);
-    const verifyCount = categoryVerifyCount(d);
-    const verifyChipHtml = verifyCount > 0
-      ? `<span class="tile-verify-chip" title="Verifications across this category">${CHECK}${verifyCount}</span>`
-      : '';
+  // Sections
+  const sectionsEl = document.getElementById('sections');
+  if (!filtered.length) {
+    sectionsEl.innerHTML = `<div class="no-results">${escapeHtml(t.noResults)}</div>`;
+    return;
+  }
 
-    if (isJobsCard) {
-      return `<div class="tile" data-type="job-listings" role="listitem" tabindex="0" style="animation-delay:${Math.min(pos*.05,.32)}s"
-        onclick="openJobsModal()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openJobsModal();}">
-        <div class="tile-top">
-          <div class="tile-icon">${ICONS[d.id]||''}</div>
-          <div class="tile-text"><div class="tile-title">${d.title}</div><div class="tile-sub">${d.sub}</div></div>
-          <div class="tile-chev"></div>
-        </div>
-        ${tagsHtml ? `<div class="tile-tags">${tagsHtml}</div>` : ''}
-      </div>`;
-    }
-
-    return `<div class="tile${isOpen?' is-open':''}" data-idx="${d._i}" role="listitem" tabindex="0"
-      style="animation-delay:${Math.min(pos*.05,.32)}s"
-      onclick="tog(${d._i})" onkeydown="handleKey(event,${d._i})"
-      aria-expanded="${isOpen}" aria-controls="${bodyId}">
-      <div class="tile-top">
-        <div class="tile-icon">
-          ${ICONS[d.id]||''}
-          <span class="tile-fresh-dot ${freshCls}" aria-hidden="true"></span>
-        </div>
-        <div class="tile-text"><div class="tile-title">${d.title}</div><div class="tile-sub">${d.sub}</div></div>
-        <div class="tile-chev">${CHEVRON}</div>
-      </div>
-      <div class="tile-tags">${tagsHtml}${verifyChipHtml}</div>
-      <div class="tile-body${isOpen?' open':''}" id="${bodyId}" role="region">
-        <div class="tile-body-inner">
-          ${noticeHtml}${volFormHtml}${resHtml}
-          <div class="card-actions">
-            <button class="ca-btn" onclick="suggestUpdateAll('${d.title.replace(/'/g,"\\'")}',event)">${BULB} ${t.suggest}</button>
-          </div>
-        </div>
-      </div>
-    </div>`;
-  }).join('');
+  sectionsEl.innerHTML = filtered.map(d => renderSection(d)).join('');
 }
 
-function resGrid(items){
-  if (!items || !items.length) return '';
-  return `<div class="res-grid">${items.map(r => resCard(r)).join('')}</div>`;
-}
+function renderSection(d) {
+  const isJobs = d.type === 'job-listings';
+  const noticeHtml = d.notice ? renderNotice(d.notice) : '';
 
-function resCard(r){
-  const t = T[lang] || T.en;
-  const v = verState.byId[r.id] || { verifyCount: 0, flagCount: 0, lastVerified: null };
-  const days = v.lastVerified ? daysSince(v.lastVerified) : null;
-  const freshCls = freshnessClass(days);
-  const freshLbl = freshnessLabel(days);
-  const isVerified = verState.userVerified.has(r.id);
-  const isFlagged = verState.userFlagged.has(r.id);
-
-  const linkOpen = r.url ? `<a class="rc-link" href="${r.url}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">` : `<div class="rc-link">`;
-  const linkClose = r.url ? `</a>` : `</div>`;
-
-  const meta = v.verifyCount === 0
-    ? (verState.loaded ? `${t.notVerified}` : '')
-    : `<span class="verify-count">✓ ${v.verifyCount}</span> ${t.confirmedBy(v.verifyCount).split(' ').slice(1).join(' ')}`;
-  const flagMeta = v.flagCount > 0 ? ` · ${t.flaggedBy(v.flagCount)}` : '';
+  let body;
+  if (isJobs && jobListingsData) {
+    body = renderJobsBody();
+  } else {
+    body = renderResources(d.resources || []);
+  }
 
   return `
-    <div class="res-card" data-rid="${r.id}">
-      <div class="rc-link-row">
-        ${linkOpen}
-          <div class="rc-org">${r.org}</div>
-          ${r.note ? `<div class="rc-note">${r.note}</div>` : ''}
-          ${r.addr ? `<div class="rc-addr">📍 ${r.addr}</div>` : ''}
-          ${r.phone ? `<div class="rc-phone">📞 ${r.phone}</div>` : ''}
-        ${linkClose}
-        <span class="freshness ${freshCls}" title="${freshLbl}">
-          <span class="freshness-dot"></span>${freshLbl}
-        </span>
-      </div>
-      <div class="verify-row" onclick="event.stopPropagation()">
-        <div class="verify-meta">${meta}${flagMeta}</div>
-        <div class="verify-actions">
-          <button class="v-btn v-btn-verify ${isVerified?'confirmed':''}"
-                  onclick="verifyResource('${r.id}','${r.org.replace(/'/g,"\\'")}', event)"
-                  ${isVerified?'disabled':''}>
-            ${isVerified ? `${CHECK}${t.verified}` : t.verify}
-          </button>
-          <button class="v-btn v-btn-flag"
-                  onclick="flagResource('${r.id}','${r.org.replace(/'/g,"\\'")}', event)"
-                  ${isFlagged?'disabled':''}>
-            ${t.flag}
-          </button>
+    <section class="section" id="section-${escapeHtml(d.id)}" aria-labelledby="title-${escapeHtml(d.id)}">
+      <div class="section-header">
+        <div class="section-icon" aria-hidden="true">${ICONS[d.id] || ''}</div>
+        <div class="section-title-block">
+          <h2 class="section-title" id="title-${escapeHtml(d.id)}">${escapeHtml(d.title)}</h2>
+          <div class="section-sub">${escapeHtml(d.sub)}</div>
         </div>
       </div>
-    </div>
+      ${noticeHtml}
+      ${body}
+      <div class="section-footer">
+        <span></span>
+        <a class="feedback-link" href="feedback.html?section=${encodeURIComponent(d.id)}">Suggest an update for this section →</a>
+      </div>
+    </section>
   `;
 }
 
-/* ════════════════════════════════════════════════════════════════════════════
-   VERIFY / FLAG ACTIONS
-   ════════════════════════════════════════════════════════════════════════════ */
-async function verifyResource(rid, orgName, e){
-  if (e) e.stopPropagation();
-  if (verState.userVerified.has(rid)) return;
+function renderNotice(text) {
+  const isEmerg = text.includes('🚨') || text.includes('Emergency');
+  return `<div class="notice${isEmerg ? ' emergency' : ''}">${escapeHtml(text)}</div>`;
+}
 
-  const t = T[lang] || T.en;
+function renderResources(items) {
+  if (!items.length) return '';
+  return `<div class="resource-list">${items.map(renderResource).join('')}</div>`;
+}
 
-  // Optimistic
-  const prev = JSON.parse(JSON.stringify(verState.byId[rid] || { verifyCount:0, flagCount:0, lastVerified:null }));
-  verState.userVerified.add(rid);
-  verState.byId[rid] = {
-    ...prev,
-    verifyCount: (prev.verifyCount||0) + 1,
-    lastVerified: new Date().toISOString()
-  };
-  render();
+function renderResource(r) {
+  const name = r.url
+    ? `<div class="resource-name"><a href="${escapeAttr(r.url)}" target="_blank" rel="noopener">${escapeHtml(r.org)}</a></div>`
+    : `<div class="resource-name">${escapeHtml(r.org)}</div>`;
+  const note = r.note ? `<div class="resource-note">${escapeHtml(r.note)}</div>` : '';
+  const addr = r.addr ? `
+    <div class="resource-detail address">
+      ${ADDR_ICON}
+      <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(r.addr + ' New York NY')}" target="_blank" rel="noopener">${escapeHtml(r.addr)}</a>
+    </div>` : '';
+  const phone = r.phone ? `
+    <div class="resource-detail phone">
+      ${PHONE_ICON}
+      <a href="tel:${escapeAttr(r.phone.replace(/[^\d+]/g,''))}">${escapeHtml(r.phone)}</a>
+    </div>` : '';
+  const web = r.url ? `
+    <div class="resource-detail website">
+      ${WEB_ICON}
+      <a href="${escapeAttr(r.url)}" target="_blank" rel="noopener">Visit website</a>
+    </div>` : '';
+  return `<div class="resource">${name}${note}${addr}${phone}${web}</div>`;
+}
 
-  try {
-    const res = await api('verify', {
-      resourceId: rid,
-      userAgent: navigator.userAgent.slice(0,120),
-      fp: getBrowserFingerprint()
-    });
-    verState.byId[rid].verifyCount = res.verifyCount;
-    verState.byId[rid].lastVerified = res.lastVerified;
-    render();
-    toast(t.verifyToast(orgName));
-    pushTickerEvent(`✓ ${orgName} just verified`);
-  } catch (err) {
-    verState.userVerified.delete(rid);
-    verState.byId[rid] = prev;
-    render();
-    toast(t.errorToast, 'error');
+function renderJobsBody() {
+  const jl = jobListingsData;
+  if (!jl) return '';
+  let html = '';
+
+  // Healthcare hiring
+  if (jl.healthcare && jl.healthcare.hiring && jl.healthcare.hiring.length) {
+    html += `<div class="subsection"><div class="subsection-title">🏥 Healthcare — Now Hiring</div>${renderResources(jl.healthcare.hiring)}</div>`;
   }
-}
-
-async function flagResource(rid, orgName, e){
-  if (e) e.stopPropagation();
-  if (verState.userFlagged.has(rid)) return;
-
-  const t = T[lang] || T.en;
-
-  const prev = JSON.parse(JSON.stringify(verState.byId[rid] || { verifyCount:0, flagCount:0, lastVerified:null }));
-  verState.userFlagged.add(rid);
-  verState.byId[rid] = { ...prev, flagCount: (prev.flagCount||0) + 1 };
-  render();
-
-  try {
-    const res = await api('flag', { resourceId: rid, note:'(quick flag)', fp: getBrowserFingerprint() });
-    verState.byId[rid].flagCount = res.flagCount;
-    render();
-    toast(t.flagToast, 'flag');
-    pushTickerEvent(`⚠ ${orgName} flagged for review`);
-  } catch (err) {
-    verState.userFlagged.delete(rid);
-    verState.byId[rid] = prev;
-    render();
-    toast(t.errorToast, 'error');
+  // Healthcare training
+  if (jl.healthcare && jl.healthcare.training && jl.healthcare.training.length) {
+    html += `<div class="subsection"><div class="subsection-title">🏥 Free Home Health Aide / CNA Training</div>${renderResources(jl.healthcare.training)}</div>`;
   }
-}
-
-function suggestUpdateAll(catTitle, e){
-  if (e) e.stopPropagation();
-  // For now, just open a flag with the category title as note.
-  // Future: full inline edit form (see verification-widget-demo for reference)
-  const note = prompt(`Suggest an update for the "${catTitle}" category — what's wrong or what should change?`);
-  if (!note || !note.trim()) return;
-  api('edit', {
-    resourceId: 'category-' + catTitle.toLowerCase().replace(/\s+/g,'-'),
-    type: 'other',
-    notes: note.trim(),
-    name: '',
-    fp: getBrowserFingerprint()
-  }).then(() => toast('✓ Suggestion sent — thanks!'))
-    .catch(() => toast('⚠ Could not send — try again.', 'error'));
-}
-
-/* ════════════════════════════════════════════════════════════════════════════
-   TICKER (live activity)
-   ════════════════════════════════════════════════════════════════════════════ */
-const tickerQueue = [];
-let tickerInterval = null;
-
-function updateTicker(){
-  // Find the most recently verified resource across the dataset
-  let mostRecent = null;
-  for (const id in verState.byId) {
-    const v = verState.byId[id];
-    if (!v.lastVerified) continue;
-    if (!mostRecent || new Date(v.lastVerified) > new Date(mostRecent.lastVerified)) {
-      // Look up the resource org name
-      const found = findResourceById(id);
-      if (found) mostRecent = { ...v, org: found.org, id };
-    }
+  // Entry level
+  if (jl.entryLevel && jl.entryLevel.length) {
+    html += `<div class="subsection"><div class="subsection-title">🟢 Entry-Level Jobs</div>${renderResources(jl.entryLevel)}</div>`;
   }
-  let totalVerifies = 0;
-  for (const id in verState.byId) totalVerifies += (verState.byId[id].verifyCount || 0);
-  const t = T[lang] || T.en;
-  if (totalVerifies === 0) {
-    setTickerText(t.tickerNoActivity);
-  } else if (mostRecent) {
-    const days = daysSince(mostRecent.lastVerified);
-    const ago = days === 0 ? 'today' : days === 1 ? '1 day ago' : `${days} days ago`;
-    setTickerText(`✓ <span class="ticker-strong">${mostRecent.org}</span> verified ${ago} · <span class="ticker-strong">${totalVerifies}</span> total verifications`);
-  } else {
-    setTickerText(`<span class="ticker-strong">${totalVerifies}</span> verifications across NYC`);
+  // Food & hospitality
+  if (jl.food && jl.food.length) {
+    html += `<div class="subsection"><div class="subsection-title">🍽️ Food & Hospitality</div>${renderResources(jl.food)}</div>`;
   }
-}
-
-function findResourceById(id){
-  for (const card of data) {
-    if (!card.resources) continue;
-    const found = card.resources.find(r => r.id === id);
-    if (found) return found;
+  // Trades
+  if (jl.trades && jl.trades.length) {
+    html += `<div class="subsection"><div class="subsection-title">🔧 Trades & Construction</div>${renderResources(jl.trades)}</div>`;
   }
-  return null;
-}
-
-function setTickerText(html){
-  const el = document.getElementById('tickerContent');
-  if (!el) return;
-  el.classList.add('swap');
-  setTimeout(() => {
-    el.innerHTML = html;
-    el.classList.remove('swap');
-  }, 180);
-}
-
-function setTickerOffline(){
-  const t = T[lang] || T.en;
-  document.getElementById('ticker').classList.add('offline');
-  setTickerText(t.tickerOffline);
-}
-
-function pushTickerEvent(msg){
-  // Briefly show the new event, then revert to standard ticker text
-  setTickerText(`<span class="ticker-strong">${msg}</span>`);
-  setTimeout(updateTicker, 4500);
-}
-
-/* ════════════════════════════════════════════════════════════════════════════
-   TILE OPEN/CLOSE
-   ════════════════════════════════════════════════════════════════════════════ */
-function handleKey(e,i){ if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tog(i); } }
-
-function tog(i){
-  open = open === i ? null : i;
-  document.querySelectorAll('.tile:not([data-type="job-listings"])').forEach(tile => {
-    const idx = parseInt(tile.dataset.idx), isO = idx === open;
-    tile.classList.toggle('is-open', isO);
-    const body = tile.querySelector('.tile-body');
-    if (body) body.classList.toggle('open', isO);
-    tile.setAttribute('aria-expanded', isO);
-  });
-  // Smoothly anchor the opened tile to the top of the viewport
-  if (open !== null) {
-    requestAnimationFrame(() => {
-      const tile = document.querySelector(`.tile[data-idx="${open}"]`);
-      if (tile) tile.scrollIntoView({ behavior:'smooth', block:'start' });
-    });
+  // Job training
+  if (jl.jobTraining && jl.jobTraining.length) {
+    html += `<div class="subsection"><div class="subsection-title">🎓 Free Job Training & Career Centers</div>${renderResources(jl.jobTraining)}</div>`;
   }
+  // Job support orgs
+  if (jl.jobSupportOrgs && jl.jobSupportOrgs.length) {
+    html += `<div class="subsection"><div class="subsection-title">🤝 Help Finding a Job</div>${renderResources(jl.jobSupportOrgs)}</div>`;
+  }
+  return html;
 }
 
-/* ════════════════════════════════════════════════════════════════════════════
-   PILLS
-   ════════════════════════════════════════════════════════════════════════════ */
-function rebuildPills(){
-  const pw = document.getElementById('pills');
-  pw.innerHTML = '';
-  ['All', ...new Set(data.flatMap(d => d.cats || []))].forEach(c => {
-    const el = document.createElement('button');
-    el.className = 'pill' + (c === active ? ' active' : '');
-    el.textContent = c;
-    el.setAttribute('aria-pressed', c === active ? 'true' : 'false');
-    el.onclick = () => {
-      active = c; open = null;
-      document.querySelectorAll('.pill').forEach(p => { p.classList.remove('active'); p.setAttribute('aria-pressed','false'); });
-      el.classList.add('active'); el.setAttribute('aria-pressed','true');
-      render();
-    };
-    pw.appendChild(el);
-  });
+/* ════════════════════════════════════════════
+   HELPERS
+   ════════════════════════════════════════════ */
+function escapeHtml(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
+function escapeAttr(s) { return escapeHtml(s); }
 
-/* ════════════════════════════════════════════════════════════════════════════
-   JOBS MODAL
-   ════════════════════════════════════════════════════════════════════════════ */
-function openJobsModal(){
-  if (!jobListingsData) return;
-  buildJobsModal();
-  openModal('jobsModal');
-}
-
-function buildJobsModal(){
-  const t = T[lang] || T.en, jl = jobListingsData;
-  document.getElementById('jobsTabs').innerHTML = t.jobsTabs.map(tab =>
-    `<button class="jobs-tab${tab.key===activeJobTab?' active':''}" onclick="switchJobTab('${tab.key}')">${tab.label}</button>`
-  ).join('');
-  let hiringHtml = '';
-  t.jobsHiringSections.forEach(sec => {
-    const items = sec.key === 'healthcareHiring' ? (jl.healthcare && jl.healthcare.hiring ? jl.healthcare.hiring : []) : (jl[sec.key] || []);
-    if (!items.length) return;
-    hiringHtml += `<div class="sub-section"><div class="sub-label">${sec.label}</div>${jobGrid(items)}</div>`;
-  });
-  let trainingHtml = '';
-  const hhaTrain = jl.healthcare && jl.healthcare.training ? jl.healthcare.training : [];
-  if (hhaTrain.length) trainingHtml += `<div class="sub-section"><div class="sub-label">🏥 HHA / CNA — Training Programs</div>${jobGrid(hhaTrain)}</div>`;
-  if ((jl.jobTraining || []).length) trainingHtml += `<div class="sub-section"><div class="sub-label">🎓 Career Training & Workforce Centers</div>${jobGrid(jl.jobTraining)}</div>`;
-  document.getElementById('jobsPanels').innerHTML =
-    `<div class="jobs-panel${activeJobTab==='hiring'?' active':''}" id="jpanel-hiring">${hiringHtml}</div>
-     <div class="jobs-panel${activeJobTab==='training'?' active':''}" id="jpanel-training">${trainingHtml}</div>
-     <div class="jobs-panel${activeJobTab==='support'?' active':''}" id="jpanel-support">${jobSupportGrid(jl.jobSupportOrgs || [])}</div>`;
-}
-
-function jobGrid(items){
-  if (!items || !items.length) return '';
-  return `<div class="job-grid">${items.map(j => `<a class="job-card" href="${j.url}" target="_blank" rel="noopener noreferrer"><div class="jc-org">${j.org}</div><div class="jc-note">${j.note}</div></a>`).join('')}</div>`;
-}
-
-function jobSupportGrid(items){
-  if (!items || !items.length) return '';
-  return `<div class="res-grid">${items.map(r => {
-    const tag = r.url ? 'a' : 'div', href = r.url ? `href="${r.url}" target="_blank" rel="noopener noreferrer"` : '';
-    return `<${tag} class="res-card" ${href} style="text-decoration:none"><div class="rc-org">${r.org}</div>${r.note?`<div class="rc-note">${r.note}</div>`:''}${r.addr?`<div class="rc-addr">📍 ${r.addr}</div>`:''}${r.phone?`<div class="rc-phone">📞 ${r.phone}</div>`:''}</${tag}>`;
-  }).join('')}</div>`;
-}
-
-function switchJobTab(key){
-  activeJobTab = key;
-  document.querySelectorAll('.jobs-tab').forEach(btn => { const a = btn.getAttribute('onclick').includes(`'${key}'`); btn.classList.toggle('active', a); });
-  document.querySelectorAll('.jobs-panel').forEach(p => p.classList.toggle('active', p.id === `jpanel-${key}`));
-}
-
-/* ════════════════════════════════════════════════════════════════════════════
-   MODAL HELPERS
-   ════════════════════════════════════════════════════════════════════════════ */
-let lastFocus = null;
-function openModal(id){ lastFocus = document.activeElement; const m = document.getElementById(id); m.classList.add('open'); const cb = m.querySelector('.modal-close'); if (cb) cb.focus(); }
-function closeModal(id){ document.getElementById(id).classList.remove('open'); if (lastFocus) lastFocus.focus(); }
-document.querySelectorAll('.modal-bg').forEach(m => {
-  m.addEventListener('click', e => { if (e.target === m) closeModal(m.id); });
-  m.addEventListener('keydown', e => {
-    if (e.key === 'Escape') closeModal(m.id);
-    if (e.key === 'Tab') {
-      const els = m.querySelectorAll('button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])');
-      const first = els[0], last = els[els.length-1];
-      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
-    }
-  });
-});
-
-/* ════════════════════════════════════════════════════════════════════════════
-   TOAST
-   ════════════════════════════════════════════════════════════════════════════ */
-function toast(msg, type){
-  const el = document.getElementById('toast');
-  document.getElementById('toastText').textContent = msg;
-  let cls = 'toast show';
-  if (type === 'flag')  cls += ' toast-flag';
-  if (type === 'error') cls += ' toast-error';
-  el.className = cls;
-  clearTimeout(toast._t);
-  toast._t = setTimeout(() => {
-    el.className = 'toast' + (type === 'flag' ? ' toast-flag' : type === 'error' ? ' toast-error' : '');
-  }, 3000);
-}
-
-/* ════════════════════════════════════════════════════════════════════════════
+/* ════════════════════════════════════════════
    THEME / FONT / LANG
-   ════════════════════════════════════════════════════════════════════════════ */
-function toggleTheme(){
+   ════════════════════════════════════════════ */
+const SUN = `<svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`;
+const MOON = `<svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>`;
+
+function toggleTheme() {
   isDark = !isDark;
   document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
   document.getElementById('themeBtn').setAttribute('aria-pressed', isDark);
-  document.getElementById('themeIcon').outerHTML = isDark ? MOON_SVG : SUN_SVG;
-  document.getElementById('themeLabel').textContent = isDark ? (T[lang]||T.en).darkOff : (T[lang]||T.en).darkOn;
+  document.getElementById('themeIcon').outerHTML = isDark ? MOON : SUN;
+  const t = T[lang] || T.en;
+  document.getElementById('themeLabel').textContent = isDark ? t.light : t.dark;
 }
-function changeFont(delta){
-  fontScale = Math.min(1.4, Math.max(0.8, +(fontScale + delta).toFixed(1)));
-  document.documentElement.style.fontSize = (fontScale * 16) + 'px';
+
+function changeFont(delta) {
+  fontScale = Math.min(1.5, Math.max(0.85, +(fontScale + delta).toFixed(2)));
+  document.documentElement.style.fontSize = (fontScale * 18) + 'px';
   document.getElementById('fontLabel').textContent = Math.round(fontScale * 100) + '%';
 }
-function toggleLangMenu(){
-  const menu = document.getElementById('langMenu'), btn = document.getElementById('langBtn');
+
+function toggleLangMenu() {
+  const menu = document.getElementById('langMenu');
+  const btn = document.getElementById('langBtn');
   const isOpen = menu.classList.toggle('open');
   btn.setAttribute('aria-expanded', isOpen);
-  if (isOpen) menu.querySelector('button').focus();
 }
-function setLang(code){
+
+function setLang(code) {
   lang = code;
   sessionStorage.setItem('lang', code);
   document.documentElement.setAttribute('lang', code);
   document.getElementById('langLabel').textContent = LANG_NAMES[code] || 'English';
   document.getElementById('langMenu').classList.remove('open');
-  document.getElementById('langBtn').setAttribute('aria-expanded','false');
+  document.getElementById('langBtn').setAttribute('aria-expanded', 'false');
   document.querySelectorAll('.lang-opt').forEach(o => {
-    const sel = o.getAttribute('onclick').includes(`'${code}'`);
-    o.classList.toggle('active', sel);
-    o.setAttribute('aria-selected', sel);
+    o.classList.toggle('active', o.getAttribute('onclick').includes(`'${code}'`));
   });
-  applyStaticTranslations();
+  applyStaticTexts();
   render();
-  updateTicker();
 }
-function applyStaticTranslations(){
+
+function applyStaticTexts() {
   const t = T[lang] || T.en;
-  document.getElementById('hl1').textContent = t.hl1;
-  document.getElementById('hl2').innerHTML = `${t.hl2} <strong>1-888-358-2384</strong>`;
-  document.getElementById('hl3').innerHTML = `${t.hl3} <strong>NYC Well 1-888-NYC-WELL</strong>`;
-  document.getElementById('subtext').textContent = t.sub;
-  document.getElementById('themeLabel').textContent = isDark ? t.darkOff : t.darkOn;
-  document.getElementById('btnMapLabel').textContent = t.findCenter;
-  document.getElementById('btnPrintLabel').textContent = t.print;
-  document.getElementById('btnPortalLabel').textContent = t.portal;
-  if (t.jobsNotice) document.getElementById('jobsNotice').textContent = t.jobsNotice;
+  document.querySelector('header h1').textContent = t.title;
+  document.querySelector('header p').textContent = t.subtitle;
+  document.querySelector('.emergency-bar h2').textContent = t.emergencyTitle;
+  document.getElementById('search').placeholder = t.searchPlaceholder;
+  document.querySelector('.jump-nav-label').textContent = t.jumpTo;
+  document.getElementById('themeLabel').textContent = isDark ? t.light : t.dark;
 }
 
 document.addEventListener('click', e => {
   const w = document.getElementById('langWrap');
   if (w && !w.contains(e.target)) {
     document.getElementById('langMenu').classList.remove('open');
-    document.getElementById('langBtn').setAttribute('aria-expanded','false');
+    document.getElementById('langBtn').setAttribute('aria-expanded', 'false');
+  }
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    document.getElementById('langMenu').classList.remove('open');
+    document.getElementById('langBtn').setAttribute('aria-expanded', 'false');
   }
 });
 
 /* Init */
-applyStaticTranslations();
-loadData();
+applyStaticTexts();
+load();
 </script>
 </body>
 </html>

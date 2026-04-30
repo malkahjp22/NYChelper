@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feedback — NYC Resource Finder</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root[data-theme="light"] {
+  --bg: #fbf7f2;
+  --card: #ffffff;
+  --border: #d8cfc4;
+  --border-strong: #b8aa97;
+  --accent: #b54a30;
+  --accent-dark: #8c3520;
+  --text: #1f1f1f;
+  --muted: #5a5550;
+  --link: #2a4a8a;
+  --green: #2e7a4a;
+  --green-bg: #e6f3ea;
+  --yellow: #b07a00;
+  --yellow-bg: #fff4e0;
+  --red: #b54a30;
+  --red-bg: #fdecec;
+}
+:root[data-theme="dark"] {
+  --bg: #1a1814;
+  --card: #2a2622;
+  --border: #4a4238;
+  --border-strong: #6a5f50;
+  --accent: #e07a5f;
+  --accent-dark: #d05a3a;
+  --text: #f0ebe2;
+  --muted: #b0a89c;
+  --link: #8ab4f8;
+  --green: #8acc9c;
+  --green-bg: #2a4a30;
+  --yellow: #f0d080;
+  --yellow-bg: #3a3020;
+  --red: #e07070;
+  --red-bg: #4a2020;
+}
+
+html { font-size: 18px; scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.55;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+.utility-bar {
+  background: var(--card);
+  border-bottom: 2px solid var(--border);
+  padding: 0.6rem 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+.util-btn {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.5rem 0.9rem;
+  background: var(--card);
+  border: 2px solid var(--border-strong);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 0.95rem; font-weight: 600;
+  cursor: pointer; text-decoration: none;
+  min-height: 44px;
+}
+.util-btn:hover, .util-btn:focus-visible {
+  background: var(--bg);
+  border-color: var(--accent);
+  outline: none;
+}
+.util-btn svg { width: 18px; height: 18px; }
+.util-spacer { flex: 1; }
+
+.wrap { max-width: 880px; margin: 0 auto; padding: 1.5rem 1rem 4rem; }
+
+header { margin-bottom: 1.6rem; }
+header h1 {
+  font-size: clamp(1.7rem, 4.5vw, 2.3rem);
+  font-weight: 800;
+  color: var(--accent);
+  letter-spacing: -0.02em;
+  margin-bottom: 0.4rem;
+}
+header p {
+  font-size: 1.05rem;
+  color: var(--muted);
+  max-width: 60ch;
+}
+
+.intro-box {
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 1.2rem 1.3rem;
+  margin-bottom: 1.5rem;
+}
+.intro-box h2 {
+  font-size: 1.15rem;
+  margin-bottom: 0.6rem;
+}
+.intro-box p {
+  font-size: 1rem;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+.intro-box p:last-child { margin-bottom: 0; }
+
+/* Tabs */
+.tabs {
+  display: flex;
+  border-bottom: 2px solid var(--border);
+  margin-bottom: 1.4rem;
+  flex-wrap: wrap;
+}
+.tab {
+  padding: 0.85rem 1.3rem;
+  font-size: 1rem;
+  font-weight: 600;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: var(--muted);
+  cursor: pointer;
+  margin-bottom: -2px;
+  min-height: 44px;
+}
+.tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  font-weight: 700;
+}
+.tab:hover:not(.active) {
+  color: var(--text);
+}
+.tab:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+/* Status / live activity */
+.live-status {
+  background: var(--green-bg);
+  border: 2px solid var(--green);
+  border-radius: 10px;
+  padding: 0.7rem 1rem;
+  margin-bottom: 1.2rem;
+  font-size: 0.95rem;
+  color: var(--green);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.live-status.offline {
+  background: var(--yellow-bg);
+  border-color: var(--yellow);
+  color: var(--yellow);
+}
+.live-dot {
+  width: 10px; height: 10px;
+  background: currentColor;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Search/filter for verify tab */
+.search-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.search-row input, .search-row select {
+  padding: 0.7rem 1rem;
+  background: var(--card);
+  border: 2px solid var(--border-strong);
+  border-radius: 10px;
+  font-size: 1rem;
+  color: var(--text);
+  font-family: inherit;
+  outline: none;
+  flex: 1;
+  min-width: 200px;
+  min-height: 44px;
+}
+.search-row input:focus, .search-row select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(181,74,48,0.2);
+}
+
+/* Verify list */
+.verify-section {
+  margin-bottom: 1.8rem;
+}
+.verify-section h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 0.6rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 2px solid var(--border);
+}
+.v-resource {
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  padding: 0.9rem 1rem;
+  margin-bottom: 0.6rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem 1rem;
+}
+.v-info { flex: 1; min-width: 200px; }
+.v-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+.v-cat {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: 0.15rem;
+}
+.v-status {
+  font-size: 0.85rem;
+  margin-top: 0.3rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 600;
+}
+.v-status .dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+}
+.v-status.fresh-green { color: var(--green); }
+.v-status.fresh-green .dot { background: var(--green); }
+.v-status.fresh-yellow { color: var(--yellow); }
+.v-status.fresh-yellow .dot { background: var(--yellow); }
+.v-status.fresh-red { color: var(--red); }
+.v-status.fresh-red .dot { background: var(--red); }
+.v-status.fresh-unknown { color: var(--muted); }
+.v-status.fresh-unknown .dot { background: var(--muted); }
+
+.v-actions {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+.v-btn {
+  padding: 0.55rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  border: 2px solid;
+  cursor: pointer;
+  background: var(--card);
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  transition: all 0.15s;
+}
+.v-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.v-btn-active {
+  border-color: var(--green);
+  color: var(--green);
+}
+.v-btn-active:hover:not(:disabled) {
+  background: var(--green);
+  color: #fff;
+}
+.v-btn-active.confirmed {
+  background: var(--green);
+  color: #fff;
+}
+.v-btn-flag {
+  border-color: var(--yellow);
+  color: var(--yellow);
+}
+.v-btn-flag:hover:not(:disabled) {
+  background: var(--yellow);
+  color: #fff;
+}
+
+/* Suggest form */
+.suggest-form {
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 1.4rem 1.5rem;
+}
+.fg { margin-bottom: 1.2rem; }
+.fg label {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+}
+.fg .hint {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: 0.3rem;
+}
+.fg input, .fg select, .fg textarea {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  background: var(--bg);
+  border: 2px solid var(--border-strong);
+  border-radius: 10px;
+  font-size: 1rem;
+  color: var(--text);
+  font-family: inherit;
+  outline: none;
+  min-height: 44px;
+}
+.fg textarea {
+  height: 120px;
+  resize: vertical;
+  line-height: 1.5;
+  min-height: auto;
+}
+.fg input:focus, .fg select:focus, .fg textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(181,74,48,0.2);
+}
+
+.submit-btn {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.85rem 1.6rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  cursor: pointer;
+  min-height: 48px;
+}
+.submit-btn:hover { background: var(--accent-dark); }
+.submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(140%);
+  background: var(--card);
+  border: 2px solid var(--green);
+  color: var(--text);
+  padding: 0.9rem 1.4rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 9999;
+  max-width: 90vw;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+.toast.error { border-color: var(--red); }
+
+.panel { display: none; }
+.panel.active { display: block; }
+
+@media (max-width: 600px) {
+  html { font-size: 17px; }
+  .wrap { padding: 1rem 0.7rem 3rem; }
+  .v-resource { flex-direction: column; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+
+<div class="utility-bar">
+  <a class="util-btn" href="index.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    <span>Back to resources</span>
+  </a>
+  <div class="util-spacer"></div>
+  <button class="util-btn" id="themeBtn" onclick="toggleTheme()" aria-pressed="false">
+    <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    <span id="themeLabel">Dark</span>
+  </button>
+</div>
+
+<div class="wrap">
+  <header>
+    <h1>💬 Feedback</h1>
+    <p>Help us keep this site accurate. Tell us what's working, what's not, or suggest a new resource.</p>
+  </header>
+
+  <div class="intro-box">
+    <h2>How you can help</h2>
+    <p><strong>Confirm a place is active.</strong> If you called or visited recently and it's still operating, mark it active so others trust it.</p>
+    <p><strong>Flag a problem.</strong> If a number is disconnected or a place has closed, flag it and we'll look into it.</p>
+    <p><strong>Suggest a new resource.</strong> Know somewhere that should be on this list? Tell us.</p>
+  </div>
+
+  <div class="live-status" id="liveStatus" role="status">
+    <span class="live-dot"></span>
+    <span id="liveStatusText">Loading recent activity…</span>
+  </div>
+
+  <div class="tabs" role="tablist">
+    <button class="tab active" id="tab-verify" role="tab" onclick="switchTab('verify')">✓ Verify resources</button>
+    <button class="tab" id="tab-suggest" role="tab" onclick="switchTab('suggest')">📝 Suggest update</button>
+  </div>
+
+  <!-- VERIFY PANEL -->
+  <div class="panel active" id="panel-verify" role="tabpanel">
+    <div class="search-row">
+      <input type="search" id="vSearch" placeholder="Search resources by name…" oninput="renderVerify()" aria-label="Search resources">
+      <select id="vCat" onchange="renderVerify()" aria-label="Filter by category">
+        <option value="">All categories</option>
+      </select>
+    </div>
+    <div id="verifyList"></div>
+  </div>
+
+  <!-- SUGGEST PANEL -->
+  <div class="panel" id="panel-suggest" role="tabpanel">
+    <form class="suggest-form" id="suggestForm" onsubmit="submitSuggestion(event)">
+      <div class="fg">
+        <label for="sType">What kind of update?</label>
+        <select id="sType" required>
+          <option value="">Choose one…</option>
+          <option value="add">Suggest a new resource to add</option>
+          <option value="update">Update info on an existing resource (address, phone, hours)</option>
+          <option value="closed">Report a closed or moved resource</option>
+          <option value="other">Something else</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label for="sOrg">Organization name</label>
+        <input type="text" id="sOrg" placeholder="e.g. Bronx Food Pantry">
+        <p class="hint">If you're suggesting an update, which place is it about?</p>
+      </div>
+      <div class="fg">
+        <label for="sDetails">Details *</label>
+        <textarea id="sDetails" required placeholder="Tell us what's wrong, what's new, or what you want us to add. Include phone numbers, addresses, or hours if you have them."></textarea>
+      </div>
+      <div class="fg">
+        <label for="sName">Your name (optional)</label>
+        <input type="text" id="sName" placeholder="So we can thank you">
+      </div>
+      <div class="fg">
+        <label for="sContact">Your email (optional)</label>
+        <input type="email" id="sContact" placeholder="If you want a reply">
+        <p class="hint">We won't share this. Only used if we need to follow up.</p>
+      </div>
+      <button type="submit" class="submit-btn" id="submitBtn">Send suggestion</button>
+    </form>
+  </div>
+
+</div>
+
+<div class="toast" id="toast" role="status">
+  <span id="toastText"></span>
+</div>
+
+<script>
+const API_URL = 'https://script.google.com/macros/s/AKfycbzU4d-aHrHwF4jgMpQEkTM3gwy6HfEaYeG73A5P38dkUC1fF6yj6i1G82N5lON65ZKSUA/exec';
+
+let isDark = false;
+let data = [];
+let jobListingsData = null;
+let allResources = [];
+const verState = {
+  byId: {},
+  userVerified: new Set(),
+  userFlagged: new Set(),
+  loaded: false
+};
+let currentTab = 'verify';
+
+async function api(action, payload = {}) {
+  const url = API_URL + '?action=' + encodeURIComponent(action) + '&payload=' + encodeURIComponent(JSON.stringify(payload));
+  const ctrl = new AbortController();
+  const tid = setTimeout(() => ctrl.abort(), 15000);
+  try {
+    const res = await fetch(url, { redirect: 'follow', signal: ctrl.signal });
+    clearTimeout(tid);
+    if (!res.ok) throw new Error('Server error ' + res.status);
+    const json = await res.json();
+    if (!json.ok) throw new Error(json.error || 'Request failed');
+    return json;
+  } catch (err) {
+    clearTimeout(tid);
+    if (err.name === 'AbortError') throw new Error('Request timed out');
+    throw err;
+  }
+}
+
+function getFingerprint() {
+  const parts = [navigator.language || '', screen.width + 'x' + screen.height, new Date().getTimezoneOffset()];
+  return btoa(parts.join('|')).slice(0, 24);
+}
+
+/* ════════════════════════════════════════════
+   FRESHNESS
+   ════════════════════════════════════════════ */
+function daysSince(iso) {
+  return iso ? Math.floor((Date.now() - new Date(iso)) / 86400000) : null;
+}
+function freshnessClass(days) {
+  if (days === null) return 'fresh-unknown';
+  if (days < 30) return 'fresh-green';
+  if (days < 60) return 'fresh-yellow';
+  return 'fresh-red';
+}
+function freshnessLabel(days, count) {
+  if (count === 0 || days === null) return 'Not yet confirmed';
+  if (days === 0) return `Confirmed today (${count})`;
+  if (days === 1) return `Confirmed 1 day ago (${count})`;
+  return `Confirmed ${days} days ago (${count})`;
+}
+
+/* ════════════════════════════════════════════
+   LOAD
+   ════════════════════════════════════════════ */
+async function load() {
+  try {
+    const json = await fetch('data.json').then(r => r.json());
+    data = json.cards || [];
+    jobListingsData = json.jobListings || null;
+    flattenResources();
+    populateCategories();
+    renderVerify();
+    hydrate();
+  } catch (e) {
+    document.getElementById('verifyList').innerHTML = '<div style="padding:2rem;text-align:center;color:var(--muted)">Could not load data. Please refresh.</div>';
+  }
+}
+
+function flattenResources() {
+  allResources = [];
+  data.forEach(card => {
+    if (card.resources && card.resources.length) {
+      card.resources.forEach(r => {
+        allResources.push({ ...r, _category: card.title, _categoryId: card.id });
+      });
+    }
+  });
+  // Add job listings too
+  if (jobListingsData) {
+    const addJobs = (arr, cat) => arr.forEach(j => allResources.push({ ...j, _category: cat, _categoryId: 'jobs-apply' }));
+    if (jobListingsData.entryLevel) addJobs(jobListingsData.entryLevel, 'Jobs (Entry-Level)');
+    if (jobListingsData.healthcare) {
+      if (jobListingsData.healthcare.hiring) addJobs(jobListingsData.healthcare.hiring, 'Jobs (Healthcare Hiring)');
+      if (jobListingsData.healthcare.training) addJobs(jobListingsData.healthcare.training, 'Jobs (Healthcare Training)');
+    }
+    if (jobListingsData.food) addJobs(jobListingsData.food, 'Jobs (Food & Hospitality)');
+    if (jobListingsData.trades) addJobs(jobListingsData.trades, 'Jobs (Trades)');
+    if (jobListingsData.jobTraining) addJobs(jobListingsData.jobTraining, 'Jobs (Training)');
+    if (jobListingsData.jobSupportOrgs) addJobs(jobListingsData.jobSupportOrgs, 'Jobs (Support)');
+  }
+}
+
+function populateCategories() {
+  const select = document.getElementById('vCat');
+  const cats = [...new Set(allResources.map(r => r._category))].sort();
+  cats.forEach(c => {
+    const o = document.createElement('option');
+    o.value = c;
+    o.textContent = c;
+    select.appendChild(o);
+  });
+}
+
+async function hydrate() {
+  try {
+    const res = await api('load');
+    const byId = {};
+    (res.resources || []).forEach(r => { byId[r.id] = r; });
+    verState.byId = byId;
+    verState.loaded = true;
+    renderVerify();
+    updateLiveStatus();
+  } catch (err) {
+    document.getElementById('liveStatus').classList.add('offline');
+    document.getElementById('liveStatusText').textContent = 'Live updates unavailable. You can still browse resources.';
+  }
+}
+
+function updateLiveStatus() {
+  const totalVerifies = Object.values(verState.byId).reduce((s, v) => s + (v.verifyCount || 0), 0);
+  let recent = null;
+  for (const id in verState.byId) {
+    const v = verState.byId[id];
+    if (!v.lastVerified) continue;
+    if (!recent || new Date(v.lastVerified) > new Date(recent.lastVerified)) {
+      const found = allResources.find(r => r.id === id);
+      if (found) recent = { ...v, org: found.org };
+    }
+  }
+  const el = document.getElementById('liveStatusText');
+  if (totalVerifies === 0) {
+    el.textContent = 'No confirmations yet — be the first to confirm a resource is active.';
+  } else if (recent) {
+    const days = daysSince(recent.lastVerified);
+    const ago = days === 0 ? 'today' : days === 1 ? '1 day ago' : `${days} days ago`;
+    el.textContent = `${totalVerifies} total confirmations · ${recent.org} confirmed ${ago}`;
+  } else {
+    el.textContent = `${totalVerifies} confirmations across all NYC resources`;
+  }
+}
+
+/* ════════════════════════════════════════════
+   RENDER VERIFY
+   ════════════════════════════════════════════ */
+function renderVerify() {
+  const q = (document.getElementById('vSearch').value || '').toLowerCase().trim();
+  const catFilter = document.getElementById('vCat').value;
+
+  const filtered = allResources.filter(r => {
+    if (catFilter && r._category !== catFilter) return false;
+    if (q && !((r.org || '').toLowerCase().includes(q) ||
+               (r.note || '').toLowerCase().includes(q) ||
+               (r.addr || '').toLowerCase().includes(q))) return false;
+    return true;
+  });
+
+  // Group by category
+  const grouped = {};
+  filtered.forEach(r => {
+    if (!grouped[r._category]) grouped[r._category] = [];
+    grouped[r._category].push(r);
+  });
+
+  const listEl = document.getElementById('verifyList');
+  if (!filtered.length) {
+    listEl.innerHTML = '<div style="padding:2rem;text-align:center;color:var(--muted)">No resources match. Try a different search.</div>';
+    return;
+  }
+
+  listEl.innerHTML = Object.keys(grouped).sort().map(cat => `
+    <div class="verify-section">
+      <h3>${escapeHtml(cat)}</h3>
+      ${grouped[cat].map(renderVResource).join('')}
+    </div>
+  `).join('');
+}
+
+function renderVResource(r) {
+  const v = verState.byId[r.id] || { verifyCount: 0, flagCount: 0, lastVerified: null };
+  const days = v.lastVerified ? daysSince(v.lastVerified) : null;
+  const cls = freshnessClass(days);
+  const lbl = freshnessLabel(days, v.verifyCount);
+  const userVerified = verState.userVerified.has(r.id);
+  const userFlagged = verState.userFlagged.has(r.id);
+
+  return `
+    <div class="v-resource" data-rid="${escapeAttr(r.id)}">
+      <div class="v-info">
+        <div class="v-name">${escapeHtml(r.org)}</div>
+        ${r.note ? `<div class="v-cat">${escapeHtml(r.note)}</div>` : ''}
+        <div class="v-status ${cls}">
+          <span class="dot"></span>
+          <span>${escapeHtml(lbl)}${v.flagCount > 0 ? ` · ${v.flagCount} flag${v.flagCount > 1 ? 's' : ''}` : ''}</span>
+        </div>
+      </div>
+      <div class="v-actions">
+        <button class="v-btn v-btn-active${userVerified ? ' confirmed' : ''}"
+                onclick="markActive('${escapeAttr(r.id)}', '${escapeAttr(r.org)}')"
+                ${userVerified ? 'disabled' : ''}>
+          ${userVerified ? '✓ Confirmed' : '✓ Mark active'}
+        </button>
+        <button class="v-btn v-btn-flag"
+                onclick="flagIssue('${escapeAttr(r.id)}', '${escapeAttr(r.org)}')"
+                ${userFlagged ? 'disabled' : ''}>
+          ⚠ Flag issue
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+/* ════════════════════════════════════════════
+   ACTIONS
+   ════════════════════════════════════════════ */
+async function markActive(rid, orgName) {
+  if (verState.userVerified.has(rid)) return;
+  const prev = JSON.parse(JSON.stringify(verState.byId[rid] || { verifyCount: 0, flagCount: 0, lastVerified: null }));
+  verState.userVerified.add(rid);
+  verState.byId[rid] = {
+    ...prev,
+    verifyCount: (prev.verifyCount || 0) + 1,
+    lastVerified: new Date().toISOString()
+  };
+  renderVerify();
+  try {
+    const res = await api('verify', {
+      resourceId: rid,
+      userAgent: navigator.userAgent.slice(0, 120),
+      fp: getFingerprint()
+    });
+    verState.byId[rid].verifyCount = res.verifyCount;
+    verState.byId[rid].lastVerified = res.lastVerified;
+    renderVerify();
+    updateLiveStatus();
+    toast(`✓ Thanks! ${orgName} marked active.`);
+  } catch (err) {
+    verState.userVerified.delete(rid);
+    verState.byId[rid] = prev;
+    renderVerify();
+    toast('Could not save — try again.', 'error');
+  }
+}
+
+async function flagIssue(rid, orgName) {
+  if (verState.userFlagged.has(rid)) return;
+  const note = prompt(`What's wrong with "${orgName}"?\n(e.g. phone disconnected, place closed, address wrong)`);
+  if (!note || !note.trim()) return;
+
+  const prev = JSON.parse(JSON.stringify(verState.byId[rid] || { verifyCount: 0, flagCount: 0, lastVerified: null }));
+  verState.userFlagged.add(rid);
+  verState.byId[rid] = { ...prev, flagCount: (prev.flagCount || 0) + 1 };
+  renderVerify();
+  try {
+    const res = await api('flag', { resourceId: rid, note: note.trim(), fp: getFingerprint() });
+    verState.byId[rid].flagCount = res.flagCount;
+    renderVerify();
+    toast(`⚠ Flagged ${orgName} for review. Thanks!`);
+  } catch (err) {
+    verState.userFlagged.delete(rid);
+    verState.byId[rid] = prev;
+    renderVerify();
+    toast('Could not save — try again.', 'error');
+  }
+}
+
+async function submitSuggestion(e) {
+  e.preventDefault();
+  const type = document.getElementById('sType').value;
+  const org = document.getElementById('sOrg').value.trim();
+  const details = document.getElementById('sDetails').value.trim();
+  const name = document.getElementById('sName').value.trim();
+  const contact = document.getElementById('sContact').value.trim();
+
+  if (!type || !details) {
+    toast('Please fill in the required fields.', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+
+  try {
+    await api('edit', {
+      resourceId: 'suggestion-' + Date.now(),
+      type: type,
+      organization: org,
+      notes: details,
+      name: name,
+      contact: contact,
+      fp: getFingerprint()
+    });
+    toast('✓ Thanks! Your suggestion was sent.');
+    document.getElementById('suggestForm').reset();
+  } catch (err) {
+    toast('Could not send — please try again.', 'error');
+  }
+  btn.disabled = false;
+  btn.textContent = 'Send suggestion';
+}
+
+/* ════════════════════════════════════════════
+   TABS, TOAST, THEME
+   ════════════════════════════════════════════ */
+function switchTab(name) {
+  currentTab = name;
+  document.querySelectorAll('.tab').forEach(t => {
+    t.classList.toggle('active', t.id === 'tab-' + name);
+    t.setAttribute('aria-selected', t.id === 'tab-' + name);
+  });
+  document.querySelectorAll('.panel').forEach(p => {
+    p.classList.toggle('active', p.id === 'panel-' + name);
+  });
+}
+
+function toast(msg, type) {
+  const el = document.getElementById('toast');
+  document.getElementById('toastText').textContent = msg;
+  el.className = 'toast show' + (type === 'error' ? ' error' : '');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => {
+    el.className = 'toast' + (type === 'error' ? ' error' : '');
+  }, 3500);
+}
+
+const SUN = `<svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`;
+const MOON = `<svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>`;
+function toggleTheme() {
+  isDark = !isDark;
+  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+  document.getElementById('themeBtn').setAttribute('aria-pressed', isDark);
+  document.getElementById('themeIcon').outerHTML = isDark ? MOON : SUN;
+  document.getElementById('themeLabel').textContent = isDark ? 'Light' : 'Dark';
+}
+
+function escapeHtml(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function escapeAttr(s) { return escapeHtml(s); }
+
+/* Auto-jump to suggest tab if URL has ?section= */
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get('section')) {
+  setTimeout(() => switchTab('suggest'), 100);
+}
+
+load();
+</script>
+</body>
+</html>
