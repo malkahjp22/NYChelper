@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NYC Resource Finder</title>
+<title>NYC Resource Navigator</title>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -24,14 +24,15 @@
   --emergency-bg: #fdecec;
   --emergency-border: #c43030;
   --emergency-text: #7a1f1f;
-  --success-bg: #e6f3ea;
-  --success-text: #1f5a30;
   --portal-bg: #f4ebe0;
   --portal-border: #b54a30;
   --portal-text: #6b2818;
   --feedback-bg: #f4ebe0;
   --feedback-border: #b8aa97;
   --feedback-text: #4a3a2a;
+  --tile-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.04);
+  --tile-shadow-hover: 0 6px 22px rgba(181,74,48,0.18);
+  --modal-overlay: rgba(20, 18, 14, 0.55);
 }
 :root[data-theme="dark"] {
   --bg: #1a1814;
@@ -50,14 +51,15 @@
   --emergency-bg: #4a2020;
   --emergency-border: #e05050;
   --emergency-text: #ffb0b0;
-  --success-bg: #2a4a30;
-  --success-text: #b0e0c0;
   --portal-bg: #3a2a20;
   --portal-border: #e07a5f;
   --portal-text: #f0c8b0;
   --feedback-bg: #2f2925;
   --feedback-border: #6a5f50;
   --feedback-text: #d8cfc4;
+  --tile-shadow: 0 1px 3px rgba(0,0,0,0.25), 0 2px 8px rgba(0,0,0,0.25);
+  --tile-shadow-hover: 0 6px 22px rgba(224,122,95,0.22);
+  --modal-overlay: rgba(0, 0, 0, 0.7);
 }
 
 html { font-size: 18px; scroll-behavior: smooth; }
@@ -70,6 +72,7 @@ body {
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
+body.modal-open { overflow: hidden; }
 
 /* ─── Skip link ─── */
 .skip-link {
@@ -112,7 +115,6 @@ body {
 .util-btn:focus-visible { box-shadow: 0 0 0 3px rgba(181,74,48,0.3); }
 .util-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
 
-/* Community-centers-near-me small button (formerly the big callout) */
 .util-btn.util-portal {
   background: var(--portal-bg);
   border-color: var(--portal-border);
@@ -123,7 +125,6 @@ body {
   color: #fff;
   border-color: var(--portal-border);
 }
-
 .util-btn.util-feedback {
   background: var(--feedback-bg);
   border-color: var(--feedback-border);
@@ -195,17 +196,17 @@ body {
   color: var(--accent);
 }
 
-/* ─── Header ─── */
+/* ─── Main wrap ─── */
 .wrap {
   width: 100%;
-  max-width: 920px;
+  max-width: 1080px;
   margin: 0 auto;
   padding: 1.5rem clamp(0.7rem, 3vw, 1.5rem) 4rem;
 }
 
 header { text-align: center; margin-bottom: 1.5rem; }
 header h1 {
-  font-size: clamp(1.6rem, 5vw, 2.5rem);
+  font-size: clamp(1.7rem, 5vw, 2.6rem);
   font-weight: 800;
   color: var(--accent);
   letter-spacing: -0.02em;
@@ -213,133 +214,129 @@ header h1 {
   line-height: 1.15;
   display: inline-flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.55rem;
   flex-wrap: wrap;
   justify-content: center;
 }
-header h1 .title-statue {
-  width: clamp(38px, 7vw, 56px);
-  height: clamp(38px, 7vw, 56px);
-  flex-shrink: 0;
-  color: var(--accent);
+header h1 .title-emoji {
+  font-size: 1.05em;
+  line-height: 1;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
 }
 header p {
-  font-size: clamp(0.95rem, 2.5vw, 1.05rem);
+  font-size: clamp(0.95rem, 2.5vw, 1.1rem);
   color: var(--muted);
 }
 
-/* ─── Urgent Support bar ─── */
-.emergency-bar {
+/* ─── Urgent Support — horizontal tile across the top ─── */
+.urgent-tile {
   background: var(--emergency-bg);
   border: 2px solid var(--emergency-border);
-  border-radius: 12px;
-  padding: 1rem 1.2rem;
-  margin-bottom: 1.2rem;
+  border-radius: 14px;
+  padding: clamp(1rem, 2.5vw, 1.3rem) clamp(1rem, 3vw, 1.5rem);
+  margin-bottom: 1.4rem;
+  box-shadow: var(--tile-shadow);
 }
-.emergency-bar h2 {
-  font-size: clamp(1rem, 2.6vw, 1.1rem);
+.urgent-tile-header {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-bottom: 0.85rem;
+}
+.urgent-tile-header h2 {
+  font-size: clamp(1.05rem, 2.6vw, 1.2rem);
   color: var(--emergency-text);
-  margin-bottom: 0.7rem;
-  display: flex; align-items: center; gap: 0.55rem;
+  font-weight: 800;
 }
-.emergency-bar h2 .urgent-icon {
-  width: 1.15em;
-  height: 1.15em;
-  flex-shrink: 0;
+.urgent-tile-header svg {
+  width: 1.3em; height: 1.3em;
   color: var(--emergency-border);
+  flex-shrink: 0;
 }
-.emergency-list {
+.urgent-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
-  gap: 0.7rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  gap: 0.6rem;
 }
-.emergency-item {
+.urgent-item {
+  background: rgba(255,255,255,0.5);
+  border: 1px solid rgba(196,48,48,0.2);
+  border-radius: 9px;
+  padding: 0.55rem 0.8rem;
   display: flex;
   flex-direction: column;
-  gap: 0.15rem;
-  padding: 0.55rem 0.75rem;
-  background: rgba(255,255,255,0.45);
-  border-radius: 8px;
-  border: 1px solid rgba(196,48,48,0.2);
+  gap: 0.1rem;
 }
-:root[data-theme="dark"] .emergency-item {
+:root[data-theme="dark"] .urgent-item {
   background: rgba(255,255,255,0.04);
   border-color: rgba(224,80,80,0.25);
 }
-.emergency-label {
-  font-size: 0.85rem;
+.urgent-label {
+  font-size: 0.82rem;
   font-weight: 600;
   color: var(--emergency-text);
   opacity: 0.9;
 }
-.emergency-item a {
+.urgent-item a {
   color: var(--emergency-text);
   font-weight: 700;
-  font-size: 1.05rem;
+  font-size: 1.02rem;
   text-decoration: underline;
   word-break: break-word;
 }
-.emergency-item a:hover { text-decoration: none; }
+.urgent-item a:hover { text-decoration: none; }
 
-.emergency-tier-label {
+.urgent-divider {
+  margin: 0.9rem 0 0.65rem;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--emergency-text);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  margin: 0.25rem 0 0.55rem;
 }
-.emergency-tier-label .tier-icon {
-  width: 18px;
-  height: 18px;
-  flex-shrink: 0;
-  color: var(--emergency-border); /* bright themed star for crisis */
+.urgent-divider::before, .urgent-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
 }
-.emergency-tier-label.tier-soft {
-  color: var(--muted);
-  margin-top: 1rem;
+.urgent-soft-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  gap: 0.6rem;
 }
-.emergency-tier-label.tier-soft .tier-icon {
-  color: var(--border-strong); /* dim themed star for general */
-}
-
-/* "General help" tier — visually softer than the crisis tier */
-.emergency-list.emergency-list-soft {
-  /* keep same grid behavior */
-}
-.emergency-item.soft {
+.urgent-item.soft {
   background: rgba(0,0,0,0.03);
   border-color: var(--border);
 }
-:root[data-theme="dark"] .emergency-item.soft {
+:root[data-theme="dark"] .urgent-item.soft {
   background: rgba(255,255,255,0.03);
   border-color: var(--border);
 }
-.emergency-item.soft .emergency-label {
-  color: var(--muted);
-}
-.emergency-item.soft a {
+.urgent-item.soft .urgent-label { color: var(--muted); }
+.urgent-item.soft a {
   color: var(--text);
   text-decoration: underline;
 }
 
-/* ─── Search & filter ─── */
+/* ─── Search ─── */
 .search-bar {
   position: relative;
-  margin-bottom: 1rem;
+  margin-bottom: 1.6rem;
 }
 .search-bar input {
   width: 100%;
-  padding: 1rem 1rem 1rem 3rem;
-  font-size: clamp(1rem, 2.6vw, 1.1rem);
+  padding: 0.85rem 1rem 0.85rem 2.9rem;
+  font-size: clamp(1rem, 2.4vw, 1.05rem);
   background: var(--card);
   border: 2px solid var(--border-strong);
   border-radius: 12px;
   color: var(--text);
   outline: none;
+  font-family: inherit;
 }
 .search-bar input:focus {
   border-color: var(--accent);
@@ -349,92 +346,191 @@ header p {
   position: absolute;
   left: 1rem; top: 50%;
   transform: translateY(-50%);
-  width: 22px; height: 22px;
+  width: 20px; height: 20px;
   color: var(--muted);
   pointer-events: none;
 }
 
-.jump-nav {
-  background: var(--card);
-  border: 2px solid var(--border);
-  border-radius: 12px;
-  padding: 0.8rem 1rem;
-  margin-bottom: 1.5rem;
+/* ─── Tile grid: 3 per row ─── */
+.tile-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
 }
-.jump-nav-label {
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: var(--muted);
-  margin-bottom: 0.5rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-.jump-nav-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-}
-.jump-link {
-  padding: 0.5rem 0.9rem;
-  background: var(--bg);
-  border: 2px solid var(--border);
-  border-radius: 999px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--text);
-  text-decoration: none;
-  transition: all 0.15s;
-  min-height: 40px;
-  display: inline-flex;
-  align-items: center;
-}
-.jump-link:hover, .jump-link:focus-visible {
-  background: var(--accent);
-  color: #fff;
-  border-color: var(--accent);
-  outline: none;
-}
-
-/* ─── Section ─── */
-.section {
+.tile {
   background: var(--card);
   border: 2px solid var(--border);
   border-radius: 14px;
-  padding: clamp(1rem, 3vw, 1.4rem);
-  margin-bottom: 1.4rem;
-  scroll-margin-top: 1rem;
-}
-.section-header {
+  padding: 1.2rem 1.1rem 1.1rem;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.18s, transform 0.18s, box-shadow 0.22s;
+  box-shadow: var(--tile-shadow);
   display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  margin-bottom: 0.5rem;
-  padding-bottom: 0.8rem;
-  border-bottom: 2px solid var(--border);
+  flex-direction: column;
+  gap: 0.5rem;
+  min-height: 150px;
+  font-family: inherit;
+  color: var(--text);
+  position: relative;
+  -webkit-tap-highlight-color: transparent;
 }
-.section-icon {
+.tile:hover, .tile:focus-visible {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: var(--tile-shadow-hover);
+  outline: none;
+}
+.tile-icon {
   width: 44px; height: 44px;
-  flex-shrink: 0;
   background: var(--bg);
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--accent);
+  flex-shrink: 0;
 }
-.section-icon svg { width: 26px; height: 26px; }
-.section-title-block { flex: 1; min-width: 0; }
-.section-title {
-  font-size: clamp(1.15rem, 3.2vw, 1.4rem);
+.tile-icon svg { width: 26px; height: 26px; }
+.tile-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+.tile-sub {
+  font-size: 0.86rem;
+  color: var(--muted);
+  line-height: 1.5;
+  flex: 1;
+}
+.tile-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border);
+}
+.tile-count {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+.tile-arrow {
+  color: var(--accent);
+  font-size: 1.1rem;
+  font-weight: 700;
+  transition: transform 0.18s;
+}
+.tile:hover .tile-arrow { transform: translateX(3px); }
+
+.tile.notice-tile { border-color: var(--notice-border); background: var(--notice-bg); }
+.tile.notice-tile .tile-icon { background: rgba(212,160,0,0.15); color: var(--notice-text); }
+.tile.notice-tile .tile-title,
+.tile.notice-tile .tile-sub { color: var(--notice-text); }
+
+/* ─── Modal ─── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--modal-overlay);
+  z-index: 500;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+}
+.modal-overlay.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+.modal {
+  background: var(--card);
+  border-radius: 18px 18px 0 0;
+  width: 100%;
+  max-width: 760px;
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 -8px 30px rgba(0,0,0,0.25);
+  transform: translateY(40px);
+  transition: transform 0.3s cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+.modal-overlay.show .modal { transform: translateY(0); }
+
+@media (min-width: 700px) {
+  .modal-overlay { align-items: center; padding: 2rem 1.5rem; }
+  .modal { border-radius: 18px; max-height: 86vh; }
+}
+
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding: 1.1rem 1.3rem 0.9rem;
+  border-bottom: 2px solid var(--border);
+  position: relative;
+}
+.modal-icon {
+  width: 44px; height: 44px;
+  background: var(--bg);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+.modal-icon svg { width: 26px; height: 26px; }
+.modal-title-block { flex: 1; min-width: 0; padding-right: 2.4rem; }
+.modal-title {
+  font-size: clamp(1.15rem, 3vw, 1.35rem);
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.01em;
   line-height: 1.25;
 }
-.section-sub {
-  font-size: clamp(0.88rem, 2.4vw, 0.95rem);
+.modal-sub {
+  font-size: 0.9rem;
   color: var(--muted);
   margin-top: 0.15rem;
+  line-height: 1.45;
+}
+.modal-close {
+  position: absolute;
+  top: 0.9rem;
+  right: 1rem;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 1.3rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+  line-height: 1;
+}
+.modal-close:hover, .modal-close:focus-visible {
+  background: var(--border);
+  outline: none;
+}
+
+.modal-body {
+  padding: 1rem 1.3rem 1.4rem;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  flex: 1;
 }
 
 .notice {
@@ -442,10 +538,11 @@ header p {
   border-left: 4px solid var(--notice-border);
   border-radius: 8px;
   padding: 0.7rem 1rem;
-  margin: 1rem 0 0.5rem;
-  font-size: 0.95rem;
+  margin-bottom: 1rem;
+  font-size: 0.92rem;
   color: var(--notice-text);
   font-weight: 500;
+  line-height: 1.5;
 }
 .notice.emergency {
   background: var(--emergency-bg);
@@ -453,28 +550,26 @@ header p {
   color: var(--emergency-text);
 }
 
-/* ─── Resource list ─── */
+/* ─── Resource list inside modal ─── */
 .resource-list {
-  display: grid;
-  /* min(100%, 280px) makes tiles always fit even on tiny screens */
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
-  gap: 0.8rem;
-  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
 }
 .resource {
   background: var(--bg);
-  border: 2px solid var(--border);
+  border: 1.5px solid var(--border);
   border-radius: 10px;
-  padding: 0.9rem 1rem;
+  padding: 0.85rem 1rem;
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
+  gap: 0.25rem;
   transition: border-color 0.15s;
   min-width: 0;
 }
 .resource:hover { border-color: var(--border-strong); }
 .resource-name {
-  font-size: 1.1rem;
+  font-size: 1.04rem;
   font-weight: 700;
   color: var(--text);
   line-height: 1.3;
@@ -487,21 +582,21 @@ header p {
 .resource-name a:visited { color: var(--link-visited); }
 .resource-name a:hover { text-decoration: none; }
 .resource-note {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   color: var(--muted);
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.15rem;
 }
 .resource-detail {
-  font-size: 1rem;
+  font-size: 0.95rem;
   display: flex;
   align-items: flex-start;
   gap: 0.5rem;
-  margin-top: 0.2rem;
+  margin-top: 0.15rem;
   word-break: break-word;
   min-width: 0;
 }
 .resource-detail svg {
-  width: 18px; height: 18px;
+  width: 16px; height: 16px;
   flex-shrink: 0;
   color: var(--muted);
   margin-top: 0.18rem;
@@ -514,25 +609,40 @@ header p {
 }
 .resource-detail a:visited { color: var(--link-visited); }
 .resource-detail.phone a {
-  font-size: 1.1rem;
+  font-size: 1.04rem;
   font-weight: 700;
 }
-.resource-detail.website a {
-  font-size: 0.95rem;
+.resource-detail.website a { font-size: 0.9rem; }
+
+.subsection {
+  margin-top: 1.1rem;
+  padding-top: 0.9rem;
+  border-top: 1px dashed var(--border);
+}
+.subsection:first-of-type {
+  margin-top: 0.4rem;
+  padding-top: 0;
+  border-top: none;
+}
+.subsection-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 0.55rem;
 }
 
-.section-footer {
-  margin-top: 1rem;
-  padding-top: 0.8rem;
+.modal-footer {
   border-top: 1px solid var(--border);
+  padding: 0.85rem 1.3rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
   gap: 0.5rem;
+  background: var(--bg);
 }
 .feedback-link {
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   color: var(--muted);
   text-decoration: underline;
   background: none;
@@ -543,61 +653,47 @@ header p {
 }
 .feedback-link:hover { color: var(--accent); }
 
-/* Job sub-sections */
-.subsection {
-  margin-top: 1.2rem;
-  padding-top: 1rem;
-  border-top: 1px dashed var(--border);
-}
-.subsection:first-of-type {
-  margin-top: 0.8rem;
-  padding-top: 0;
-  border-top: none;
-}
-.subsection-title {
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: var(--accent);
-  margin-bottom: 0.5rem;
-}
-
 /* ─── No results ─── */
 .no-results {
   text-align: center;
-  padding: 3rem 1rem;
+  padding: 2.5rem 1rem;
   color: var(--muted);
-  font-size: 1.05rem;
+  font-size: 1rem;
   background: var(--card);
   border: 2px dashed var(--border);
   border-radius: 12px;
+  grid-column: 1 / -1;
 }
 
 /* ─── Print ─── */
 @media print {
-  .utility-bar, .search-bar, .jump-nav, .section-footer, .skip-link { display: none !important; }
+  .utility-bar, .search-bar, .skip-link, .modal-overlay { display: none !important; }
   body { background: #fff; color: #000; font-size: 12pt; }
-  .section { page-break-inside: avoid; border: 1px solid #999; }
-  .resource { break-inside: avoid; }
+  .tile { page-break-inside: avoid; border: 1px solid #999; cursor: default; }
+  .tile-grid { grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
 }
 
 /* ─── Reduced motion ─── */
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }
   html { scroll-behavior: auto; }
+  .modal { transform: none; }
 }
 
-/* ─── Responsive breakpoints ─── */
+/* ─── Responsive ─── */
 @media (max-width: 900px) {
   html { font-size: 17px; }
+  .tile-grid { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 600px) {
   html { font-size: 16px; }
   .wrap { padding: 1rem 0.7rem 3rem; }
   .utility-bar { justify-content: center; padding: 0.5rem 0.6rem; gap: 0.4rem; }
   .util-btn { padding: 0.45rem 0.7rem; font-size: 0.88rem; }
-  .resource-list { grid-template-columns: 1fr; }
-  .section-icon { width: 38px; height: 38px; }
-  .section-icon svg { width: 22px; height: 22px; }
+  .tile-grid { grid-template-columns: 1fr; gap: 0.7rem; }
+  .tile { min-height: auto; padding: 1rem; }
+  .tile-icon { width: 38px; height: 38px; }
+  .tile-icon svg { width: 22px; height: 22px; }
 }
 @media (max-width: 480px) {
   html { font-size: 15px; }
@@ -605,17 +701,15 @@ header p {
   .utility-bar { padding: 0.4rem 0.5rem; gap: 0.3rem; }
   .util-btn { padding: 0.4rem 0.6rem; font-size: 0.82rem; min-height: 40px; }
   .util-btn svg { width: 16px; height: 16px; }
-  .util-btn .label-text { display: none; } /* icon-only on tiny screens for non-portal */
-  .util-btn.util-portal .label-text { display: inline; } /* keep portal label visible */
+  .util-btn .label-text { display: none; }
+  .util-btn.util-portal .label-text { display: inline; }
   .fc-btn { padding: 0.4rem 0.7rem; min-height: 40px; }
-  .section { padding: 0.9rem 0.85rem; border-radius: 10px; }
-  .emergency-bar { padding: 0.85rem 0.85rem; }
-  .jump-nav { padding: 0.7rem 0.85rem; }
-  .search-bar input { padding: 0.85rem 0.85rem 0.85rem 2.6rem; }
+  .urgent-tile { padding: 0.85rem 0.85rem; }
+  .search-bar input { padding: 0.75rem 0.85rem 0.75rem 2.5rem; }
   .search-icon { left: 0.85rem; width: 18px; height: 18px; }
-}
-@media (min-width: 1200px) {
-  .resource-list { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+  .modal-header { padding: 0.9rem 1rem 0.75rem; }
+  .modal-body { padding: 0.85rem 1rem 1.1rem; }
+  .modal-footer { padding: 0.75rem 1rem; }
 }
 </style>
 </head>
@@ -695,110 +789,87 @@ header p {
 <div class="wrap">
   <header>
     <h1>
-      <svg class="title-statue" viewBox="0 0 64 64" aria-hidden="true">
-        <!-- simplified statue: torch + crown + figure, in accent color -->
-        <g fill="currentColor" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round">
-          <!-- flame -->
-          <path d="M32 3 c-1.6 2.4 -2.6 4.8 -2.6 6.6 c0 2 1.2 3.4 2.6 3.4 c1.4 0 2.6 -1.4 2.6 -3.4 c0 -1.8 -1 -4.2 -2.6 -6.6 z" fill="currentColor"/>
-          <!-- torch handle -->
-          <rect x="30.6" y="13" width="2.8" height="9" rx="0.4"/>
-          <!-- arm holding torch -->
-          <path d="M32 22 c-2 1 -4 3 -5 6" fill="none"/>
-          <!-- crown spikes -->
-          <g fill="none" stroke-width="1.5">
-            <line x1="20" y1="22" x2="18" y2="17"/>
-            <line x1="24" y1="20.2" x2="22.5" y2="15.2"/>
-            <line x1="28" y1="19.4" x2="27" y2="14.2"/>
-            <line x1="32" y1="19.2" x2="32" y2="14"/>
-            <line x1="36" y1="19.4" x2="37" y2="14.2"/>
-            <line x1="40" y1="20.2" x2="41.5" y2="15.2"/>
-            <line x1="44" y1="22" x2="46" y2="17"/>
-          </g>
-          <!-- head -->
-          <circle cx="32" cy="24" r="4" fill="currentColor"/>
-          <!-- robe / body -->
-          <path d="M24 28 c-2 4 -4 14 -4 22 c0 6 4 10 12 10 c8 0 12 -4 12 -10 c0 -8 -2 -18 -4 -22 c-2 -2 -4 -3 -8 -3 c-4 0 -6 1 -8 3 z" fill="currentColor"/>
-          <!-- tablet in left arm -->
-          <rect x="36" y="34" width="9" height="13" rx="0.6" fill="var(--card)" stroke="currentColor" stroke-width="1.4"/>
-        </g>
-      </svg>
-      <span id="titleText">NYC Resource Finder</span>
+      <span class="title-emoji" aria-hidden="true">🗽</span>
+      <span id="titleText">NYC Resource Navigator</span>
     </h1>
-    <p id="subtitleText">Free NYC help, all in one place.</p>
+    <p id="subtitleText">Support network for all of New York City.</p>
   </header>
 
-  <div class="emergency-bar" role="region" aria-label="Urgent support contacts">
-    <h2>
-      <svg class="urgent-icon" viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.6 19.79 19.79 0 01.22 1 2 2 0 012.2.01h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006.29 6.29l1.06-1.06a2 2 0 012.11-.45c.907.34 1.85.574 2.81.7a2 2 0 011.72 2z"
-              fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- ── Urgent Support: horizontal across the top ── -->
+  <div class="urgent-tile" role="region" aria-label="Urgent support contacts">
+    <div class="urgent-tile-header">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.6 19.79 19.79 0 01.22 1 2 2 0 012.2.01h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006.29 6.29l1.06-1.06a2 2 0 012.11-.45c.907.34 1.85.574 2.81.7a2 2 0 011.72 2z"/>
       </svg>
-      <span id="emergencyTitleText">Urgent Support</span>
-    </h2>
-
-    <div class="emergency-tier-label" id="tierCrisisLabel">
-      <svg class="tier-icon" viewBox="0 0 24 24" aria-hidden="true">
-        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"
-                 fill="currentColor" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/>
-      </svg>
-      Emergency &amp; crisis (24/7)
+      <h2 id="urgentTitleText">Urgent Support</h2>
     </div>
-    <div class="emergency-list">
-      <div class="emergency-item">
-        <span class="emergency-label">Life-threatening emergency</span>
+
+    <div class="urgent-grid">
+      <div class="urgent-item">
+        <span class="urgent-label">Life-threatening emergency</span>
         <a href="tel:911">Call 911</a>
       </div>
-      <div class="emergency-item">
-        <span class="emergency-label">Suicide &amp; Crisis Lifeline</span>
+      <div class="urgent-item">
+        <span class="urgent-label">Suicide &amp; Crisis Lifeline</span>
         <a href="tel:988">Call or text 988</a>
       </div>
-      <div class="emergency-item">
-        <span class="emergency-label">NYC 24-Hour Domestic Violence Hotline</span>
-        <a href="tel:18006214673">1-800-621-HOPE (4673)</a>
+      <div class="urgent-item">
+        <span class="urgent-label">NYC Domestic Violence Hotline (24h)</span>
+        <a href="tel:18006214673">1-800-621-HOPE</a>
       </div>
-      <div class="emergency-item">
-        <span class="emergency-label">Sexual Assault Hotline (RAINN)</span>
-        <a href="tel:18006564673">1-800-656-HOPE (4673)</a>
+      <div class="urgent-item">
+        <span class="urgent-label">Sexual Assault Hotline (RAINN)</span>
+        <a href="tel:18006564673">1-800-656-HOPE</a>
       </div>
-      <div class="emergency-item">
-        <span class="emergency-label">NYC Well — mental health support</span>
+      <div class="urgent-item">
+        <span class="urgent-label">NYC Well — mental health</span>
         <a href="tel:18886929355">1-888-NYC-WELL</a>
       </div>
-      <div class="emergency-item">
-        <span class="emergency-label">Coalition for the Homeless Crisis Hotline</span>
+      <div class="urgent-item">
+        <span class="urgent-label">Coalition for the Homeless</span>
         <a href="tel:18883582384">1-888-358-2384</a>
       </div>
     </div>
 
-    <div class="emergency-tier-label tier-soft" id="tierGeneralLabel">
-      <svg class="tier-icon" viewBox="0 0 24 24" aria-hidden="true">
-        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"
-                 fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-      </svg>
-      General help &amp; non-emergency (NYC)
-    </div>
-    <div class="emergency-list emergency-list-soft">
-      <div class="emergency-item soft">
-        <span class="emergency-label">NYC city services — shelter, benefits, complaints, info</span>
+    <div class="urgent-divider">General help &amp; non-emergency (NYC)</div>
+    <div class="urgent-soft-grid">
+      <div class="urgent-item soft">
+        <span class="urgent-label">NYC city services — shelter, benefits, info</span>
         <a href="tel:311">Call 311 (24 hours)</a>
       </div>
     </div>
   </div>
 
   <div id="main">
+    <!-- ── Search bar ── -->
     <div class="search-bar" role="search">
       <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
       </svg>
-      <input type="search" id="search" placeholder="Type what you need (food, job, housing…)" aria-label="Search resources" oninput="render()">
+      <input type="search" id="search" placeholder="Search resources (food, jobs, housing…)" aria-label="Search resources" oninput="render()">
     </div>
 
-    <nav class="jump-nav" aria-label="Jump to section">
-      <div class="jump-nav-label">Jump to:</div>
-      <div class="jump-nav-list" id="jumpNav"></div>
-    </nav>
+    <!-- ── Tile grid ── -->
+    <div class="tile-grid" id="tileGrid" aria-live="polite"></div>
+  </div>
+</div>
 
-    <div id="sections" aria-live="polite"></div>
+<!-- ── Modal ── -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalIfOverlay(event)" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <div class="modal-icon" id="modalIcon" aria-hidden="true"></div>
+      <div class="modal-title-block">
+        <h2 class="modal-title" id="modalTitle"></h2>
+        <div class="modal-sub" id="modalSub"></div>
+      </div>
+      <button class="modal-close" type="button" onclick="closeModal()" aria-label="Close">×</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-footer">
+      <span></span>
+      <a class="feedback-link" id="modalFeedbackLink" href="feedback.html">Suggest an update for this section →</a>
+    </div>
   </div>
 </div>
 
@@ -811,6 +882,8 @@ let jobListingsData = null;
 let isDark = false;
 let fontScale = 1;
 let lang = sessionStorage.getItem('lang') || 'en';
+let currentCardId = null;
+let lastFocusedTile = null;
 
 /* ════════════════════════════════════════════
    ICONS
@@ -829,7 +902,6 @@ const ICONS = {
   'immigrant':    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>`,
   'digital':      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0114.08 0"/><path d="M1.42 9a16 16 0 0121.16 0"/><path d="M8.53 16.11a6 6 0 016.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>`,
   'anchors':      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="3"/><line x1="12" y1="22" x2="12" y2="8"/><path d="M5 12H2a10 10 0 0020 0h-3"/></svg>`,
-  'volunteers':   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
 };
 
 const PHONE_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.6 19.79 19.79 0 01.22 1 2 2 0 012.2.01h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006.29 6.29l1.06-1.06a2 2 0 012.11-.45c.907.34 1.85.574 2.81.7a2 2 0 011.72 2z"/></svg>`;
@@ -841,82 +913,64 @@ const WEB_ICON   = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" s
    ════════════════════════════════════════════ */
 const T = {
   en: {
-    title: 'NYC Resource Finder',
-    subtitle: 'Free NYC help, all in one place.',
-    emergencyTitle: '📞 Urgent Support',
+    title: 'NYC Resource Navigator',
+    subtitle: 'Support network for all of New York City.',
+    urgentTitle: 'Urgent Support',
     portalUtil: 'Neighborhood Portal',
     centersUtil: 'Community centers near me',
-    searchPlaceholder: 'Type what you need (food, job, housing…)',
-    jumpTo: 'Jump to:',
-    noResults: 'No matches. Try a different word, or scroll down to browse all sections.',
-    visit: 'Visit website',
-    dark: 'Dark',
-    light: 'Light',
+    searchPlaceholder: 'Search resources (food, jobs, housing…)',
+    noResults: 'No matches. Try a different word.',
+    dark: 'Dark', light: 'Light',
   },
   es: {
-    title: 'Buscador de Recursos NYC',
-    subtitle: 'Ayuda gratuita en NYC, todo en un solo lugar.',
-    emergencyTitle: '📞 Apoyo Urgente',
+    title: 'Navegador de Recursos NYC',
+    subtitle: 'Red de apoyo para toda la ciudad de Nueva York.',
+    urgentTitle: 'Apoyo Urgente',
     portalUtil: 'Portal del Vecindario',
     centersUtil: 'Centros comunitarios cerca de mí',
-    searchPlaceholder: 'Escriba lo que necesita (comida, trabajo, vivienda…)',
-    jumpTo: 'Ir a:',
-    noResults: 'Sin resultados. Pruebe otra palabra o desplácese para ver todas las secciones.',
-    visit: 'Visitar sitio web',
-    dark: 'Oscuro',
-    light: 'Claro',
+    searchPlaceholder: 'Buscar recursos (comida, trabajo, vivienda…)',
+    noResults: 'Sin resultados. Pruebe otra palabra.',
+    dark: 'Oscuro', light: 'Claro',
   },
   fr: {
-    title: 'Recherche de Ressources NYC',
-    subtitle: 'Aide gratuite à NYC, tout au même endroit.',
-    emergencyTitle: '📞 Aide Urgente',
+    title: 'Navigateur de Ressources NYC',
+    subtitle: "Réseau de soutien pour toute la ville de New York.",
+    urgentTitle: 'Aide Urgente',
     portalUtil: 'Portail du Quartier',
     centersUtil: 'Centres communautaires près de moi',
-    searchPlaceholder: 'Tapez ce dont vous avez besoin (nourriture, emploi, logement…)',
-    jumpTo: 'Aller à :',
-    noResults: 'Aucun résultat. Essayez un autre mot ou faites défiler pour parcourir.',
-    visit: 'Visiter le site',
-    dark: 'Sombre',
-    light: 'Clair',
+    searchPlaceholder: 'Rechercher (nourriture, emploi, logement…)',
+    noResults: 'Aucun résultat. Essayez un autre mot.',
+    dark: 'Sombre', light: 'Clair',
   },
   zh: {
-    title: '纽约市资源查找',
-    subtitle: '纽约免费帮助，一站式查找。',
-    emergencyTitle: '📞 紧急支援',
+    title: '纽约市资源导航',
+    subtitle: '为整个纽约市服务的支持网络。',
+    urgentTitle: '紧急支援',
     portalUtil: '社区门户',
     centersUtil: '附近的社区中心',
-    searchPlaceholder: '输入您的需求（食物、工作、住房…）',
-    jumpTo: '跳转到：',
-    noResults: '没有匹配项。请尝试其他词或向下浏览所有部分。',
-    visit: '访问网站',
-    dark: '深色',
-    light: '浅色',
+    searchPlaceholder: '搜索资源（食物、工作、住房…）',
+    noResults: '没有匹配项。请尝试其他词。',
+    dark: '深色', light: '浅色',
   },
   ru: {
-    title: 'Поиск ресурсов NYC',
-    subtitle: 'Бесплатная помощь в Нью-Йорке — всё в одном месте.',
-    emergencyTitle: '📞 Срочная помощь',
+    title: 'Навигатор ресурсов NYC',
+    subtitle: 'Сеть поддержки для всего Нью-Йорка.',
+    urgentTitle: 'Срочная помощь',
     portalUtil: 'Соседский портал',
     centersUtil: 'Общественные центры рядом',
-    searchPlaceholder: 'Введите, что вам нужно (еда, работа, жильё…)',
-    jumpTo: 'Перейти к:',
-    noResults: 'Ничего не найдено. Попробуйте другое слово или прокрутите страницу.',
-    visit: 'Посетить сайт',
-    dark: 'Тёмная',
-    light: 'Светлая',
+    searchPlaceholder: 'Поиск ресурсов (еда, работа, жильё…)',
+    noResults: 'Ничего не найдено. Попробуйте другое слово.',
+    dark: 'Тёмная', light: 'Светлая',
   },
   ht: {
-    title: 'Chèche Resous NYC',
-    subtitle: 'Èd gratis nan NYC, tout nan yon sèl kote.',
-    emergencyTitle: '📞 Sipò Ijan',
+    title: 'Navigatè Resous NYC',
+    subtitle: 'Rezo sipò pou tout vil Nouyòk.',
+    urgentTitle: 'Sipò Ijan',
     portalUtil: 'Pòtal Katye a',
     centersUtil: 'Sant kominotè bò kote m',
-    searchPlaceholder: 'Tape sa w bezwen (manje, travay, lojman…)',
-    jumpTo: 'Ale nan:',
-    noResults: 'Pa gen rezilta. Eseye yon lòt mo oswa desann pou wè tout seksyon yo.',
-    visit: 'Vizite sit la',
-    dark: 'Fonse',
-    light: 'Klè',
+    searchPlaceholder: 'Chèche resous (manje, travay, lojman…)',
+    noResults: 'Pa gen rezilta. Eseye yon lòt mo.',
+    dark: 'Fonse', light: 'Klè',
   }
 };
 const LANG_NAMES = {en:'English', es:'Español', fr:'Français', zh:'中文', ru:'Русский', ht:'Kreyòl'};
@@ -931,13 +985,13 @@ async function load() {
     jobListingsData = json.jobListings || null;
     render();
   } catch (e) {
-    document.getElementById('sections').innerHTML =
+    document.getElementById('tileGrid').innerHTML =
       '<div class="no-results">Could not load data. Please refresh the page.</div>';
   }
 }
 
 /* ════════════════════════════════════════════
-   RENDER
+   RENDER TILES
    ════════════════════════════════════════════ */
 function render() {
   const t = T[lang] || T.en;
@@ -954,52 +1008,122 @@ function render() {
       (r.note && r.note.toLowerCase().includes(q)) ||
       (r.addr && r.addr.toLowerCase().includes(q))
     )) return true;
+    // Also search inside job listings if searching the jobs tile
+    if (d.type === 'job-listings' && jobListingsData) {
+      const all = [];
+      const push = arr => arr && arr.forEach(j => all.push(j));
+      push(jobListingsData.entryLevel);
+      push(jobListingsData.healthcare && jobListingsData.healthcare.hiring);
+      push(jobListingsData.healthcare && jobListingsData.healthcare.training);
+      push(jobListingsData.food);
+      push(jobListingsData.trades);
+      push(jobListingsData.jobTraining);
+      push(jobListingsData.jobSupportOrgs);
+      if (all.some(j => (j.org && j.org.toLowerCase().includes(q)) || (j.note && j.note.toLowerCase().includes(q))))
+        return true;
+    }
     return false;
   });
 
-  const jumpNav = document.getElementById('jumpNav');
-  jumpNav.innerHTML = filtered.map(d =>
-    `<a class="jump-link" href="#section-${d.id}">${escapeHtml(d.title)}</a>`
-  ).join('');
-
-  const sectionsEl = document.getElementById('sections');
+  const gridEl = document.getElementById('tileGrid');
   if (!filtered.length) {
-    sectionsEl.innerHTML = `<div class="no-results">${escapeHtml(t.noResults)}</div>`;
+    gridEl.innerHTML = `<div class="no-results">${escapeHtml(t.noResults)}</div>`;
     return;
   }
 
-  sectionsEl.innerHTML = filtered.map(d => renderSection(d)).join('');
+  gridEl.innerHTML = filtered.map(d => renderTile(d)).join('');
 }
 
-function renderSection(d) {
-  const isJobs = d.type === 'job-listings';
-  const noticeHtml = d.notice ? renderNotice(d.notice) : '';
-
-  let body;
-  if (isJobs && jobListingsData) {
-    body = renderJobsBody();
-  } else {
-    body = renderResources(d.resources || []);
-  }
-
+function renderTile(d) {
+  const count = countResources(d);
+  const countLabel = count > 0 ? `${count} resource${count !== 1 ? 's' : ''}` : '';
+  const noticeClass = d.notice ? ' notice-tile' : '';
   return `
-    <section class="section" id="section-${escapeHtml(d.id)}" aria-labelledby="title-${escapeHtml(d.id)}">
-      <div class="section-header">
-        <div class="section-icon" aria-hidden="true">${ICONS[d.id] || ''}</div>
-        <div class="section-title-block">
-          <h2 class="section-title" id="title-${escapeHtml(d.id)}">${escapeHtml(d.title)}</h2>
-          <div class="section-sub">${escapeHtml(d.sub)}</div>
-        </div>
+    <button class="tile${noticeClass}" type="button" onclick="openModal('${escapeAttr(d.id)}', this)" aria-label="Open ${escapeAttr(d.title)} resources">
+      <div class="tile-icon" aria-hidden="true">${ICONS[d.id] || ''}</div>
+      <div class="tile-title">${escapeHtml(d.title)}</div>
+      <div class="tile-sub">${escapeHtml(d.sub)}</div>
+      <div class="tile-footer">
+        <span class="tile-count">${escapeHtml(countLabel)}</span>
+        <span class="tile-arrow" aria-hidden="true">→</span>
       </div>
-      ${noticeHtml}
-      ${body}
-      <div class="section-footer">
-        <span></span>
-        <a class="feedback-link" href="feedback.html?section=${encodeURIComponent(d.id)}">Suggest an update for this section →</a>
-      </div>
-    </section>
+    </button>
   `;
 }
+
+function countResources(d) {
+  if (d.type === 'job-listings' && jobListingsData) {
+    let c = 0;
+    const add = arr => { if (arr) c += arr.length; };
+    add(jobListingsData.entryLevel);
+    add(jobListingsData.healthcare && jobListingsData.healthcare.hiring);
+    add(jobListingsData.healthcare && jobListingsData.healthcare.training);
+    add(jobListingsData.food);
+    add(jobListingsData.trades);
+    add(jobListingsData.jobTraining);
+    add(jobListingsData.jobSupportOrgs);
+    return c;
+  }
+  return (d.resources || []).length;
+}
+
+/* ════════════════════════════════════════════
+   MODAL
+   ════════════════════════════════════════════ */
+function openModal(id, triggerEl) {
+  const d = data.find(x => x.id === id);
+  if (!d) return;
+  currentCardId = id;
+  lastFocusedTile = triggerEl || document.activeElement;
+
+  document.getElementById('modalIcon').innerHTML = ICONS[d.id] || '';
+  document.getElementById('modalTitle').textContent = d.title;
+  document.getElementById('modalSub').textContent = d.sub;
+  document.getElementById('modalFeedbackLink').href = `feedback.html?section=${encodeURIComponent(d.id)}`;
+
+  let body = '';
+  if (d.notice) body += renderNotice(d.notice);
+  if (d.type === 'job-listings' && jobListingsData) {
+    body += renderJobsBody();
+  } else {
+    body += renderResources(d.resources || []);
+  }
+  document.getElementById('modalBody').innerHTML = body;
+  document.getElementById('modalBody').scrollTop = 0;
+
+  const overlay = document.getElementById('modalOverlay');
+  overlay.classList.add('show');
+  document.body.classList.add('modal-open');
+
+  // Focus management
+  setTimeout(() => {
+    document.querySelector('.modal-close').focus();
+  }, 50);
+}
+
+function closeModal() {
+  const overlay = document.getElementById('modalOverlay');
+  overlay.classList.remove('show');
+  document.body.classList.remove('modal-open');
+  currentCardId = null;
+  if (lastFocusedTile && typeof lastFocusedTile.focus === 'function') {
+    lastFocusedTile.focus();
+  }
+}
+
+function closeModalIfOverlay(e) {
+  if (e.target === e.currentTarget) closeModal();
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    if (document.getElementById('modalOverlay').classList.contains('show')) {
+      closeModal();
+    }
+    document.getElementById('langMenu').classList.remove('open');
+    document.getElementById('langBtn').setAttribute('aria-expanded', 'false');
+  }
+});
 
 function renderNotice(text) {
   const isEmerg = text.includes('🚨') || text.includes('Emergency');
@@ -1048,13 +1172,13 @@ function renderJobsBody() {
     html += `<div class="subsection"><div class="subsection-title">🟢 Entry-Level Jobs</div>${renderResources(jl.entryLevel)}</div>`;
   }
   if (jl.food && jl.food.length) {
-    html += `<div class="subsection"><div class="subsection-title">🍽️ Food & Hospitality</div>${renderResources(jl.food)}</div>`;
+    html += `<div class="subsection"><div class="subsection-title">🍽️ Food &amp; Hospitality</div>${renderResources(jl.food)}</div>`;
   }
   if (jl.trades && jl.trades.length) {
-    html += `<div class="subsection"><div class="subsection-title">🔧 Trades & Construction</div>${renderResources(jl.trades)}</div>`;
+    html += `<div class="subsection"><div class="subsection-title">🔧 Trades &amp; Construction</div>${renderResources(jl.trades)}</div>`;
   }
   if (jl.jobTraining && jl.jobTraining.length) {
-    html += `<div class="subsection"><div class="subsection-title">🎓 Free Job Training & Career Centers</div>${renderResources(jl.jobTraining)}</div>`;
+    html += `<div class="subsection"><div class="subsection-title">🎓 Free Job Training &amp; Career Centers</div>${renderResources(jl.jobTraining)}</div>`;
   }
   if (jl.jobSupportOrgs && jl.jobSupportOrgs.length) {
     html += `<div class="subsection"><div class="subsection-title">🤝 Help Finding a Job</div>${renderResources(jl.jobSupportOrgs)}</div>`;
@@ -1087,8 +1211,6 @@ function toggleTheme() {
   document.getElementById('themeLabel').textContent = isDark ? t.light : t.dark;
 }
 
-/* Preserve scroll position when changing root font-size so the page
-   doesn't jump and the cursor doesn't lose the A−/A+ button. */
 function changeFont(delta) {
   const oldRem = parseFloat(getComputedStyle(document.documentElement).fontSize);
   const oldScrollY = window.scrollY;
@@ -1097,7 +1219,6 @@ function changeFont(delta) {
   document.documentElement.style.fontSize = (fontScale * 18) + 'px';
   document.getElementById('fontLabel').textContent = Math.round(fontScale * 100) + '%';
 
-  // Adjust scroll so the same content stays roughly under the same viewport position.
   const newRem = parseFloat(getComputedStyle(document.documentElement).fontSize);
   if (oldRem > 0 && newRem > 0) {
     const ratio = newRem / oldRem;
@@ -1130,10 +1251,9 @@ function applyStaticTexts() {
   const t = T[lang] || T.en;
   document.getElementById('titleText').textContent = t.title;
   document.getElementById('subtitleText').textContent = t.subtitle;
-  const eTitle = document.getElementById('emergencyTitleText');
-  if (eTitle) eTitle.textContent = (t.emergencyTitle || 'Urgent Support').replace(/^📞\s*/,'');
+  const u = document.getElementById('urgentTitleText');
+  if (u) u.textContent = t.urgentTitle;
   document.getElementById('search').placeholder = t.searchPlaceholder;
-  document.querySelector('.jump-nav-label').textContent = t.jumpTo;
   document.getElementById('themeLabel').textContent = isDark ? t.light : t.dark;
   const pUtil = document.getElementById('portalUtilLabel');
   if (pUtil) pUtil.textContent = t.portalUtil;
@@ -1144,13 +1264,6 @@ function applyStaticTexts() {
 document.addEventListener('click', e => {
   const w = document.getElementById('langWrap');
   if (w && !w.contains(e.target)) {
-    document.getElementById('langMenu').classList.remove('open');
-    document.getElementById('langBtn').setAttribute('aria-expanded', 'false');
-  }
-});
-
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') {
     document.getElementById('langMenu').classList.remove('open');
     document.getElementById('langBtn').setAttribute('aria-expanded', 'false');
   }
