@@ -26,9 +26,12 @@
   --emergency-text: #7a1f1f;
   --success-bg: #e6f3ea;
   --success-text: #1f5a30;
-  --portal-bg: #eaf1f9;
-  --portal-border: #4a6fa5;
-  --portal-text: #1f3d6e;
+  --portal-bg: #f4ebe0;
+  --portal-border: #b54a30;
+  --portal-text: #6b2818;
+  --feedback-bg: #f4ebe0;
+  --feedback-border: #b8aa97;
+  --feedback-text: #4a3a2a;
 }
 :root[data-theme="dark"] {
   --bg: #1a1814;
@@ -49,9 +52,12 @@
   --emergency-text: #ffb0b0;
   --success-bg: #2a4a30;
   --success-text: #b0e0c0;
-  --portal-bg: #1f2a3d;
-  --portal-border: #7aa2d4;
-  --portal-text: #b0c8e8;
+  --portal-bg: #3a2a20;
+  --portal-border: #e07a5f;
+  --portal-text: #f0c8b0;
+  --feedback-bg: #2f2925;
+  --feedback-border: #6a5f50;
+  --feedback-text: #d8cfc4;
 }
 
 html { font-size: 18px; scroll-behavior: smooth; }
@@ -62,6 +68,7 @@ body {
   line-height: 1.55;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
 /* ─── Skip link ─── */
@@ -95,6 +102,7 @@ body {
   cursor: pointer; text-decoration: none;
   min-height: 44px;
   transition: background 0.15s, border-color 0.15s;
+  white-space: nowrap;
 }
 .util-btn:hover, .util-btn:focus-visible {
   background: var(--bg);
@@ -104,7 +112,7 @@ body {
 .util-btn:focus-visible { box-shadow: 0 0 0 3px rgba(181,74,48,0.3); }
 .util-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
 
-/* Portal button stands out a bit in the utility bar */
+/* Community-centers-near-me small button (formerly the big callout) */
 .util-btn.util-portal {
   background: var(--portal-bg);
   border-color: var(--portal-border);
@@ -114,6 +122,17 @@ body {
   background: var(--portal-border);
   color: #fff;
   border-color: var(--portal-border);
+}
+
+.util-btn.util-feedback {
+  background: var(--feedback-bg);
+  border-color: var(--feedback-border);
+  color: var(--feedback-text);
+}
+.util-btn.util-feedback:hover, .util-btn.util-feedback:focus-visible {
+  background: var(--feedback-border);
+  color: #fff;
+  border-color: var(--feedback-border);
 }
 
 .font-control {
@@ -138,6 +157,8 @@ body {
   border-left: 1px solid var(--border);
   border-right: 1px solid var(--border);
   display: flex; align-items: center;
+  min-width: 4ch;
+  justify-content: center;
 }
 
 .lang-wrap { position: relative; }
@@ -175,22 +196,39 @@ body {
 }
 
 /* ─── Header ─── */
-.wrap { max-width: 920px; margin: 0 auto; padding: 1.5rem 1rem 4rem; }
+.wrap {
+  width: 100%;
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 1.5rem clamp(0.7rem, 3vw, 1.5rem) 4rem;
+}
 
 header { text-align: center; margin-bottom: 1.5rem; }
 header h1 {
-  font-size: clamp(1.8rem, 5vw, 2.5rem);
+  font-size: clamp(1.6rem, 5vw, 2.5rem);
   font-weight: 800;
   color: var(--accent);
   letter-spacing: -0.02em;
   margin-bottom: 0.4rem;
+  line-height: 1.15;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+header h1 .title-statue {
+  width: clamp(38px, 7vw, 56px);
+  height: clamp(38px, 7vw, 56px);
+  flex-shrink: 0;
+  color: var(--accent);
 }
 header p {
-  font-size: 1.05rem;
+  font-size: clamp(0.95rem, 2.5vw, 1.05rem);
   color: var(--muted);
 }
 
-/* ─── Emergency bar ─── */
+/* ─── Urgent Support bar ─── */
 .emergency-bar {
   background: var(--emergency-bg);
   border: 2px solid var(--emergency-border);
@@ -199,71 +237,93 @@ header p {
   margin-bottom: 1.2rem;
 }
 .emergency-bar h2 {
-  font-size: 1.05rem;
+  font-size: clamp(1rem, 2.6vw, 1.1rem);
   color: var(--emergency-text);
-  margin-bottom: 0.5rem;
-  display: flex; align-items: center; gap: 0.5rem;
+  margin-bottom: 0.7rem;
+  display: flex; align-items: center; gap: 0.55rem;
+}
+.emergency-bar h2 .urgent-icon {
+  width: 1.15em;
+  height: 1.15em;
+  flex-shrink: 0;
+  color: var(--emergency-border);
 }
 .emergency-list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 0.6rem;
-  font-size: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 0.7rem;
 }
-.emergency-list a {
+.emergency-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.55rem 0.75rem;
+  background: rgba(255,255,255,0.45);
+  border-radius: 8px;
+  border: 1px solid rgba(196,48,48,0.2);
+}
+:root[data-theme="dark"] .emergency-item {
+  background: rgba(255,255,255,0.04);
+  border-color: rgba(224,80,80,0.25);
+}
+.emergency-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--emergency-text);
+  opacity: 0.9;
+}
+.emergency-item a {
   color: var(--emergency-text);
   font-weight: 700;
+  font-size: 1.05rem;
   text-decoration: underline;
+  word-break: break-word;
 }
-.emergency-list a:hover { text-decoration: none; }
+.emergency-item a:hover { text-decoration: none; }
 
-/* ─── Neighborhood Portal callout (prominent entry point) ─── */
-.portal-callout {
+.emergency-tier-label {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  background: var(--portal-bg);
-  border: 2px solid var(--portal-border);
-  border-radius: 14px;
-  padding: 1rem 1.2rem;
-  margin-bottom: 1.5rem;
-  text-decoration: none;
-  color: var(--portal-text);
-  transition: transform 0.15s, box-shadow 0.15s;
-}
-.portal-callout:hover, .portal-callout:focus-visible {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(74, 111, 165, 0.18);
-  outline: none;
-}
-.portal-callout-icon {
-  font-size: 2rem;
-  flex-shrink: 0;
-  line-height: 1;
-}
-.portal-callout-body { flex: 1; min-width: 0; }
-.portal-callout-title {
-  font-size: 1.15rem;
-  font-weight: 800;
-  margin-bottom: 0.2rem;
-  letter-spacing: -0.01em;
-}
-.portal-callout-sub {
-  font-size: 0.92rem;
-  line-height: 1.45;
-  opacity: 0.92;
-}
-.portal-callout-arrow {
-  font-size: 1.4rem;
-  flex-shrink: 0;
+  gap: 0.5rem;
+  font-size: 0.85rem;
   font-weight: 700;
-  opacity: 0.7;
-  transition: transform 0.2s, opacity 0.2s;
+  color: var(--emergency-text);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0.25rem 0 0.55rem;
 }
-.portal-callout:hover .portal-callout-arrow,
-.portal-callout:focus-visible .portal-callout-arrow {
-  transform: translateX(4px);
-  opacity: 1;
+.emergency-tier-label .tier-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  color: var(--emergency-border); /* bright themed star for crisis */
+}
+.emergency-tier-label.tier-soft {
+  color: var(--muted);
+  margin-top: 1rem;
+}
+.emergency-tier-label.tier-soft .tier-icon {
+  color: var(--border-strong); /* dim themed star for general */
+}
+
+/* "General help" tier — visually softer than the crisis tier */
+.emergency-list.emergency-list-soft {
+  /* keep same grid behavior */
+}
+.emergency-item.soft {
+  background: rgba(0,0,0,0.03);
+  border-color: var(--border);
+}
+:root[data-theme="dark"] .emergency-item.soft {
+  background: rgba(255,255,255,0.03);
+  border-color: var(--border);
+}
+.emergency-item.soft .emergency-label {
+  color: var(--muted);
+}
+.emergency-item.soft a {
+  color: var(--text);
+  text-decoration: underline;
 }
 
 /* ─── Search & filter ─── */
@@ -274,7 +334,7 @@ header p {
 .search-bar input {
   width: 100%;
   padding: 1rem 1rem 1rem 3rem;
-  font-size: 1.1rem;
+  font-size: clamp(1rem, 2.6vw, 1.1rem);
   background: var(--card);
   border: 2px solid var(--border-strong);
   border-radius: 12px;
@@ -340,7 +400,7 @@ header p {
   background: var(--card);
   border: 2px solid var(--border);
   border-radius: 14px;
-  padding: 1.4rem 1.4rem 1.2rem;
+  padding: clamp(1rem, 3vw, 1.4rem);
   margin-bottom: 1.4rem;
   scroll-margin-top: 1rem;
 }
@@ -363,15 +423,16 @@ header p {
   color: var(--accent);
 }
 .section-icon svg { width: 26px; height: 26px; }
-.section-title-block { flex: 1; }
+.section-title-block { flex: 1; min-width: 0; }
 .section-title {
-  font-size: 1.4rem;
+  font-size: clamp(1.15rem, 3.2vw, 1.4rem);
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.01em;
+  line-height: 1.25;
 }
 .section-sub {
-  font-size: 0.95rem;
+  font-size: clamp(0.88rem, 2.4vw, 0.95rem);
   color: var(--muted);
   margin-top: 0.15rem;
 }
@@ -392,10 +453,11 @@ header p {
   color: var(--emergency-text);
 }
 
-/* ─── Resource list (always visible) ─── */
+/* ─── Resource list ─── */
 .resource-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  /* min(100%, 280px) makes tiles always fit even on tiny screens */
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
   gap: 0.8rem;
   margin-top: 1rem;
 }
@@ -408,6 +470,7 @@ header p {
   flex-direction: column;
   gap: 0.3rem;
   transition: border-color 0.15s;
+  min-width: 0;
 }
 .resource:hover { border-color: var(--border-strong); }
 .resource-name {
@@ -415,6 +478,7 @@ header p {
   font-weight: 700;
   color: var(--text);
   line-height: 1.3;
+  word-break: break-word;
 }
 .resource-name a {
   color: var(--link);
@@ -434,6 +498,7 @@ header p {
   gap: 0.5rem;
   margin-top: 0.2rem;
   word-break: break-word;
+  min-width: 0;
 }
 .resource-detail svg {
   width: 18px; height: 18px;
@@ -445,6 +510,7 @@ header p {
   color: var(--link);
   text-decoration: underline;
   font-weight: 600;
+  overflow-wrap: anywhere;
 }
 .resource-detail a:visited { color: var(--link-visited); }
 .resource-detail.phone a {
@@ -508,7 +574,7 @@ header p {
 
 /* ─── Print ─── */
 @media print {
-  .utility-bar, .search-bar, .jump-nav, .section-footer, .skip-link, .portal-callout { display: none !important; }
+  .utility-bar, .search-bar, .jump-nav, .section-footer, .skip-link { display: none !important; }
   body { background: #fff; color: #000; font-size: 12pt; }
   .section { page-break-inside: avoid; border: 1px solid #999; }
   .resource { break-inside: avoid; }
@@ -520,19 +586,36 @@ header p {
   html { scroll-behavior: auto; }
 }
 
-/* ─── Mobile adjustments ─── */
-@media (max-width: 600px) {
+/* ─── Responsive breakpoints ─── */
+@media (max-width: 900px) {
   html { font-size: 17px; }
+}
+@media (max-width: 600px) {
+  html { font-size: 16px; }
   .wrap { padding: 1rem 0.7rem 3rem; }
-  .section { padding: 1.1rem 1rem 1rem; }
+  .utility-bar { justify-content: center; padding: 0.5rem 0.6rem; gap: 0.4rem; }
+  .util-btn { padding: 0.45rem 0.7rem; font-size: 0.88rem; }
   .resource-list { grid-template-columns: 1fr; }
-  .utility-bar { justify-content: center; padding: 0.5rem 0.6rem; }
-  .util-btn { padding: 0.5rem 0.7rem; font-size: 0.85rem; }
-  .util-btn span { display: inline; }
-  .portal-callout { padding: 0.9rem 1rem; gap: 0.8rem; }
-  .portal-callout-icon { font-size: 1.7rem; }
-  .portal-callout-title { font-size: 1.05rem; }
-  .portal-callout-sub { font-size: 0.86rem; }
+  .section-icon { width: 38px; height: 38px; }
+  .section-icon svg { width: 22px; height: 22px; }
+}
+@media (max-width: 480px) {
+  html { font-size: 15px; }
+  .wrap { padding: 0.8rem 0.5rem 2.5rem; }
+  .utility-bar { padding: 0.4rem 0.5rem; gap: 0.3rem; }
+  .util-btn { padding: 0.4rem 0.6rem; font-size: 0.82rem; min-height: 40px; }
+  .util-btn svg { width: 16px; height: 16px; }
+  .util-btn .label-text { display: none; } /* icon-only on tiny screens for non-portal */
+  .util-btn.util-portal .label-text { display: inline; } /* keep portal label visible */
+  .fc-btn { padding: 0.4rem 0.7rem; min-height: 40px; }
+  .section { padding: 0.9rem 0.85rem; border-radius: 10px; }
+  .emergency-bar { padding: 0.85rem 0.85rem; }
+  .jump-nav { padding: 0.7rem 0.85rem; }
+  .search-bar input { padding: 0.85rem 0.85rem 0.85rem 2.6rem; }
+  .search-icon { left: 0.85rem; width: 18px; height: 18px; }
+}
+@media (min-width: 1200px) {
+  .resource-list { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
 }
 </style>
 </head>
@@ -540,85 +623,167 @@ header p {
 <a href="#main" class="skip-link">Skip to main content</a>
 
 <div class="utility-bar" role="toolbar" aria-label="Display options">
-  <a class="util-btn util-portal" href="portal.html" id="portalUtilBtn">
+  <a class="util-btn util-portal"
+     href="portal.html"
+     id="portalUtilBtn"
+     aria-label="Open the Neighborhood Portal">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
       <polyline points="9 22 9 12 15 12 15 22"/>
     </svg>
-    <span id="portalUtilLabel">Neighborhood Portal</span>
+    <span class="label-text" id="portalUtilLabel">Neighborhood Portal</span>
+  </a>
+  <a class="util-btn util-feedback" href="feedback.html" id="feedbackUtilBtn" aria-label="Give feedback">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+    </svg>
+    <span class="label-text" id="feedbackUtilLabel">Feedback</span>
+  </a>
+  <a class="util-btn"
+     href="https://www.google.com/search?q=community+centers+near+me"
+     target="_blank" rel="noopener"
+     id="centersUtilBtn"
+     aria-label="Find community centers near me on Google (opens in new tab)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/>
+      <polyline points="15 3 21 3 21 9"/>
+      <line x1="10" y1="14" x2="21" y2="3"/>
+    </svg>
+    <span class="label-text" id="centersUtilLabel">Community centers near me</span>
   </a>
   <div class="font-control" role="group" aria-label="Text size">
-    <button class="fc-btn" onclick="changeFont(-0.1)" aria-label="Smaller text">A−</button>
+    <button class="fc-btn" type="button" onclick="changeFont(-0.1)" aria-label="Smaller text">A−</button>
     <span class="fc-label" id="fontLabel">100%</span>
-    <button class="fc-btn" onclick="changeFont(0.1)" aria-label="Bigger text">A+</button>
+    <button class="fc-btn" type="button" onclick="changeFont(0.1)" aria-label="Bigger text">A+</button>
   </div>
-  <button class="util-btn" id="themeBtn" onclick="toggleTheme()" aria-pressed="false">
+  <button class="util-btn" type="button" id="themeBtn" onclick="toggleTheme()" aria-pressed="false">
     <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
       <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
       <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
       <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
     </svg>
-    <span id="themeLabel">Dark</span>
+    <span class="label-text" id="themeLabel">Dark</span>
   </button>
   <div class="lang-wrap" id="langWrap">
-    <button class="util-btn" id="langBtn" onclick="toggleLangMenu()" aria-haspopup="true" aria-expanded="false">
+    <button class="util-btn" type="button" id="langBtn" onclick="toggleLangMenu()" aria-haspopup="true" aria-expanded="false">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
         <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
       </svg>
-      <span id="langLabel">English</span>
+      <span class="label-text" id="langLabel">English</span>
     </button>
     <div class="lang-menu" id="langMenu" role="menu">
-      <button class="lang-opt active" role="menuitem" onclick="setLang('en')">🇺🇸 English</button>
-      <button class="lang-opt" role="menuitem" onclick="setLang('es')">🇪🇸 Español</button>
-      <button class="lang-opt" role="menuitem" onclick="setLang('fr')">🇫🇷 Français</button>
-      <button class="lang-opt" role="menuitem" onclick="setLang('zh')">🇨🇳 中文</button>
-      <button class="lang-opt" role="menuitem" onclick="setLang('ru')">🇷🇺 Русский</button>
-      <button class="lang-opt" role="menuitem" onclick="setLang('ht')">🇭🇹 Kreyòl</button>
+      <button class="lang-opt active" type="button" role="menuitem" onclick="setLang('en')">🇺🇸 English</button>
+      <button class="lang-opt" type="button" role="menuitem" onclick="setLang('es')">🇪🇸 Español</button>
+      <button class="lang-opt" type="button" role="menuitem" onclick="setLang('fr')">🇫🇷 Français</button>
+      <button class="lang-opt" type="button" role="menuitem" onclick="setLang('zh')">🇨🇳 中文</button>
+      <button class="lang-opt" type="button" role="menuitem" onclick="setLang('ru')">🇷🇺 Русский</button>
+      <button class="lang-opt" type="button" role="menuitem" onclick="setLang('ht')">🇭🇹 Kreyòl</button>
     </div>
   </div>
-  <button class="util-btn" onclick="window.print()">
+  <button class="util-btn" type="button" onclick="window.print()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <polyline points="6 9 6 2 18 2 18 9"/>
       <path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/>
       <rect x="6" y="14" width="12" height="8"/>
     </svg>
-    <span>Print</span>
+    <span class="label-text">Print</span>
   </button>
-  <a class="util-btn" href="feedback.html">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
-    </svg>
-    <span>Feedback</span>
-  </a>
 </div>
 
 <div class="wrap">
   <header>
-    <h1>🗽 NYC Resource Finder</h1>
-    <p>Free help with food, housing, jobs, and more — all across New York City</p>
+    <h1>
+      <svg class="title-statue" viewBox="0 0 64 64" aria-hidden="true">
+        <!-- simplified statue: torch + crown + figure, in accent color -->
+        <g fill="currentColor" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round">
+          <!-- flame -->
+          <path d="M32 3 c-1.6 2.4 -2.6 4.8 -2.6 6.6 c0 2 1.2 3.4 2.6 3.4 c1.4 0 2.6 -1.4 2.6 -3.4 c0 -1.8 -1 -4.2 -2.6 -6.6 z" fill="currentColor"/>
+          <!-- torch handle -->
+          <rect x="30.6" y="13" width="2.8" height="9" rx="0.4"/>
+          <!-- arm holding torch -->
+          <path d="M32 22 c-2 1 -4 3 -5 6" fill="none"/>
+          <!-- crown spikes -->
+          <g fill="none" stroke-width="1.5">
+            <line x1="20" y1="22" x2="18" y2="17"/>
+            <line x1="24" y1="20.2" x2="22.5" y2="15.2"/>
+            <line x1="28" y1="19.4" x2="27" y2="14.2"/>
+            <line x1="32" y1="19.2" x2="32" y2="14"/>
+            <line x1="36" y1="19.4" x2="37" y2="14.2"/>
+            <line x1="40" y1="20.2" x2="41.5" y2="15.2"/>
+            <line x1="44" y1="22" x2="46" y2="17"/>
+          </g>
+          <!-- head -->
+          <circle cx="32" cy="24" r="4" fill="currentColor"/>
+          <!-- robe / body -->
+          <path d="M24 28 c-2 4 -4 14 -4 22 c0 6 4 10 12 10 c8 0 12 -4 12 -10 c0 -8 -2 -18 -4 -22 c-2 -2 -4 -3 -8 -3 c-4 0 -6 1 -8 3 z" fill="currentColor"/>
+          <!-- tablet in left arm -->
+          <rect x="36" y="34" width="9" height="13" rx="0.6" fill="var(--card)" stroke="currentColor" stroke-width="1.4"/>
+        </g>
+      </svg>
+      <span id="titleText">NYC Resource Finder</span>
+    </h1>
+    <p id="subtitleText">Free NYC help, all in one place.</p>
   </header>
 
-  <div class="emergency-bar" role="region" aria-label="Emergency contacts">
-    <h2>📞 If you need help right now</h2>
+  <div class="emergency-bar" role="region" aria-label="Urgent support contacts">
+    <h2>
+      <svg class="urgent-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.6 19.79 19.79 0 01.22 1 2 2 0 012.2.01h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006.29 6.29l1.06-1.06a2 2 0 012.11-.45c.907.34 1.85.574 2.81.7a2 2 0 011.72 2z"
+              fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span id="emergencyTitleText">Urgent Support</span>
+    </h2>
+
+    <div class="emergency-tier-label" id="tierCrisisLabel">
+      <svg class="tier-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"
+                 fill="currentColor" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/>
+      </svg>
+      Emergency &amp; crisis (24/7)
+    </div>
     <div class="emergency-list">
-      <div><strong>Need shelter tonight:</strong> <a href="tel:311">Call 311</a> (24 hours)</div>
-      <div><strong>Homeless Hotline:</strong> <a href="tel:18883582384">1-888-358-2384</a></div>
-      <div><strong>Mental Health:</strong> <a href="tel:18886929355">1-888-NYC-WELL</a></div>
-      <div><strong>Life-threatening emergency:</strong> <a href="tel:911">Call 911</a></div>
+      <div class="emergency-item">
+        <span class="emergency-label">Life-threatening emergency</span>
+        <a href="tel:911">Call 911</a>
+      </div>
+      <div class="emergency-item">
+        <span class="emergency-label">Suicide &amp; Crisis Lifeline</span>
+        <a href="tel:988">Call or text 988</a>
+      </div>
+      <div class="emergency-item">
+        <span class="emergency-label">NYC 24-Hour Domestic Violence Hotline</span>
+        <a href="tel:18006214673">1-800-621-HOPE (4673)</a>
+      </div>
+      <div class="emergency-item">
+        <span class="emergency-label">Sexual Assault Hotline (RAINN)</span>
+        <a href="tel:18006564673">1-800-656-HOPE (4673)</a>
+      </div>
+      <div class="emergency-item">
+        <span class="emergency-label">NYC Well — mental health support</span>
+        <a href="tel:18886929355">1-888-NYC-WELL</a>
+      </div>
+      <div class="emergency-item">
+        <span class="emergency-label">Coalition for the Homeless Crisis Hotline</span>
+        <a href="tel:18883582384">1-888-358-2384</a>
+      </div>
+    </div>
+
+    <div class="emergency-tier-label tier-soft" id="tierGeneralLabel">
+      <svg class="tier-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"
+                 fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+      </svg>
+      General help &amp; non-emergency (NYC)
+    </div>
+    <div class="emergency-list emergency-list-soft">
+      <div class="emergency-item soft">
+        <span class="emergency-label">NYC city services — shelter, benefits, complaints, info</span>
+        <a href="tel:311">Call 311 (24 hours)</a>
+      </div>
     </div>
   </div>
-
-  <!-- Neighborhood Portal — prominent entry point -->
-  <a class="portal-callout" href="portal.html" id="portalCallout" aria-label="Open the Neighborhood Portal">
-    <span class="portal-callout-icon" aria-hidden="true">🏘️</span>
-    <div class="portal-callout-body">
-      <div class="portal-callout-title" id="portalCalloutTitle">Find a local community center near me</div>
-      <div class="portal-callout-sub" id="portalCalloutSub">Open the Neighborhood Portal — connect with neighbors in your ZIP, post a need, or offer help.</div>
-    </div>
-    <span class="portal-callout-arrow" aria-hidden="true">→</span>
-  </a>
 
   <div id="main">
     <div class="search-bar" role="search">
@@ -672,96 +837,84 @@ const ADDR_ICON  = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" s
 const WEB_ICON   = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`;
 
 /* ════════════════════════════════════════════
-   TRANSLATIONS (top-level UI only)
+   TRANSLATIONS
    ════════════════════════════════════════════ */
 const T = {
   en: {
-    title: '🗽 NYC Resource Finder',
-    subtitle: 'Free help with food, housing, jobs, and more — all across New York City',
-    emergencyTitle: '📞 If you need help right now',
+    title: 'NYC Resource Finder',
+    subtitle: 'Free NYC help, all in one place.',
+    emergencyTitle: '📞 Urgent Support',
     portalUtil: 'Neighborhood Portal',
-    portalTitle: 'Find a local community center near me',
-    portalSub: 'Open the Neighborhood Portal — connect with neighbors in your ZIP, post a need, or offer help.',
+    centersUtil: 'Community centers near me',
     searchPlaceholder: 'Type what you need (food, job, housing…)',
     jumpTo: 'Jump to:',
     noResults: 'No matches. Try a different word, or scroll down to browse all sections.',
     visit: 'Visit website',
-    feedbackPrompt: 'Found a problem? Suggest an update →',
     dark: 'Dark',
     light: 'Light',
   },
   es: {
-    title: '🗽 Buscador de Recursos NYC',
-    subtitle: 'Ayuda gratis con comida, vivienda, trabajos y más — en toda Nueva York',
-    emergencyTitle: '📞 Si necesita ayuda ahora',
+    title: 'Buscador de Recursos NYC',
+    subtitle: 'Ayuda gratuita en NYC, todo en un solo lugar.',
+    emergencyTitle: '📞 Apoyo Urgente',
     portalUtil: 'Portal del Vecindario',
-    portalTitle: 'Encontrar un centro comunitario cerca de mí',
-    portalSub: 'Abra el Portal del Vecindario — conéctese con vecinos en su código postal, publique una necesidad u ofrezca ayuda.',
+    centersUtil: 'Centros comunitarios cerca de mí',
     searchPlaceholder: 'Escriba lo que necesita (comida, trabajo, vivienda…)',
     jumpTo: 'Ir a:',
     noResults: 'Sin resultados. Pruebe otra palabra o desplácese para ver todas las secciones.',
     visit: 'Visitar sitio web',
-    feedbackPrompt: '¿Encontró un problema? Sugerir una actualización →',
     dark: 'Oscuro',
     light: 'Claro',
   },
   fr: {
-    title: '🗽 Recherche de Ressources NYC',
-    subtitle: 'Aide gratuite — nourriture, logement, emploi et plus — dans tout New York',
-    emergencyTitle: '📞 Si vous avez besoin d\'aide maintenant',
+    title: 'Recherche de Ressources NYC',
+    subtitle: 'Aide gratuite à NYC, tout au même endroit.',
+    emergencyTitle: '📞 Aide Urgente',
     portalUtil: 'Portail du Quartier',
-    portalTitle: 'Trouver un centre communautaire près de chez moi',
-    portalSub: 'Ouvrez le Portail du Quartier — connectez-vous avec vos voisins, publiez un besoin ou offrez de l\'aide.',
+    centersUtil: 'Centres communautaires près de moi',
     searchPlaceholder: 'Tapez ce dont vous avez besoin (nourriture, emploi, logement…)',
     jumpTo: 'Aller à :',
     noResults: 'Aucun résultat. Essayez un autre mot ou faites défiler pour parcourir.',
     visit: 'Visiter le site',
-    feedbackPrompt: 'Un problème ? Suggérer une mise à jour →',
     dark: 'Sombre',
     light: 'Clair',
   },
   zh: {
-    title: '🗽 纽约市资源查找',
-    subtitle: '食物、住房、工作等免费帮助 — 覆盖纽约全市',
-    emergencyTitle: '📞 如需立即帮助',
+    title: '纽约市资源查找',
+    subtitle: '纽约免费帮助，一站式查找。',
+    emergencyTitle: '📞 紧急支援',
     portalUtil: '社区门户',
-    portalTitle: '查找我附近的社区中心',
-    portalSub: '打开社区门户 — 与您邮编内的邻居联系，发布需求或提供帮助。',
+    centersUtil: '附近的社区中心',
     searchPlaceholder: '输入您的需求（食物、工作、住房…）',
     jumpTo: '跳转到：',
     noResults: '没有匹配项。请尝试其他词或向下浏览所有部分。',
     visit: '访问网站',
-    feedbackPrompt: '发现问题？建议更新 →',
     dark: '深色',
     light: '浅色',
   },
   ru: {
-    title: '🗽 Поиск ресурсов NYC',
-    subtitle: 'Бесплатная помощь с едой, жильём, работой и др. — по всему Нью-Йорку',
-    emergencyTitle: '📞 Если нужна помощь прямо сейчас',
+    title: 'Поиск ресурсов NYC',
+    subtitle: 'Бесплатная помощь в Нью-Йорке — всё в одном месте.',
+    emergencyTitle: '📞 Срочная помощь',
     portalUtil: 'Соседский портал',
-    portalTitle: 'Найти местный общественный центр',
-    portalSub: 'Откройте Соседский портал — свяжитесь с соседями по индексу, разместите запрос или предложите помощь.',
+    centersUtil: 'Общественные центры рядом',
     searchPlaceholder: 'Введите, что вам нужно (еда, работа, жильё…)',
     jumpTo: 'Перейти к:',
     noResults: 'Ничего не найдено. Попробуйте другое слово или прокрутите страницу.',
     visit: 'Посетить сайт',
-    feedbackPrompt: 'Нашли проблему? Предложить исправление →',
     dark: 'Тёмная',
     light: 'Светлая',
   },
   ht: {
-    title: '🗽 Chèche Resous NYC',
-    subtitle: 'Èd gratis pou manje, lojman, travay, ak plis — atravè New York',
-    emergencyTitle: '📞 Si w bezwen èd kounye a',
+    title: 'Chèche Resous NYC',
+    subtitle: 'Èd gratis nan NYC, tout nan yon sèl kote.',
+    emergencyTitle: '📞 Sipò Ijan',
     portalUtil: 'Pòtal Katye a',
-    portalTitle: 'Jwenn yon sant kominotè bò kote m',
-    portalSub: 'Louvri Pòtal Katye a — konekte ak vwazen yo nan ZIP ou, poste yon bezwen, oswa ofri èd.',
+    centersUtil: 'Sant kominotè bò kote m',
     searchPlaceholder: 'Tape sa w bezwen (manje, travay, lojman…)',
     jumpTo: 'Ale nan:',
     noResults: 'Pa gen rezilta. Eseye yon lòt mo oswa desann pou wè tout seksyon yo.',
     visit: 'Vizite sit la',
-    feedbackPrompt: 'Jwenn yon pwoblèm? Sijere yon mizajou →',
     dark: 'Fonse',
     light: 'Klè',
   }
@@ -804,13 +957,11 @@ function render() {
     return false;
   });
 
-  // Jump nav
   const jumpNav = document.getElementById('jumpNav');
   jumpNav.innerHTML = filtered.map(d =>
     `<a class="jump-link" href="#section-${d.id}">${escapeHtml(d.title)}</a>`
   ).join('');
 
-  // Sections
   const sectionsEl = document.getElementById('sections');
   if (!filtered.length) {
     sectionsEl.innerHTML = `<div class="no-results">${escapeHtml(t.noResults)}</div>`;
@@ -887,32 +1038,24 @@ function renderJobsBody() {
   const jl = jobListingsData;
   if (!jl) return '';
   let html = '';
-
-  // Healthcare hiring
   if (jl.healthcare && jl.healthcare.hiring && jl.healthcare.hiring.length) {
     html += `<div class="subsection"><div class="subsection-title">🏥 Healthcare — Now Hiring</div>${renderResources(jl.healthcare.hiring)}</div>`;
   }
-  // Healthcare training
   if (jl.healthcare && jl.healthcare.training && jl.healthcare.training.length) {
     html += `<div class="subsection"><div class="subsection-title">🏥 Free Home Health Aide / CNA Training</div>${renderResources(jl.healthcare.training)}</div>`;
   }
-  // Entry level
   if (jl.entryLevel && jl.entryLevel.length) {
     html += `<div class="subsection"><div class="subsection-title">🟢 Entry-Level Jobs</div>${renderResources(jl.entryLevel)}</div>`;
   }
-  // Food & hospitality
   if (jl.food && jl.food.length) {
     html += `<div class="subsection"><div class="subsection-title">🍽️ Food & Hospitality</div>${renderResources(jl.food)}</div>`;
   }
-  // Trades
   if (jl.trades && jl.trades.length) {
     html += `<div class="subsection"><div class="subsection-title">🔧 Trades & Construction</div>${renderResources(jl.trades)}</div>`;
   }
-  // Job training
   if (jl.jobTraining && jl.jobTraining.length) {
     html += `<div class="subsection"><div class="subsection-title">🎓 Free Job Training & Career Centers</div>${renderResources(jl.jobTraining)}</div>`;
   }
-  // Job support orgs
   if (jl.jobSupportOrgs && jl.jobSupportOrgs.length) {
     html += `<div class="subsection"><div class="subsection-title">🤝 Help Finding a Job</div>${renderResources(jl.jobSupportOrgs)}</div>`;
   }
@@ -944,10 +1087,22 @@ function toggleTheme() {
   document.getElementById('themeLabel').textContent = isDark ? t.light : t.dark;
 }
 
+/* Preserve scroll position when changing root font-size so the page
+   doesn't jump and the cursor doesn't lose the A−/A+ button. */
 function changeFont(delta) {
-  fontScale = Math.min(1.5, Math.max(0.85, +(fontScale + delta).toFixed(2)));
+  const oldRem = parseFloat(getComputedStyle(document.documentElement).fontSize);
+  const oldScrollY = window.scrollY;
+
+  fontScale = Math.min(2, Math.max(0.2, +(fontScale + delta).toFixed(2)));
   document.documentElement.style.fontSize = (fontScale * 18) + 'px';
   document.getElementById('fontLabel').textContent = Math.round(fontScale * 100) + '%';
+
+  // Adjust scroll so the same content stays roughly under the same viewport position.
+  const newRem = parseFloat(getComputedStyle(document.documentElement).fontSize);
+  if (oldRem > 0 && newRem > 0) {
+    const ratio = newRem / oldRem;
+    window.scrollTo({ top: oldScrollY * ratio, behavior: 'auto' });
+  }
 }
 
 function toggleLangMenu() {
@@ -973,19 +1128,17 @@ function setLang(code) {
 
 function applyStaticTexts() {
   const t = T[lang] || T.en;
-  document.querySelector('header h1').textContent = t.title;
-  document.querySelector('header p').textContent = t.subtitle;
-  document.querySelector('.emergency-bar h2').textContent = t.emergencyTitle;
+  document.getElementById('titleText').textContent = t.title;
+  document.getElementById('subtitleText').textContent = t.subtitle;
+  const eTitle = document.getElementById('emergencyTitleText');
+  if (eTitle) eTitle.textContent = (t.emergencyTitle || 'Urgent Support').replace(/^📞\s*/,'');
   document.getElementById('search').placeholder = t.searchPlaceholder;
   document.querySelector('.jump-nav-label').textContent = t.jumpTo;
   document.getElementById('themeLabel').textContent = isDark ? t.light : t.dark;
-  // Portal callout + utility button
-  const pTitle = document.getElementById('portalCalloutTitle');
-  const pSub = document.getElementById('portalCalloutSub');
   const pUtil = document.getElementById('portalUtilLabel');
-  if (pTitle) pTitle.textContent = t.portalTitle;
-  if (pSub) pSub.textContent = t.portalSub;
   if (pUtil) pUtil.textContent = t.portalUtil;
+  const cUtil = document.getElementById('centersUtilLabel');
+  if (cUtil) cUtil.textContent = t.centersUtil || 'Community centers near me';
 }
 
 document.addEventListener('click', e => {
