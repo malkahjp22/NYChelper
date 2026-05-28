@@ -10,7 +10,6 @@
       "hiring": [
         { "id": "vns-health",               "org": "VNS Health",               "note": "Home care & clinical — direct hire",    "url": "https://jobs.vnshealth.org/careers-home/jobs?categories=Home%20Health%20Aide&tags3=Brooklyn%7CQueens%7CManhattan%7CThe%20Bronx&page=1" },
         { "id": "nyc-health-hospitals",     "org": "NYC Health + Hospitals",   "note": "Clinical & non-clinical — direct hire", "url": "https://www.nychealthandhospitals.org/careers" },
-        { "id": "vnsny",                    "org": "VNSNY",                    "note": "Home & community care — direct hire",   "url": "https://www.vnsny.org/careers" }
       ],
       "training": [
         { "id": "nys-hha-training-list",    "org": "NYS Free HHA Training List",   "note": "PDF — statewide program list",         "url": "https://www.health.ny.gov/facilities/home_care/docs/training_program_list.pdf" },
