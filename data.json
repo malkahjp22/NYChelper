@@ -3,8 +3,7 @@
     "entryLevel": [
       { "id": "nyc-civic-corps",      "org": "NYC Civic Corps",      "note": "Community & city service",  "url": "https://www.nycservice.org/national_service" },
       { "id": "goodwill-ny-nj",       "org": "Goodwill NY/NJ",       "note": "Supported placements",      "url": "https://www.goodtemps.org/job-seekers/" },
-      { "id": "nyc-jobs-portal",      "org": "NYC Jobs Portal",      "note": "City government openings",  "url": "https://www.nyc.gov/jobs/index.page" },
-      { "id": "bronxworks-careers",   "org": "BronxWorks",           "note": "Multiple openings",         "url": "https://www.bronxworks.org/about/careers" }
+      { "id": "nyc-jobs-portal",      "org": "NYC Jobs Portal",      "note": "City government openings",  "url": "https://cityjobs.nyc.gov/jobs" },
     ],
     "healthcare": {
       "hiring": [
@@ -13,8 +12,8 @@
       ],
       "training": [
         { "id": "nys-hha-training-list",    "org": "NYS Free HHA Training List",   "note": "PDF — statewide program list",         "url": "https://www.health.ny.gov/facilities/home_care/docs/training_program_list.pdf" },
-        { "id": "mosholu-cna",              "org": "Mosholu Montefiore CNA",       "note": "Free CNA training — Bronx",            "url": "https://www.mosholumontefiore.org" },
-        { "id": "sunnyside-hha",            "org": "Sunnyside Community Services", "note": "Free HHA training — Queens",           "url": "https://www.sunnysidecommservices.org/about-us/job-openings" }
+        { "id": "mosholu-cna",              "org": "Mosholu Montefiore CNA",       "note": "Free CNA training — Bronx",            "url": "https://www.mmcc.org/certified-nursing-assistant-program-cna/" },
+        { "id": "sunnyside-hha",            "org": "Sunnyside Community Services", "note": "Free HHA training — Queens",           "url": "https://scsny.org/programs/programs-services/adult-and-immigrant-services/home-health-aide-training/" }
       ]
     },
     "food": [
