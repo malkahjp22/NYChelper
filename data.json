@@ -3,12 +3,12 @@
     "entryLevel": [
       { "id": "nyc-civic-corps",      "org": "NYC Civic Corps",      "note": "Community & city service",  "url": "https://www.nycservice.org/national_service" },
       { "id": "goodwill-ny-nj",       "org": "Goodwill NY/NJ",       "note": "Supported placements",      "url": "https://www.goodtemps.org/job-seekers/" },
-      { "id": "nyc-jobs-portal",      "org": "NYC Jobs Portal",      "note": "City government openings",  "url": "https://cityjobs.nyc.gov/jobs" },
+      { "id": "nyc-jobs-portal",      "org": "NYC Jobs Portal",      "note": "City government openings",  "url": "https://cityjobs.nyc.gov/jobs" }
     ],
     "healthcare": {
       "hiring": [
         { "id": "vns-health",               "org": "VNS Health",               "note": "Home care & clinical — direct hire",    "url": "https://jobs.vnshealth.org/careers-home/jobs?categories=Home%20Health%20Aide&tags3=Brooklyn%7CQueens%7CManhattan%7CThe%20Bronx&page=1" },
-        { "id": "nyc-health-hospitals",     "org": "NYC Health + Hospitals",   "note": "Clinical & non-clinical — direct hire", "url": "https://www.nychealthandhospitals.org/careers" },
+        { "id": "nyc-health-hospitals",     "org": "NYC Health + Hospitals",   "note": "Clinical & non-clinical — direct hire", "url": "https://www.nychealthandhospitals.org/careers" }
       ],
       "training": [
         { "id": "nys-hha-training-list",    "org": "NYS Free HHA Training List",   "note": "PDF — statewide program list",         "url": "https://www.health.ny.gov/facilities/home_care/docs/training_program_list.pdf" },
