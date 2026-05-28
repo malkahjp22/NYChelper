@@ -18,7 +18,6 @@
     },
     "food": [
       { "id": "kommissary",                "org": "Kommissary",               "note": "Kitchen & food service",     "url": "https://www.kommissary.com/careers" },
-      { "id": "grubhub-careers",           "org": "Grubhub",                  "note": "Delivery — flexible",        "url": "https://careers.grubhub.com" },
       { "id": "ushg-careers",              "org": "Union Square Hospitality", "note": "Front & back of house",      "url": "https://careers.ushgnyc.com" },
       { "id": "compass-group",             "org": "Compass Group",            "note": "Institutional food service", "url": "https://jobs.compass-usa.com" },
       { "id": "delaware-north",            "org": "Delaware North",           "note": "Venue & stadium service",    "url": "https://www.delawarenorth.com/careers" }
