@@ -289,14 +289,14 @@ header p {
   text-align: center;
   align-items: center;
   text-decoration: none;
-  background: var(--emergency-bg);
-  border: 1px solid var(--emergency-bg);
+  background: var(--accent-dark);
+  border: 1px solid var(--accent-dark);
   border-radius: 8px;
-  transition: background 0.15s, transform 0.05s;
+  transition: transform 0.12s ease;
   -webkit-tap-highlight-color: transparent;
 }
-.urgent-btn:hover { background: var(--accent-dark); border-color: var(--accent-dark); }
-.urgent-btn:active { transform: translateY(1px); }
+.urgent-btn:hover, .urgent-btn:focus-visible { transform: scale(0.96); }
+.urgent-btn:active { transform: scale(0.93); }
 .urgent-label {
   font-size: 0.82rem;
   font-weight: 600;
