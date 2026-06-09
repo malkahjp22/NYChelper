@@ -74,7 +74,6 @@ body {
 }
 body.modal-open { overflow: hidden; }
 
-/* ─── Skip link ─── */
 .skip-link {
   position: absolute; top: -100px; left: 0;
   background: var(--accent); color: #fff;
@@ -83,7 +82,6 @@ body.modal-open { overflow: hidden; }
 }
 .skip-link:focus { top: 0; }
 
-/* ─── Top utility bar ─── */
 .utility-bar {
   background: var(--card);
   border-bottom: 2px solid var(--border);
@@ -196,7 +194,6 @@ body.modal-open { overflow: hidden; }
   color: var(--accent);
 }
 
-/* ─── Main wrap ─── */
 .wrap {
   width: 100%;
   max-width: 1080px;
@@ -228,7 +225,6 @@ header p {
   color: var(--muted);
 }
 
-/* ─── Urgent Support — horizontal tile across the top ─── */
 .urgent-tile {
   background: var(--emergency-bg);
   border: 2px solid var(--emergency-border);
@@ -286,43 +282,6 @@ header p {
 }
 .urgent-item a:hover { text-decoration: none; }
 
-.urgent-divider {
-  margin: 0.9rem 0 0.65rem;
-  font-size: 0.76rem;
-  font-weight: 700;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-.urgent-divider::before, .urgent-divider::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--border);
-}
-.urgent-soft-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
-  gap: 0.6rem;
-}
-.urgent-item.soft {
-  background: rgba(0,0,0,0.03);
-  border-color: var(--border);
-}
-:root[data-theme="dark"] .urgent-item.soft {
-  background: rgba(255,255,255,0.03);
-  border-color: var(--border);
-}
-.urgent-item.soft .urgent-label { color: var(--muted); }
-.urgent-item.soft a {
-  color: var(--text);
-  text-decoration: underline;
-}
-
-/* ─── Search ─── */
 .search-bar {
   position: relative;
   margin-bottom: 1.6rem;
@@ -351,7 +310,6 @@ header p {
   pointer-events: none;
 }
 
-/* ─── Tile grid: 3 per row ─── */
 .tile-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -431,7 +389,6 @@ header p {
 .tile.notice-tile .tile-title,
 .tile.notice-tile .tile-sub { color: var(--notice-text); }
 
-/* ─── Modal ─── */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -550,7 +507,6 @@ header p {
   color: var(--emergency-text);
 }
 
-/* ─── Resource list inside modal ─── */
 .resource-list {
   display: flex;
   flex-direction: column;
@@ -653,7 +609,6 @@ header p {
 }
 .feedback-link:hover { color: var(--accent); }
 
-/* ─── No results ─── */
 .no-results {
   text-align: center;
   padding: 2.5rem 1rem;
@@ -665,7 +620,6 @@ header p {
   grid-column: 1 / -1;
 }
 
-/* ─── Print ─── */
 @media print {
   .utility-bar, .search-bar, .skip-link, .modal-overlay { display: none !important; }
   body { background: #fff; color: #000; font-size: 12pt; }
@@ -673,14 +627,12 @@ header p {
   .tile-grid { grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
 }
 
-/* ─── Reduced motion ─── */
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }
   html { scroll-behavior: auto; }
   .modal { transform: none; }
 }
 
-/* ─── Responsive ─── */
 @media (max-width: 900px) {
   html { font-size: 17px; }
   .tile-grid { grid-template-columns: repeat(2, 1fr); }
@@ -690,16 +642,7 @@ header p {
   .wrap { padding: 1rem 0.7rem 3rem; }
   .utility-bar { justify-content: center; padding: 0.5rem 0.6rem; gap: 0.4rem; }
   .util-btn { padding: 0.45rem 0.7rem; font-size: 0.88rem; }
-  .tile-grid { grid-template-columns: 1fr; gap: 0.7rem; }
-  .tile { min-height: auto; padding: 1rem; }
-  .tile-icon { width: 38px; height: 38px; }
-  .tile-icon svg { width: 22px; height: 22px; }
-}
-@media (max-width: 480px) {
-  html { font-size: 15px; }
-  .wrap { padding: 0.8rem 0.5rem 2.5rem; }
-  .utility-bar { padding: 0.4rem 0.5rem; gap: 0.3rem; }
-  .util-btn { padding: 0.4rem 0.6rem; font-size: 0.82rem; min-height: 40px; }
+  .tile-grid { grid-template-columns: 1fr; gap: 0.8rem; }
   .util-btn svg { width: 16px; height: 16px; }
   .util-btn .label-text { display: none; }
   .util-btn.util-portal .label-text { display: inline; }
@@ -715,12 +658,8 @@ header p {
 </head>
 <body>
 <a href="#main" class="skip-link">Skip to main content</a>
-
 <div class="utility-bar" role="toolbar" aria-label="Display options">
-  <a class="util-btn util-portal"
-     href="portal.html"
-     id="portalUtilBtn"
-     aria-label="Open the Neighborhood Portal">
+  <a class="util-btn util-portal" href="portal.html" id="portalUtilBtn" aria-label="Open the Neighborhood Portal">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
       <polyline points="9 22 9 12 15 12 15 22"/>
@@ -731,39 +670,23 @@ header p {
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
     </svg>
-    <span class="label-text" id="feedbackUtilLabel">Feedback</span>
+    <span class="label-text">Feedback</span>
   </a>
-  <a class="util-btn"
-     href="https://www.google.com/search?q=community+centers+near+me"
-     target="_blank" rel="noopener"
-     id="centersUtilBtn"
-     aria-label="Find community centers near me on Google (opens in new tab)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/>
-      <polyline points="15 3 21 3 21 9"/>
-      <line x1="10" y1="14" x2="21" y2="3"/>
-    </svg>
-    <span class="label-text" id="centersUtilLabel">Community centers near me</span>
-  </a>
-  <div class="font-control" role="group" aria-label="Text size">
-    <button class="fc-btn" type="button" onclick="changeFont(-0.1)" aria-label="Smaller text">A−</button>
-    <span class="fc-label" id="fontLabel">100%</span>
-    <button class="fc-btn" type="button" onclick="changeFont(0.1)" aria-label="Bigger text">A+</button>
+  <div class="font-control" role="group" aria-label="Text size options">
+    <button class="fc-btn" type="button" onclick="changeFont(-1)" aria-label="Decrease text size">A-</button>
+    <span class="fc-label" id="fontScaleLabel" aria-live="polite">100%</span>
+    <button class="fc-btn" type="button" onclick="changeFont(1)" aria-label="Increase text size">A+</button>
   </div>
-  <button class="util-btn" type="button" id="themeBtn" onclick="toggleTheme()" aria-pressed="false">
-    <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
-      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-      <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
-      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+  <button class="util-btn" type="button" id="themeBtn" onclick="toggleTheme()" aria-label="Toggle dark mode">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
     </svg>
-    <span class="label-text" id="themeLabel">Dark</span>
+    <span class="label-text" id="themeLabel">Dark Mode</span>
   </button>
   <div class="lang-wrap" id="langWrap">
-    <button class="util-btn" type="button" id="langBtn" onclick="toggleLangMenu()" aria-haspopup="true" aria-expanded="false">
+    <button class="util-btn" type="button" id="langBtn" onclick="toggleLangMenu()" aria-haspopup="true" aria-expanded="false" aria-label="Change language">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
-        <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
+        <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
       </svg>
       <span class="label-text" id="langLabel">English</span>
     </button>
@@ -795,62 +718,28 @@ header p {
     <p id="subtitleText">Support network for all of New York City.</p>
   </header>
 
-  <!-- ── Urgent Support: horizontal across the top ── -->
-  <div class="urgent-tile" role="region" aria-label="Urgent support contacts">
+  <div class="urgent-tile" id="urgentTileBlock" role="region" aria-label="Urgent support contacts" style="display: none;">
     <div class="urgent-tile-header">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.6 19.79 19.79 0 01.22 1 2 2 0 012.2.01h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006.29 6.29l1.06-1.06a2 2 0 012.11-.45c.907.34 1.85.574 2.81.7a2 2 0 011.72 2z"/>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
       </svg>
       <h2 id="urgentTitleText">Urgent Support</h2>
     </div>
-
-    <div class="urgent-grid">
-      <div class="urgent-item">
-        <span class="urgent-label">Life-threatening emergency</span>
-        <a href="tel:911">Call 911</a>
-      </div>
-      <div class="urgent-item">
-        <span class="urgent-label">Suicide &amp; Crisis Lifeline</span>
-        <a href="tel:988">Call or text 988</a>
-      </div>
-      <div class="urgent-item">
-        <span class="urgent-label">NYC Domestic Violence Hotline (24h)</span>
-        <a href="tel:18006214673">1-800-621-HOPE</a>
-      </div>
-      <div class="urgent-item">
-        <span class="urgent-label">Sexual Assault Hotline (RAINN)</span>
-      <a href="tel:18006564673">1-800-656-HOPE</a>
-      </div>
-      <div class="urgent-item">
-        <span class="urgent-label">Coalition for the Homeless Hotline</span>
-        <a href="tel:18883582384">1-888-358-2384</a>
-      </div>
-    </div>
-
-    <div class="urgent-divider">General help &amp; non-emergency (NYC)</div>
-    <div class="urgent-soft-grid">
-      <div class="urgent-item soft">
-        <span class="urgent-label">NYC city services — shelter, benefits, info</span>
-        <a href="tel:311">Call 311 (24 hours)</a>
-      </div>
-    </div>
+    <div class="urgent-grid" id="urgentSupportGrid"></div>
   </div>
 
-  <div id="main">
-    <!-- ── Search bar ── -->
-    <div class="search-bar" role="search">
-      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  <main id="main">
+    <div class="search-bar">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
       </svg>
-      <input type="search" id="search" placeholder="Search resources (food, jobs, housing…)" aria-label="Search resources" oninput="render()">
+      <input type="text" id="search" placeholder="Search resources (food, jobs, housing...)" oninput="render()" aria-label="Search resources">
     </div>
 
-    <!-- ── Tile grid ── -->
-    <div class="tile-grid" id="tileGrid" aria-live="polite"></div>
-  </div>
+    <div class="tile-grid" id="tileGrid"></div>
+  </main>
 </div>
 
-<!-- ── Modal ── -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeModalIfOverlay(event)" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
   <div class="modal" id="modal">
     <div class="modal-header">
@@ -870,228 +759,159 @@ header p {
 </div>
 
 <script>
-/* ════════════════════════════════════════════
-   STATE
-   ════════════════════════════════════════════ */
+/* ════════════════════════════════════════════ STATE ════════════════════════════════════════════ */
 let data = [];
 let jobListingsData = null;
+let urgentContactsData = [];
 let isDark = false;
 let fontScale = 1;
 let lang = sessionStorage.getItem('lang') || 'en';
 let currentCardId = null;
 let lastFocusedTile = null;
 
-/* ════════════════════════════════════════════
-   ICONS
-   ════════════════════════════════════════════ */
+/* ════════════════════════════════════════════ ICONS ════════════════════════════════════════════ */
 const ICONS = {
-  'jobs-apply':   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>`,
-  'food':         `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>`,
-  'clothing':     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-.16 3.42l4.29 2.87a1 1 0 01.45.83V21a1 1 0 001 1h5.6a1 1 0 001-1V10.58a1 1 0 01.45-.83l4.29-2.87a2 2 0 00-.16-3.42z"/></svg>`,
-  'housing':      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
-  'benefits':     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>`,
-  'childcare':    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>`,
-  'education':    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>`,
-  'legal':        `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="21"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M4 6l-2 8h4z"/><path d="M20 6l-2 8h4z"/><line x1="8" y1="21" x2="16" y2="21"/></svg>`,
-  'mentalhealth': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>`,
-  'transit':      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>`,
-  'immigrant':    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>`,
-  'digital':      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0114.08 0"/><path d="M1.42 9a16 16 0 0121.16 0"/><path d="M8.53 16.11a6 6 0 016.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>`,
-  'anchors':      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="3"/><line x1="12" y1="22" x2="12" y2="8"/><path d="M5 12H2a10 10 0 0020 0h-3"/></svg>`,
+  'jobs-apply': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>`,
+  'food': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>`,
+  'clothing': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.62 2V11a8 8 0 005 7.42V22h10v-3.58A8 8 0 0022 11V5.42a2 2 0 00-1.62-2z"/></svg>`,
+  'housing': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
+  'benefits': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="12" y1="4" x2="12" y2="20"/><line x1="2" y1="12" x2="22" y2="12"/></svg>`,
+  'childcare': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>`,
+  'education': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/></svg>`,
+  'legal': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
+  'mentalhealth': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>`,
+  'transit': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>`,
+  'immigrant': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>`,
+  'digital': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0114.08 0"/><path d="M1.42 9a16 16 0 0121.16 0"/><path d="M8.53 16.11a6 6 0 016.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>`,
+  'anchors': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="3"/><line x1="12" y1="22" x2="12" y2="8"/><path d="M5 12h14"/></svg>`
 };
 
-const PHONE_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.6 19.79 19.79 0 01.22 1 2 2 0 012.2.01h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006.29 6.29l1.06-1.06a2 2 0 012.11-.45c.907.34 1.85.574 2.81.7a2 2 0 011.72 2z"/></svg>`;
-const ADDR_ICON  = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>`;
-const WEB_ICON   = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`;
-
-/* ════════════════════════════════════════════
-   TRANSLATIONS
-   ════════════════════════════════════════════ */
+/* ════════════════════════════════════════════ TRANSLATIONS ════════════════════════════════════════════ */
 const T = {
-  en: {
-    title: 'NYC Resource Navigator',
-    subtitle: 'Support network for all of New York City.',
-    urgentTitle: 'Urgent Support',
-    portalUtil: 'Neighborhood Portal',
-    centersUtil: 'Community centers near me',
-    searchPlaceholder: 'Search resources (food, jobs, housing…)',
-    noResults: 'No matches. Try a different word.',
-    dark: 'Dark', light: 'Light',
-  },
-  es: {
-    title: 'Navegador de Recursos NYC',
-    subtitle: 'Red de apoyo para toda la ciudad de Nueva York.',
-    urgentTitle: 'Apoyo Urgente',
-    portalUtil: 'Portal del Vecindario',
-    centersUtil: 'Centros comunitarios cerca de mí',
-    searchPlaceholder: 'Buscar recursos (comida, trabajo, vivienda…)',
-    noResults: 'Sin resultados. Pruebe otra palabra.',
-    dark: 'Oscuro', light: 'Claro',
-  },
-  fr: {
-    title: 'Navigateur de Ressources NYC',
-    subtitle: "Réseau de soutien pour toute la ville de New York.",
-    urgentTitle: 'Aide Urgente',
-    portalUtil: 'Portail du Quartier',
-    centersUtil: 'Centres communautaires près de moi',
-    searchPlaceholder: 'Rechercher (nourriture, emploi, logement…)',
-    noResults: 'Aucun résultat. Essayez un autre mot.',
-    dark: 'Sombre', light: 'Clair',
-  },
-  zh: {
-    title: '纽约市资源导航',
-    subtitle: '为整个纽约市服务的支持网络。',
-    urgentTitle: '紧急支援',
-    portalUtil: '社区门户',
-    centersUtil: '附近的社区中心',
-    searchPlaceholder: '搜索资源（食物、工作、住房…）',
-    noResults: '没有匹配项。请尝试其他词。',
-    dark: '深色', light: '浅色',
-  },
-  ru: {
-    title: 'Навигатор ресурсов NYC',
-    subtitle: 'Сеть поддержки для всего Нью-Йорка.',
-    urgentTitle: 'Срочная помощь',
-    portalUtil: 'Соседский портал',
-    centersUtil: 'Общественные центры рядом',
-    searchPlaceholder: 'Поиск ресурсов (еда, работа, жильё…)',
-    noResults: 'Ничего не найдено. Попробуйте другое слово.',
-    dark: 'Тёмная', light: 'Светлая',
-  },
-  ht: {
-    title: 'Navigatè Resous NYC',
-    subtitle: 'Rezo sipò pou tout vil Nouyòk.',
-    urgentTitle: 'Sipò Ijan',
-    portalUtil: 'Pòtal Katye a',
-    centersUtil: 'Sant kominotè bò kote m',
-    searchPlaceholder: 'Chèche resous (manje, travay, lojman…)',
-    noResults: 'Pa gen rezilta. Eseye yon lòt mo.',
-    dark: 'Fonse', light: 'Klè',
-  }
+  en: { title: "NYC Resource Navigator", subtitle: "Support network for all of New York City.", urgentTitle: "Urgent Support", portalUtil: "Neighborhood Portal", searchPlaceholder: "Search resources (food, jobs, housing...)", noResults: "No results matched your search. Try another word.", dark: "Dark Mode", light: "Light Mode" },
+  es: { title: "Navegador de Recursos de NYC", subtitle: "Red de apoyo para toda la ciudad de Nueva York.", urgentTitle: "Soporte Urgente", portalUtil: "Portal del Vecindario", searchPlaceholder: "Buscar recursos (comida, empleo, vivienda...)", noResults: "No hay resultados. Pruebe con otra palabra.", dark: "Oscuro", light: "Claro" },
+  fr: { title: "Navigateur de Ressources NYC", subtitle: "Réseau de soutien pour toute la ville de New York.", urgentTitle: "Aide Urgente", portalUtil: "Portail du Quartier", searchPlaceholder: "Rechercher (nourriture, emploi, logement…)", noResults: "Aucun résultat. Essayez un autre mot.", dark: "Sombre", light: "Clair" },
+  zh: { title: "纽约市资源导航", subtitle: "为整个纽约市服务的支持网络。", urgentTitle: "紧急支援", portalUtil: "社区门户", searchPlaceholder: "搜索资源（食物、工作、住房…）", noResults: "没有匹配项。请尝试其他词。", dark: "深色", light: "浅色" },
+  ru: { title: "Навигатор ресурсов NYC", subtitle: "Сеть поддержки для всего Нью-Йорка.", urgentTitle: "Срочная помощь", portalUtil: "Соседский портал", searchPlaceholder: "Поиск ресурсов (еда, работа, жильё…)", noResults: "Ничего не найдено. Попробуйте другое слово.", dark: "Тёмная", light: "Светлая" },
+  ht: { title: "Navigatè Resous NYC", subtitle: "Rezo sipò pou tout vil Nouyòk.", urgentTitle: "Sipò Ijan", portalUtil: "Pòtal Katye a", searchPlaceholder: "Chèche resous (manje, travay, lojman…)", noResults: "Pa gen rezilta. Eseye yon lòt mo.", dark: "Fonse", light: "Klè" }
 };
 const LANG_NAMES = {en:'English', es:'Español', fr:'Français', zh:'中文', ru:'Русский', ht:'Kreyòl'};
 
-/* ════════════════════════════════════════════
-   LOAD
-   ════════════════════════════════════════════ */
+/* ════════════════════════════════════════════ LOAD ════════════════════════════════════════════ */
 async function load() {
   try {
     const json = await fetch('data.json').then(r => r.json());
     data = json.cards || [];
     jobListingsData = json.jobListings || null;
+    urgentContactsData = json.urgentContacts || [];
+    
+    renderUrgentBar();
     render();
   } catch (e) {
-    document.getElementById('tileGrid').innerHTML =
-      '<div class="no-results">Could not load data. Please refresh the page.</div>';
+    document.getElementById('tileGrid').innerHTML = '<div class="no-results">Could not load data. Please refresh the page.</div>';
   }
 }
 
-/* ════════════════════════════════════════════
-   RENDER TILES
-   ════════════════════════════════════════════ */
+function renderUrgentBar() {
+  const block = document.getElementById('urgentTileBlock');
+  const grid = document.getElementById('urgentSupportGrid');
+  if (!urgentContactsData || urgentContactsData.length === 0) {
+    block.style.display = 'none';
+    return;
+  }
+  
+  let html = '';
+  urgentContactsData.forEach(item => {
+    html += `
+      <div class="urgent-item">
+        <span class="urgent-label">${escapeHtml(item.label)}</span>
+        <a href="${escapeAttr(item.url)}">${escapeHtml(item.text)}</a>
+      </div>
+    `;
+  });
+  grid.innerHTML = html;
+  block.style.display = '';
+}
+
+/* ════════════════════════════════════════════ RENDER TILES ════════════════════════════════════════════ */
 function render() {
   const t = T[lang] || T.en;
   const q = (document.getElementById('search').value || '').toLowerCase().trim();
-
+  
   const filtered = data.filter(d => {
     if (!q) return true;
     if (d.title.toLowerCase().includes(q)) return true;
     if (d.sub.toLowerCase().includes(q)) return true;
     if ((d.tags || []).some(tag => tag.toLowerCase().includes(q))) return true;
-    if ((d.notice || '').toLowerCase().includes(q)) return true;
-    if ((d.resources || []).some(r =>
-      (r.org && r.org.toLowerCase().includes(q)) ||
-      (r.note && r.note.toLowerCase().includes(q)) ||
-      (r.addr && r.addr.toLowerCase().includes(q))
-    )) return true;
-    // Also search inside job listings if searching the jobs tile
-    if (d.type === 'job-listings' && jobListingsData) {
-      const all = [];
-      const push = arr => arr && arr.forEach(j => all.push(j));
-      push(jobListingsData.entryLevel);
-      push(jobListingsData.healthcare && jobListingsData.healthcare.hiring);
-      push(jobListingsData.healthcare && jobListingsData.healthcare.training);
-      push(jobListingsData.food);
-      push(jobListingsData.trades);
-      push(jobListingsData.jobTraining);
-      push(jobListingsData.jobSupportOrgs);
-      if (all.some(j => (j.org && j.org.toLowerCase().includes(q)) || (j.note && j.note.toLowerCase().includes(q))))
-        return true;
-    }
     return false;
   });
-
-  const gridEl = document.getElementById('tileGrid');
-  if (!filtered.length) {
-    gridEl.innerHTML = `<div class="no-results">${escapeHtml(t.noResults)}</div>`;
+  
+  const container = document.getElementById('tileGrid');
+  if (filtered.length === 0) {
+    container.innerHTML = `<div class="no-results">${escapeHtml(t.noResults)}</div>`;
     return;
   }
-
-  gridEl.innerHTML = filtered.map(d => renderTile(d)).join('');
-}
-
-function renderTile(d) {
-  const count = countResources(d);
-  const countLabel = count > 0 ? `${count} resource${count !== 1 ? 's' : ''}` : '';
-  const noticeClass = d.notice ? ' notice-tile' : '';
-  return `
-    <button class="tile${noticeClass}" type="button" onclick="openModal('${escapeAttr(d.id)}', this)" aria-label="Open ${escapeAttr(d.title)} resources">
-      <div class="tile-icon" aria-hidden="true">${ICONS[d.id] || ''}</div>
-      <div class="tile-title">${escapeHtml(d.title)}</div>
-      <div class="tile-sub">${escapeHtml(d.sub)}</div>
-      <div class="tile-footer">
-        <span class="tile-count">${escapeHtml(countLabel)}</span>
-        <span class="tile-arrow" aria-hidden="true">→</span>
-      </div>
-    </button>
-  `;
+  
+  container.innerHTML = filtered.map(d => {
+    const count = countResources(d);
+    const countLabel = count > 0 ? `${count} resource${count !== 1 ? 's' : ''}` : '';
+    const noticeClass = d.notice ? ' notice-tile' : '';
+    return `
+      <button class="tile${noticeClass}" type="button" onclick="openModal('${escapeAttr(d.id)}', this)" aria-label="Open ${escapeAttr(d.title)} resources">
+        <div class="tile-icon" aria-hidden="true">${ICONS[d.id] || ''}</div>
+        <div class="tile-title">${escapeHtml(d.title)}</div>
+        <div class="tile-sub">${escapeHtml(d.sub)}</div>
+        <div class="tile-footer">
+          <span class="tile-count">${escapeHtml(countLabel)}</span>
+          <span class="tile-arrow" aria-hidden="true">→</span>
+        </div>
+      </button>
+    `;
+  }).join('');
 }
 
 function countResources(d) {
   if (d.type === 'job-listings' && jobListingsData) {
     let c = 0;
-    const add = arr => { if (arr) c += arr.length; };
-    add(jobListingsData.entryLevel);
-    add(jobListingsData.healthcare && jobListingsData.healthcare.hiring);
-    add(jobListingsData.healthcare && jobListingsData.healthcare.training);
-    add(jobListingsData.food);
-    add(jobListingsData.trades);
-    add(jobListingsData.jobTraining);
-    add(jobListingsData.jobSupportOrgs);
+    if (jobListingsData.sections) {
+      jobListingsData.sections.forEach(sec => {
+        const arr = jobListingsData[sec.key];
+        if (arr) c += arr.length;
+      });
+    }
     return c;
   }
   return (d.resources || []).length;
 }
 
-/* ════════════════════════════════════════════
-   MODAL
-   ════════════════════════════════════════════ */
+/* ════════════════════════════════════════════ MODAL ════════════════════════════════════════════ */
 function openModal(id, triggerEl) {
   const d = data.find(x => x.id === id);
   if (!d) return;
   currentCardId = id;
   lastFocusedTile = triggerEl || document.activeElement;
-
+  
   document.getElementById('modalIcon').innerHTML = ICONS[d.id] || '';
   document.getElementById('modalTitle').textContent = d.title;
   document.getElementById('modalSub').textContent = d.sub;
   document.getElementById('modalFeedbackLink').href = `feedback.html?section=${encodeURIComponent(d.id)}`;
-
+  
   let body = '';
   if (d.notice) body += renderNotice(d.notice);
+  
   if (d.type === 'job-listings' && jobListingsData) {
     body += renderJobsBody();
   } else {
     body += renderResources(d.resources || []);
   }
+  
   document.getElementById('modalBody').innerHTML = body;
   document.getElementById('modalBody').scrollTop = 0;
-
+  
   const overlay = document.getElementById('modalOverlay');
   overlay.classList.add('show');
   document.body.classList.add('modal-open');
-
-  // Focus management
+  
   setTimeout(() => {
     document.querySelector('.modal-close').focus();
   }, 50);
@@ -1111,122 +931,80 @@ function closeModalIfOverlay(e) {
   if (e.target === e.currentTarget) closeModal();
 }
 
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') {
-    if (document.getElementById('modalOverlay').classList.contains('show')) {
-      closeModal();
-    }
-    document.getElementById('langMenu').classList.remove('open');
-    document.getElementById('langBtn').setAttribute('aria-expanded', 'false');
-  }
-});
-
 function renderNotice(text) {
-  const isEmerg = text.includes('🚨') || text.includes('Emergency');
-  return `<div class="notice${isEmerg ? ' emergency' : ''}">${escapeHtml(text)}</div>`;
+  const isEmergency = text.includes('🚨') || text.toLowerCase().includes('emergency');
+  return `<div class="notice${isEmergency ? ' emergency' : ''}">${escapeHtml(text)}</div>`;
 }
 
-function renderResources(items) {
-  if (!items.length) return '';
-  return `<div class="resource-list">${items.map(renderResource).join('')}</div>`;
-}
-
-function renderResource(r) {
-  const name = r.url
-    ? `<div class="resource-name"><a href="${escapeAttr(r.url)}" target="_blank" rel="noopener">${escapeHtml(r.org)}</a></div>`
-    : `<div class="resource-name">${escapeHtml(r.org)}</div>`;
-  const note = r.note ? `<div class="resource-note">${escapeHtml(r.note)}</div>` : '';
-  const addr = r.addr ? `
-    <div class="resource-detail address">
-      ${ADDR_ICON}
-      <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(r.addr + ' New York NY')}" target="_blank" rel="noopener">${escapeHtml(r.addr)}</a>
-    </div>` : '';
-  const phone = r.phone ? `
-    <div class="resource-detail phone">
-      ${PHONE_ICON}
-      <a href="tel:${escapeAttr(r.phone.replace(/[^\d+]/g,''))}">${escapeHtml(r.phone)}</a>
-    </div>` : '';
-  const web = r.url ? `
-    <div class="resource-detail website">
-      ${WEB_ICON}
-      <a href="${escapeAttr(r.url)}" target="_blank" rel="noopener">Visit website</a>
-    </div>` : '';
-  return `<div class="resource">${name}${note}${addr}${phone}${web}</div>`;
+function renderResources(arr) {
+  if (!arr || arr.length === 0) return '';
+  return `<div class="resource-list">` + arr.map(r => {
+    let h = `<div class="resource">`;
+    if (r.url) {
+      h += `<div class="resource-name"><a href="${escapeAttr(r.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(r.org)} ↗</a></div>`;
+    } else {
+      h += `<div class="resource-name">${escapeHtml(r.org)}</div>`;
+    }
+    if (r.note) h += `<div class="resource-note">${escapeHtml(r.note)}</div>`;
+    if (r.addr) {
+      h += `<div class="resource-detail address">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span>${escapeHtml(r.addr)}</span>
+      </div>`;
+    }
+    if (r.phone) {
+      h += `<div class="resource-detail phone">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+        <a href="tel:${escapeAttr(r.phone.replace(/[^0-9]/g, ''))}">${escapeHtml(r.phone)}</a>
+      </div>`;
+    }
+    h += `</div>`;
+    return h;
+  }).join('') + `</div>`;
 }
 
 function renderJobsBody() {
   const jl = jobListingsData;
-  if (!jl) return '';
+  if (!jl || !jl.sections) return '';
   let html = '';
-  if (jl.healthcare && jl.healthcare.hiring && jl.healthcare.hiring.length) {
-    html += `<div class="subsection"><div class="subsection-title">🏥 Healthcare — Now Hiring</div>${renderResources(jl.healthcare.hiring)}</div>`;
-  }
-  if (jl.healthcare && jl.healthcare.training && jl.healthcare.training.length) {
-    html += `<div class="subsection"><div class="subsection-title">🏥 Free Home Health Aide / CNA Training</div>${renderResources(jl.healthcare.training)}</div>`;
-  }
-  if (jl.entryLevel && jl.entryLevel.length) {
-    html += `<div class="subsection"><div class="subsection-title">🟢 Entry-Level Jobs</div>${renderResources(jl.entryLevel)}</div>`;
-  }
-  if (jl.food && jl.food.length) {
-    html += `<div class="subsection"><div class="subsection-title">🍽️ Food &amp; Hospitality</div>${renderResources(jl.food)}</div>`;
-  }
-  if (jl.trades && jl.trades.length) {
-    html += `<div class="subsection"><div class="subsection-title">🔧 Trades &amp; Construction</div>${renderResources(jl.trades)}</div>`;
-  }
-  if (jl.jobTraining && jl.jobTraining.length) {
-    html += `<div class="subsection"><div class="subsection-title">🎓 Free Job Training &amp; Career Centers</div>${renderResources(jl.jobTraining)}</div>`;
-  }
-  if (jl.jobSupportOrgs && jl.jobSupportOrgs.length) {
-    html += `<div class="subsection"><div class="subsection-title">🤝 Help Finding a Job</div>${renderResources(jl.jobSupportOrgs)}</div>`;
-  }
+  
+  jl.sections.forEach(sec => {
+    const list = jl[sec.key];
+    if (list && list.length) {
+      html += `<div class="subsection"><div class="subsection-title">${escapeHtml(sec.title)}</div>${renderResources(list)}</div>`;
+    }
+  });
+  
   return html;
 }
 
-/* ════════════════════════════════════════════
-   HELPERS
-   ════════════════════════════════════════════ */
+/* ════════════════════════════════════════════ HELPERS ════════════════════════════════════════════ */
 function escapeHtml(s) {
-  return String(s == null ? '' : s)
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  if (!s) return '';
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
-function escapeAttr(s) { return escapeHtml(s); }
+function escapeAttr(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
 
-/* ════════════════════════════════════════════
-   THEME / FONT / LANG
-   ════════════════════════════════════════════ */
-const SUN = `<svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`;
-const MOON = `<svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>`;
-
+/* ════════════════════════════════════════════ UTILITIES ════════════════════════════════════════════ */
 function toggleTheme() {
   isDark = !isDark;
   document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-  document.getElementById('themeBtn').setAttribute('aria-pressed', isDark);
-  document.getElementById('themeIcon').outerHTML = isDark ? MOON : SUN;
-  const t = T[lang] || T.en;
-  document.getElementById('themeLabel').textContent = isDark ? t.light : t.dark;
+  document.getElementById('themeLabel').textContent = isDark ? T[lang].light : T[lang].dark;
 }
 
-function changeFont(delta) {
-  const oldRem = parseFloat(getComputedStyle(document.documentElement).fontSize);
-  const oldScrollY = window.scrollY;
-
-  fontScale = Math.min(2, Math.max(0.2, +(fontScale + delta).toFixed(2)));
-  document.documentElement.style.fontSize = (fontScale * 18) + 'px';
-  document.getElementById('fontLabel').textContent = Math.round(fontScale * 100) + '%';
-
-  const newRem = parseFloat(getComputedStyle(document.documentElement).fontSize);
-  if (oldRem > 0 && newRem > 0) {
-    const ratio = newRem / oldRem;
-    window.scrollTo({ top: oldScrollY * ratio, behavior: 'auto' });
-  }
+function changeFont(dir) {
+  fontScale = Math.max(0.85, Math.min(1.4, fontScale + dir * 0.05));
+  document.documentElement.style.fontSize = `${fontScale * 18}px`;
+  document.getElementById('fontScaleLabel').textContent = `${Math.round(fontScale * 100)}%`;
 }
 
 function toggleLangMenu() {
-  const menu = document.getElementById('langMenu');
-  const btn = document.getElementById('langBtn');
-  const isOpen = menu.classList.toggle('open');
-  btn.setAttribute('aria-expanded', isOpen);
+  const m = document.getElementById('langMenu');
+  const open = m.classList.toggle('open');
+  document.getElementById('langBtn').setAttribute('aria-expanded', open ? 'true' : 'false');
 }
 
 function setLang(code) {
@@ -1251,10 +1029,6 @@ function applyStaticTexts() {
   if (u) u.textContent = t.urgentTitle;
   document.getElementById('search').placeholder = t.searchPlaceholder;
   document.getElementById('themeLabel').textContent = isDark ? t.light : t.dark;
-  const pUtil = document.getElementById('portalUtilLabel');
-  if (pUtil) pUtil.textContent = t.portalUtil;
-  const cUtil = document.getElementById('centersUtilLabel');
-  if (cUtil) cUtil.textContent = t.centersUtil || 'Community centers near me';
 }
 
 document.addEventListener('click', e => {
@@ -1265,7 +1039,13 @@ document.addEventListener('click', e => {
   }
 });
 
-/* Init */
+window.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && currentCardId) closeModal();
+});
+
+// Boot
+document.documentElement.setAttribute('lang', lang);
+document.getElementById('langLabel').textContent = LANG_NAMES[lang] || 'English';
 applyStaticTexts();
 load();
 </script>
