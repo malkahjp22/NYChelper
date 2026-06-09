@@ -8,60 +8,87 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root[data-theme="light"] {
-  --bg: #fbf7f2;
+  /* Soft, warm oatmeal & cream base */
+  --bg: #fdfaf4;
   --card: #ffffff;
-  --border: #d8cfc4;
-  --border-strong: #b8aa97;
-  --accent: #b54a30;
-  --accent-dark: #8c3520;
-  --text: #1f1f1f;
-  --muted: #5a5550;
-  --link: #2a4a8a;
-  --link-visited: #5a3fa0;
-  --notice-bg: #fff4e0;
-  --notice-border: #d4a000;
-  --notice-text: #5a3a00;
-  --emergency-bg: #ba7766;
-  --emergencytile-bg: #804545;
-  --emergency-border: #fccfcf;
-  --emergency-text: #db8c8c;
-  --portal-bg: #f4ebe0;
-  --portal-border: #b54a30;
-  --portal-text: #6b2818;
-  --feedback-bg: #f4ebe0;
-  --feedback-border: #b8aa97;
-  --feedback-text: #4a3a2a;
-  --tile-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.04);
-  --tile-shadow-hover: 0 6px 22px rgba(181,74,48,0.18);
-  --modal-overlay: rgba(20, 18, 14, 0.55);
+  --border: #e6ded4;
+  --border-strong: #cfbeac;
+  
+  /* Rich terracotta & burnt orange accents */
+  --accent: #c85a32;
+  --accent-dark: #9e411f;
+  --text: #2c2520; /* Soft charcoal with a hint of brown */
+  --muted: #6e645a;
+  
+  /* Warm approach to links (deep amber/teal-blue instead of harsh blue/purple) */
+  --link: #2b5c5f;
+  --link-visited: #66465f;
+  
+  /* Sun-baked honey/gold notice */
+  --notice-bg: #fdf5e6;
+  --notice-border: #e0a945;
+  --notice-text: #66460b;
+  
+  /* Softened emergency colors (less aggressive, more protective/warm) */
+  --emergency-bg: #f5dfda;
+  --emergencytile-bg: #a64432;
+  --emergency-border: #e8a397;
+  --emergency-text: #5c1a0e;
+  
+  /* Portals and Feedback */
+  --portal-bg: #f6ede2;
+  --portal-border: #c85a32;
+  --portal-text: #732a11;
+  --feedback-bg: #f6ede2;
+  --feedback-border: #cfbeac;
+  --feedback-text: #4a3e35;
+  
+  /* Warm, organic shadows */
+  --tile-shadow: 0 2px 4px rgba(44,37,32,0.03), 0 4px 12px rgba(44,37,32,0.04);
+  --tile-shadow-hover: 0 8px 24px rgba(200,90,50,0.15);
+  --modal-overlay: rgba(44, 37, 32, 0.45);
 }
+
 :root[data-theme="dark"] {
-  --bg: #1a1814;
-  --card: #2a2622;
-  --border: #4a4238;
-  --border-strong: #6a5f50;
-  --accent: #e07a5f;
-  --accent-dark: #d05a3a;
-  --text: #f0ebe2;
-  --muted: #b0a89c;
-  --link: #8ab4f8;
-  --link-visited: #c4a8f0;
-  --notice-bg: #3a3020;
-  --notice-border: #d4a000;
-  --notice-text: #f0d080;
-  --emergency-bg: #804545;
-  --emergencytile-bg: #804545;
-  --emergency-border: #e05050;
-  --emergency-text: #ffb0b0;
-  --portal-bg: #3a2a20;
-  --portal-border: #e07a5f;
-  --portal-text: #f0c8b0;
-  --feedback-bg: #2f2925;
-  --feedback-border: #6a5f50;
-  --feedback-text: #d8cfc4;
-  --tile-shadow: 0 1px 3px rgba(0,0,0,0.25), 0 2px 8px rgba(0,0,0,0.25);
-  --tile-shadow-hover: 0 6px 22px rgba(224,122,95,0.22);
-  --modal-overlay: rgba(0, 0, 0, 0.7);
+  /* Deep espresso & dark chocolate base */
+  --bg: #1a1512;
+  --card: #26201b;
+  --border: #40362e;
+  --border-strong: #5c4e43;
+  
+  /* Radiant peach & warm copper accents */
+  --accent: #e58b6c;
+  --accent-dark: #c85a32;
+  --text: #f5eedf; /* Soft cream text, easy on the eyes */
+  --muted: #b8aba0;
+  
+  /* Warm glowing links */
+  --link: #8bc3cc;
+  --link-visited: #cca3cc;
+  
+  /* Warm amber notice */
+  --notice-bg: #332715;
+  --notice-border: #cca152;
+  --notice-text: #fadc96;
+  
+  /* Emergency elements */
+  --emergency-bg: #4a1f18;
+  --emergencytile-bg: #7a2f22;
+  --emergency-border: #c85a32;
+  --emergency-text: #fcdbd5;
+  
+  /* Portals and Feedback */
+  --portal-bg: #33251c;
+  --portal-border: #e58b6c;
+  --portal-text: #fcdbd5;
+  --feedback-bg: #2b231e;
+  --feedback-border: #5c4e43;
+  --feedback-text: #e6ded4;
+  
+  /* Deep, warm shadows */
+  --tile-shadow: 0 2px 4px rgba(0,0,0,0.4), 0 4px 12px rgba(0,0,0,0.3);
+  --tile-shadow-hover: 0 8px 24px rgba(229,139,108,0.15);
+  --modal-overlay: rgba(15, 12, 10, 0.75);
 }
 
 html { font-size: 18px; scroll-behavior: smooth; }
