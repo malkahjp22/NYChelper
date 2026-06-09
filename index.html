@@ -269,22 +269,22 @@ header p {
   text-align: center;
   align-items: center;
   text-decoration: none;
-  background: var(--card, #fff);
+  background: var(--emergency-border);
   border: 1px solid var(--emergency-border);
   border-radius: 8px;
   transition: background 0.15s, transform 0.05s;
   -webkit-tap-highlight-color: transparent;
 }
-.urgent-btn:hover { background: var(--emergency-bg); }
+.urgent-btn:hover { background: var(--accent-dark); border-color: var(--accent-dark); }
 .urgent-btn:active { transform: translateY(1px); }
 .urgent-label {
   font-size: 0.82rem;
   font-weight: 600;
-  color: var(--emergency-text);
+  color: #fff;
   opacity: 0.9;
 }
 .urgent-btn .urgent-text {
-  color: var(--emergency-text);
+  color: #fff;
   font-weight: 700;
   font-size: 1.02rem;
   text-decoration: underline;
@@ -434,10 +434,8 @@ header p {
 }
 .tile:hover .tile-arrow { transform: translateX(3px); }
 
-.tile.notice-tile { border-color: var(--notice-border); background: var(--notice-bg); }
-.tile.notice-tile .tile-icon { background: rgba(212,160,0,0.15); color: var(--notice-text); }
-.tile.notice-tile .tile-title,
-.tile.notice-tile .tile-sub { color: var(--notice-text); }
+/* notice tiles use the same look as regular tiles for a uniform grid;
+   the notice text still appears inside the modal */
 
 /* ─── Modal ─── */
 .modal-overlay {
