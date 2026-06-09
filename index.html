@@ -8,87 +8,93 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root[data-theme="light"] {
-  /* Soft, warm oatmeal & cream base */
-  --bg: #fdfaf4;
-  --card: #ffffff;
-  --border: #e6ded4;
-  --border-strong: #cfbeac;
-  
-  /* Rich terracotta & burnt orange accents */
-  --accent: #c85a32;
-  --accent-dark: #9e411f;
-  --text: #2c2520; /* Soft charcoal with a hint of brown */
-  --muted: #6e645a;
-  
-  /* Warm approach to links (deep amber/teal-blue instead of harsh blue/purple) */
-  --link: #2b5c5f;
-  --link-visited: #66465f;
-  
-  /* Sun-baked honey/gold notice */
-  --notice-bg: #fdf5e6;
-  --notice-border: #e0a945;
-  --notice-text: #66460b;
-  
-  /* Softened emergency colors (less aggressive, more protective/warm) */
-  --emergency-bg: #f5dfda;
-  --emergencytile-bg: #a64432;
-  --emergency-border: #e8a397;
-  --emergency-text: #5c1a0e;
-  
+  /* Clean, cool light theme */
+  --bg: #eef2f7;
+  --card: #dfe6ee;
+  --border: #bfc9d6;
+  --border-strong: #94a3b8;
+
+  /* Friendly blue accent */
+  --accent: #2563eb;
+  --accent-dark: #1d4ed8;
+
+  /* High-contrast text */
+  --text: #111827;
+  --muted: #475569;
+
+  /* Links */
+  --link: #0f5bd8;
+  --link-visited: #6d28d9;
+
+  /* Notice */
+  --notice-bg: #e8f4ff;
+  --notice-border: #60a5fa;
+  --notice-text: #0f172a;
+
+  /* Emergency */
+  --emergency-bg: #fee2e2;
+  --emergencytile-bg: #dc2626;
+  --emergency-border: #ef4444;
+  --emergency-text: #ffffff;
+
   /* Portals and Feedback */
-  --portal-bg: #f6ede2;
-  --portal-border: #c85a32;
-  --portal-text: #732a11;
-  --feedback-bg: #f6ede2;
-  --feedback-border: #cfbeac;
-  --feedback-text: #4a3e35;
-  
-  /* Warm, organic shadows */
-  --tile-shadow: 0 2px 4px rgba(44,37,32,0.03), 0 4px 12px rgba(44,37,32,0.04);
-  --tile-shadow-hover: 0 8px 24px rgba(200,90,50,0.15);
-  --modal-overlay: rgba(44, 37, 32, 0.45);
+  --portal-bg: #e8f0ff;
+  --portal-border: #2563eb;
+  --portal-text: #0f172a;
+
+  --feedback-bg: #e2e8f0;
+  --feedback-border: #94a3b8;
+  --feedback-text: #0f172a;
+
+  /* Shadows */
+  --tile-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+  --tile-shadow-hover: 0 10px 24px rgba(37, 99, 235, 0.18);
+  --modal-overlay: rgba(15, 23, 42, 0.45);
 }
 
 :root[data-theme="dark"] {
-  /* Deep espresso & dark chocolate base */
-  --bg: #1a1512;
-  --card: #26201b;
-  --border: #40362e;
-  --border-strong: #5c4e43;
-  
-  /* Radiant peach & warm copper accents */
-  --accent: #e58b6c;
-  --accent-dark: #c85a32;
-  --text: #f5eedf; /* Soft cream text, easy on the eyes */
-  --muted: #b8aba0;
-  
-  /* Warm glowing links */
-  --link: #8bc3cc;
-  --link-visited: #cca3cc;
-  
-  /* Warm amber notice */
-  --notice-bg: #332715;
-  --notice-border: #cca152;
-  --notice-text: #fadc96;
-  
-  /* Emergency elements */
-  --emergency-bg: #4a1f18;
-  --emergencytile-bg: #7a2f22;
-  --emergency-border: #c85a32;
-  --emergency-text: #fcdbd5;
-  
+  /* Darker background and tiles */
+  --bg: #0b1220;
+  --card: #151f32;
+  --border: #283548;
+  --border-strong: #3d4f68;
+
+  /* Friendly blue accent */
+  --accent: #60a5fa;
+  --accent-dark: #3b82f6;
+
+  /* Very high-contrast text */
+  --text: #f8fafc;
+  --muted: #cbd5e1;
+
+  /* Links */
+  --link: #7dd3fc;
+  --link-visited: #c4b5fd;
+
+  /* Notice */
+  --notice-bg: #172554;
+  --notice-border: #60a5fa;
+  --notice-text: #eff6ff;
+
+  /* Emergency */
+  --emergency-bg: #4c0519;
+  --emergencytile-bg: #b91c1c;
+  --emergency-border: #ef4444;
+  --emergency-text: #ffffff;
+
   /* Portals and Feedback */
-  --portal-bg: #33251c;
-  --portal-border: #e58b6c;
-  --portal-text: #fcdbd5;
-  --feedback-bg: #2b231e;
-  --feedback-border: #5c4e43;
-  --feedback-text: #e6ded4;
-  
-  /* Deep, warm shadows */
-  --tile-shadow: 0 2px 4px rgba(0,0,0,0.4), 0 4px 12px rgba(0,0,0,0.3);
-  --tile-shadow-hover: 0 8px 24px rgba(229,139,108,0.15);
-  --modal-overlay: rgba(15, 12, 10, 0.75);
+  --portal-bg: #1e293b;
+  --portal-border: #60a5fa;
+  --portal-text: #f8fafc;
+
+  --feedback-bg: #172033;
+  --feedback-border: #334155;
+  --feedback-text: #f8fafc;
+
+  /* Stronger depth */
+  --tile-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+  --tile-shadow-hover: 0 12px 28px rgba(96, 165, 250, 0.15);
+  --modal-overlay: rgba(0, 0, 0, 0.75);
 }
 
 html { font-size: 18px; scroll-behavior: smooth; }
