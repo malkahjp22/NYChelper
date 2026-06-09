@@ -261,16 +261,22 @@ header p {
 }
 .urgent-btn {
   flex: 1 1 0;
-  min-width: 180px;
+  min-width: 150px;
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
-  padding: 0.5rem 0.4rem;
+  padding: 0.6rem 0.7rem;
   text-align: center;
   align-items: center;
   text-decoration: none;
+  background: var(--card, #fff);
+  border: 1px solid var(--emergency-border);
+  border-radius: 8px;
+  transition: background 0.15s, transform 0.05s;
   -webkit-tap-highlight-color: transparent;
 }
+.urgent-btn:hover { background: var(--emergency-bg); }
+.urgent-btn:active { transform: translateY(1px); }
 .urgent-label {
   font-size: 0.82rem;
   font-weight: 600;
@@ -883,7 +889,7 @@ function renderUrgentBar() {
   block.style.display = '';
   
   if (hasMain) {
-    mainGrid.style.display = 'grid';
+    mainGrid.style.display = 'flex';
     mainGrid.innerHTML = urgentContactsData.map(item => `
       <a class="urgent-btn" href="${escapeAttr(item.url)}">
         <span class="urgent-label">${escapeHtml(item.label)}</span>
