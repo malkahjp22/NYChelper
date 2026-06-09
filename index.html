@@ -254,22 +254,22 @@ header p {
   flex-shrink: 0;
 }
 .urgent-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
-  gap: 0.6rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  justify-content: space-between;
 }
-.urgent-item {
-  background: rgba(255,255,255,0.5);
-  border: 1px solid rgba(196,48,48,0.2);
-  border-radius: 9px;
-  padding: 0.55rem 0.8rem;
+.urgent-btn {
+  flex: 1 1 0;
+  min-width: 180px;
   display: flex;
   flex-direction: column;
-  gap: 0.1rem;
-}
-:root[data-theme="dark"] .urgent-item {
-  background: rgba(255,255,255,0.04);
-  border-color: rgba(224,80,80,0.25);
+  gap: 0.15rem;
+  padding: 0.5rem 0.4rem;
+  text-align: center;
+  align-items: center;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
 }
 .urgent-label {
   font-size: 0.82rem;
@@ -277,14 +277,16 @@ header p {
   color: var(--emergency-text);
   opacity: 0.9;
 }
-.urgent-item a {
+.urgent-btn .urgent-text {
   color: var(--emergency-text);
   font-weight: 700;
   font-size: 1.02rem;
   text-decoration: underline;
   word-break: break-word;
 }
-.urgent-item a:hover { text-decoration: none; }
+.urgent-btn:hover .urgent-text,
+.urgent-btn:focus-visible .urgent-text { text-decoration: none; }
+.urgent-btn:focus-visible { outline: 2px solid var(--emergency-border); outline-offset: 2px; border-radius: 6px; }
 
 .urgent-divider {
   margin: 0.9rem 0 0.65rem;
@@ -883,10 +885,10 @@ function renderUrgentBar() {
   if (hasMain) {
     mainGrid.style.display = 'grid';
     mainGrid.innerHTML = urgentContactsData.map(item => `
-      <div class="urgent-item">
+      <a class="urgent-btn" href="${escapeAttr(item.url)}">
         <span class="urgent-label">${escapeHtml(item.label)}</span>
-        <a href="${escapeAttr(item.url)}">${escapeHtml(item.text)}</a>
-      </div>
+        <span class="urgent-text">${escapeHtml(item.text)}</span>
+      </a>
     `).join('');
   } else {
     mainGrid.style.display = 'none';
