@@ -880,7 +880,6 @@ function renderUrgentBar() {
   
   block.style.display = '';
   
-  // Render primary/emergency items
   if (hasMain) {
     mainGrid.style.display = 'grid';
     mainGrid.innerHTML = urgentContactsData.map(item => `
@@ -893,7 +892,6 @@ function renderUrgentBar() {
     mainGrid.style.display = 'none';
   }
   
-  // Render visual breakdown for lower priority links (e.g. Homebase)
   if (hasSoft) {
     divider.style.display = 'flex';
     softGrid.style.display = 'grid';
@@ -955,11 +953,15 @@ function countResources(d) {
         if (arr) c += arr.length;
       });
     } else {
-      // Legacy data structure safety fallback
       const add = arr => { if (arr) c += arr.length; };
       add(jobListingsData.entryLevel);
-      add(jobListingsData.healthcare && jobListingsData.healthcare.hiring);
-      add(jobListingsData.healthcare && jobListingsData.healthcare.training);
+      if (jobListingsData.healthcare) {
+        add(jobListingsData.healthcare.hiring);
+        add(jobListingsData.healthcare.training);
+      }
+      add(jobListingsData.healthcareHiring);
+      add(jobListingsData.healthcareTraining);
+      add(jobListingsData.hiringNow);
       add(jobListingsData.food);
       add(jobListingsData.trades);
       add(jobListingsData.jobTraining);
@@ -1062,12 +1064,20 @@ function renderJobsBody() {
       }
     });
   } else {
-    // Legacy mapping compatibility safety loop
+    if (jl.hiringNow && jl.hiringNow.length) {
+      html += `<div class="subsection"><div class="subsection-title">💼 Job Application Portals</div>${renderResources(jl.hiringNow)}</div>`;
+    }
     if (jl.healthcare && jl.healthcare.hiring && jl.healthcare.hiring.length) {
       html += `<div class="subsection"><div class="subsection-title">🏥 Healthcare — Now Hiring</div>${renderResources(jl.healthcare.hiring)}</div>`;
     }
+    if (jl.healthcareHiring && jl.healthcareHiring.length) {
+      html += `<div class="subsection"><div class="subsection-title">🏥 Healthcare — Now Hiring</div>${renderResources(jl.healthcareHiring)}</div>`;
+    }
     if (jl.healthcare && jl.healthcare.training && jl.healthcare.training.length) {
       html += `<div class="subsection"><div class="subsection-title">🏥 Free Home Health Aide / CNA Training</div>${renderResources(jl.healthcare.training)}</div>`;
+    }
+    if (jl.healthcareTraining && jl.healthcareTraining.length) {
+      html += `<div class="subsection"><div class="subsection-title">🏥 Free Home Health Aide / CNA Training</div>${renderResources(jl.healthcareTraining)}</div>`;
     }
     if (jl.entryLevel && jl.entryLevel.length) {
       html += `<div class="subsection"><div class="subsection-title">🟢 Entry-Level Jobs</div>${renderResources(jl.entryLevel)}</div>`;
