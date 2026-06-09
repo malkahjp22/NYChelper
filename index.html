@@ -269,8 +269,8 @@ header p {
   text-align: center;
   align-items: center;
   text-decoration: none;
-  background: var(--emergency-border);
-  border: 1px solid var(--emergency-border);
+  background: var(--emergency-bg);
+  border: 1px solid var(--emergency-bg);
   border-radius: 8px;
   transition: background 0.15s, transform 0.05s;
   -webkit-tap-highlight-color: transparent;
@@ -359,13 +359,16 @@ header p {
   pointer-events: none;
 }
 
-/* ─── Tile grid: 3 per row ─── */
+/* ─── Tile grid: 3 per row, centered so a lone tile never hangs alone ─── */
 .tile-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 1rem;
 }
 .tile {
+  flex: 1 1 260px;
+  max-width: calc((100% - 2rem) / 3);
   background: var(--card);
   border: 2px solid var(--border);
   border-radius: 14px;
@@ -668,14 +671,15 @@ header p {
   background: var(--card);
   border: 2px dashed var(--border);
   border-radius: 12px;
-  grid-column: 1 / -1;
+  flex-basis: 100%;
+  max-width: 100%;
 }
 
 @media print {
   .utility-bar, .search-bar, .skip-link, .modal-overlay { display: none !important; }
   body { background: #fff; color: #000; font-size: 12pt; }
-  .tile { page-break-inside: avoid; border: 1px solid #999; cursor: default; }
-  .tile-grid { grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
+  .tile { page-break-inside: avoid; border: 1px solid #999; cursor: default; max-width: calc((100% - 0.5rem) / 2); }
+  .tile-grid { gap: 0.5rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -686,14 +690,15 @@ header p {
 
 @media (max-width: 900px) {
   html { font-size: 17px; }
-  .tile-grid { grid-template-columns: repeat(2, 1fr); }
+  .tile { max-width: calc((100% - 1rem) / 2); }
 }
 @media (max-width: 600px) {
   html { font-size: 16px; }
   .wrap { padding: 1rem 0.7rem 3rem; }
   .utility-bar { justify-content: center; padding: 0.5rem 0.6rem; gap: 0.4rem; }
   .util-btn { padding: 0.4rem 0.6rem; font-size: 0.82rem; min-height: 40px; }
-  .tile-grid { grid-template-columns: 1fr; gap: 0.8rem; }
+  .tile-grid { gap: 0.8rem; }
+  .tile { max-width: 100%; }
   .util-btn svg { width: 16px; height: 16px; }
   .util-btn .label-text { display: none; }
   .util-btn.util-portal .label-text { display: inline; }
