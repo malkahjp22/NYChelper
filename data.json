@@ -209,8 +209,22 @@
       {
         "id": "workforce1-mn",
         "org": "Workforce1 — Manhattan",
-        "note": "Walk-in career center · 330 W 34th St",
-        "url": "https://www.nyc.gov/workforce1"
+        "note": "Walk-in career centers · tap to see locations",
+        "locations": [
+          {
+            "name": "Upper Manhattan Workforce1 Career Center",
+            "addr": "215 West 125th Street, 6th Floor, New York, NY 10027"
+          },
+          {
+            "name": "Washington Heights Workforce1 Career Center",
+            "addr": "516 West 181st Street, 5th Floor, New York, NY 10033"
+          },
+          {
+            "name": "Healthcare Workforce1 Career Center",
+            "addr": "14 Wall Street, 17th Floor, New York, NY 10005"
+          }
+        ],
+        "moreInfoUrl": "https://www.nyc.gov/workforce1"
       },
       {
         "id": "workforce1-bx",
