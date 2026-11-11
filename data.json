@@ -230,26 +230,95 @@
       {
         "id": "workforce1-bx",
         "org": "Workforce1 — Bronx",
-        "note": "Walk-in career center · 2396 Third Ave",
-        "url": "https://www.nyc.gov/workforce1"
+        "note": "Walk-in career centers · tap to see locations",
+        "locations": [
+          {
+            "name": "Bronx Workforce1 Career Center",
+            "addr": "400 East Fordham Road, 8th Floor (entrance on Webster Avenue), Bronx, NY 10458"
+          },
+          {
+            "name": "Hunts Point Workforce1 Career Center",
+            "addr": "1029 East 163rd Street, 3rd Floor, Bronx, NY 10459"
+          },
+          {
+            "name": "West Farms Workforce1 Career Center",
+            "addr": "901 East Tremont Avenue, 2nd Floor, Bronx, NY 10460"
+          },
+          {
+            "name": "Bronx Workforce1 Industrial & Transportation Career Center",
+            "addr": "14 Bruckner Boulevard, 3rd Floor, Bronx, NY 10454"
+          }
+        ],
+        "moreInfoUrl": "https://www.nyc.gov/workforce1"
       },
       {
         "id": "workforce1-bk",
         "org": "Workforce1 — Brooklyn",
-        "note": "Walk-in career center · 9 Bond St",
-        "url": "https://www.nyc.gov/workforce1"
+        "note": "Walk-in career centers · tap to see locations",
+        "locations": [
+          {
+            "name": "Brooklyn Workforce1 Career Center",
+            "addr": "9 Bond Street, 5th Floor, Brooklyn, NY 11201"
+          },
+          {
+            "name": "Coney Island Workforce1 Career Center",
+            "addr": "[Operating Virtually], Brooklyn, NY 11224",
+            "virtual": true
+          },
+          {
+            "name": "East New York Workforce1 Career Center",
+            "addr": "2617 Atlantic Avenue, Brooklyn, NY 11207"
+          },
+          {
+            "name": "Brooklyn Workforce1 Industrial & Transportation Career Center",
+            "addr": "Brooklyn Army Terminal, 140 58th Street, Building B Lobby, Brooklyn, NY 11220"
+          }
+        ],
+        "moreInfoUrl": "https://www.nyc.gov/workforce1"
       },
       {
         "id": "workforce1-qn",
         "org": "Workforce1 — Queens",
-        "note": "Walk-in career center · 168-25 Jamaica Ave",
-        "url": "https://www.nyc.gov/workforce1"
+        "note": "Walk-in career centers · tap to see locations",
+        "locations": [
+          {
+            "name": "Queens Workforce1 Career Center",
+            "addr": "168-25 Jamaica Avenue, 2nd Floor, Jamaica, NY 11432"
+          },
+          {
+            "name": "Far Rockaway Workforce1 Career Center",
+            "addr": "57-17 Rockaway Beach Boulevard, Arverne, NY 11692"
+          },
+          {
+            "name": "Flushing Workforce1 Career Center",
+            "addr": "41-17 Main Street, 3rd Floor, Flushing, NY 11355"
+          },
+          {
+            "name": "Workforce1 Industrial & Transportation Career Center",
+            "addr": "168-46 91st Avenue, 2nd Floor, Jamaica, NY 11432"
+          },
+          {
+            "name": "Long Island City Workforce1 Industrial & Transportation Career Center",
+            "addr": "47-10 Austell Place, Long Island City, NY 11101"
+          }
+        ],
+        "moreInfoUrl": "https://www.nyc.gov/workforce1"
       },
       {
         "id": "workforce1-si",
         "org": "Workforce1 — Staten Island",
-        "note": "Walk-in career center · 120 Stuyvesant Pl",
-        "url": "https://www.nyc.gov/workforce1"
+        "note": "Walk-in career centers · tap to see locations",
+        "locations": [
+          {
+            "name": "Staten Island Workforce1 Career Center",
+            "addr": "120 Stuyvesant Place, 3rd Floor, Staten Island, NY 10301"
+          },
+          {
+            "name": "Staten Island Workforce1 Industrial & Transportation Career Center",
+            "addr": "120 Stuyvesant Place, 3rd Floor, Staten Island, NY 10301"
+          }
+        ],
+        "moreInfoUrl": "https://www.nyc.gov/workforce1"
       },
       {
         "id": "per-scholas",
@@ -373,7 +442,7 @@
           "id": "food-help-nyc",
           "org": "Food Help NYC",
           "note": "Search pantries by zip code",
-          "url": "https://www.foodhelpnyc.org"
+          "url": "https://finder.nyc.gov/foodhelp/"
         },
         {
           "id": "food-bank-nyc",
@@ -389,7 +458,7 @@
           "note": "Soup kitchen & pantry",
           "addr": "795 Lexington Ave, Brooklyn",
           "phone": "(718) 574-0058",
-          "url": "https://www.stjohnsbread.org"
+          "url": "https://www.breadandlife.org/our-services/food-services/digital-choice-food-pantry/#register-for-pantry"
         },
         {
           "id": "gods-love-we-deliver",
@@ -404,7 +473,7 @@
           "org": "Grand Central Food Program",
           "note": "Nightly street meal routes",
           "addr": "8 Dey St",
-          "url": "https://www.coalitionforthehomeless.org/grand-central-food-program/"
+          "url": "https://www.coalitionforthehomeless.org/get-help/i-need-food/"
         },
         {
           "id": "yourpeer-food",

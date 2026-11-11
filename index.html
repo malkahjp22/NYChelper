@@ -1110,12 +1110,12 @@ function renderResources(arr) {
           ${r.note ? `<span class="resource-note">${escapeHtml(r.note)}</span>` : ''}
         </summary>`;
       h += `<ul class="loc-list">` + r.locations.map(loc => {
-        const mapUrl = loc.mapUrl || ('https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(loc.addr));
+        const mapUrl = loc.mapUrl || ('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(loc.name + ', ' + loc.addr.replace(/\s*\(.*?\)/g, '')));
         return `<li class="loc-item">
           <div class="loc-name">${escapeHtml(loc.name)}</div>
           <div class="resource-detail address">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            <a href="${escapeAttr(mapUrl)}" target="_blank" rel="noopener noreferrer" aria-label="Directions to ${escapeAttr(loc.name)}">${escapeHtml(loc.addr)}</a>
+            ${loc.virtual ? `<span>${escapeHtml(loc.addr)}</span>` : `<a href="${escapeAttr(mapUrl)}" target="_blank" rel="noopener noreferrer" aria-label="${escapeAttr(loc.name)} on Google Maps">${escapeHtml(loc.addr)}</a>`}
           </div>
         </li>`;
       }).join('') + `</ul>`;
