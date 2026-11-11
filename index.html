@@ -1110,7 +1110,7 @@ function renderResources(arr) {
           ${r.note ? `<span class="resource-note">${escapeHtml(r.note)}</span>` : ''}
         </summary>`;
       h += `<ul class="loc-list">` + r.locations.map(loc => {
-        const mapUrl = 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(loc.addr);
+        const mapUrl = loc.mapUrl || ('https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(loc.addr));
         return `<li class="loc-item">
           <div class="loc-name">${escapeHtml(loc.name)}</div>
           <div class="resource-detail address">

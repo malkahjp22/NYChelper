@@ -210,11 +210,11 @@
         "id": "workforce1-mn",
         "org": "Workforce1 — Manhattan",
         "note": "Walk-in career centers · tap to see locations",
-        "url": "https://www.google.com/maps/place/Upper+Manhattan+Workforce1+Career+Center/@40.8096961,-73.9489,677m
         "locations": [
           {
             "name": "Upper Manhattan Workforce1 Career Center",
-            "addr": "215 West 125th Street, 6th Floor, New York, NY 10027"
+            "addr": "215 West 125th Street, 6th Floor, New York, NY 10027",
+            "mapUrl": "https://www.google.com/maps/place/Upper+Manhattan+Workforce1+Career+Center/@40.8096961,-73.9489,677m/data=!3m2!1e3!4b1!4m6!3m5!1s0x89c2f66d4bbd5aa5:0x1d1c2eace67b349!8m2!3d40.8096961!4d-73.9489!16s%2Fg%2F126305wdg!5m1!1e2"
           },
           {
             "name": "Washington Heights Workforce1 Career Center",
