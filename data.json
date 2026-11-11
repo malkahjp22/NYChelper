@@ -862,6 +862,12 @@
       "notice": "",
       "resources": [
         {
+          "id": "nyc-adult-ed-enrollment",
+          "org": "NYC Adult Education Enrollment",
+          "note": "Scroll down and select your borough",
+          "url": "https://adultedu.nyc/enrollment/"
+        },
+        {
           "id": "henry-street",
           "org": "Henry Street Settlement",
           "note": "ESL & adult education",
