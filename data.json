@@ -29,7 +29,11 @@
   "jobListings": {
     "sections": [
       {
-        "title": "💼 Job Application Portals",
+        "title": "🎓 Free Job Training & Career Centers",
+        "key": "jobTraining"
+      },
+      {
+        "title": "💼 Online Job Application Portals",
         "key": "hiringNow"
       },
       {
@@ -51,10 +55,6 @@
       {
         "title": "🔧 Trades & Construction",
         "key": "trades"
-      },
-      {
-        "title": "🎓 Free Job Training & Career Centers",
-        "key": "jobTraining"
       },
       {
         "title": "🤝 Help Finding a Job",
